@@ -111,12 +111,14 @@ class Command(BaseCommand):
                         'description': f'Description for Training Program {i+1}',
                         'start_date': timezone.now() + timedelta(days=random.randint(1, 30)),
                         'end_date': timezone.now() + timedelta(days=random.randint(31, 60)),
-                        'max_participants': random.randint(10, 30),
                         'instructor': teacher,
-                        'is_active': True
+                        'is_active': True,
+                        'capacity': random.randint(10, 30)
                     }
                 )[0]
-                program.participants.add(*Employee.objects.all()[:random.randint(1, 5)])
+                # Add random number of participants up to capacity
+                max_participants = min(random.randint(1, 5), program.capacity)
+                program.participants.add(*Employee.objects.all()[:max_participants])
 
         # Create leadership members
         positions = ['Principal', 'Vice Principal', 'Head of Academics', 'Head of Administration', 'Head of Finance']
