@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Create Assignment - {{ class_subject.class_name.name }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Create Assignment</h2>
+            <p class="text-muted">{{ class_subject.class_name.name }} - {{ class_subject.subject.name }}</p>
+        </div>
+        <div class="col-auto">
+            <a href="{% url 'teachers:class_detail' class_subject.class_name.id %}" class="btn btn-secondary">
+                Back to Class
+            </a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="title" class="form-label">Assignment Title</label>
+                    <input type="text" class="form-control" id="title" name="title" required>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="due_date" class="form-label">Due Date</label>
+                    <input type="datetime-local" class="form-control" id="due_date" name="due_date" required>
+                </div>
+                <div class="mb-3">
+                    <label for="max_score" class="form-label">Maximum Score</label>
+                    <input type="number" class="form-control" id="max_score" name="max_score" min="0" max="100" value="100" required>
+                </div>
+                <div class="mb-3">
+                    <label for="file" class="form-label">Attachment (Optional)</label>
+                    <input type="file" class="form-control" id="file" name="file">
+                </div>
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary">Create Assignment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

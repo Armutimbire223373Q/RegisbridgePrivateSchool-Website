@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Student Profile{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Student Profile</h5>
+                    <a href="{% url 'students:dashboard' %}" class="btn btn-outline-secondary btn-sm">
+                        Back to Dashboard
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                    <div class="messages">
+                        {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <!-- Personal Information -->
+                        <h6 class="text-primary mb-3">Personal Information</h6>
+                        <div class="mb-4">
+                            <p><strong>Name:</strong> {{ student.user.get_full_name }}</p>
+                            <p><strong>Student ID:</strong> {{ student.student_id }}</p>
+                            <p><strong>Date of Birth:</strong> {{ student.date_of_birth|date:"F d, Y" }}</p>
+                            <p><strong>Gender:</strong> {{ student.get_gender_display }}</p>
+                        </div>
+
+                        <!-- Contact Information -->
+                        <h6 class="text-primary mb-3">Contact Information</h6>
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Address</label>
+                            <textarea class="form-control" id="address" name="address" rows="3">{{ student.address }}</textarea>
+                        </div>
+
+                        <!-- Parent Information -->
+                        <h6 class="text-primary mb-3">Parent Information</h6>
+                        <div class="mb-3">
+                            <label for="parent_name" class="form-label">Parent/Guardian Name</label>
+                            <input type="text" class="form-control" id="parent_name" name="parent_name" value="{{ student.parent_name }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="parent_phone" class="form-label">Parent/Guardian Phone</label>
+                            <input type="tel" class="form-control" id="parent_phone" name="parent_phone" value="{{ student.parent_phone }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="parent_email" class="form-label">Parent/Guardian Email</label>
+                            <input type="email" class="form-control" id="parent_email" name="parent_email" value="{{ student.parent_email }}">
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

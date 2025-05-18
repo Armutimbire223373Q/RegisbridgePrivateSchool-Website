@@ -1,0 +1,83 @@
+{% extends "messaging/base_messaging.html" %}
+
+{% block page_title %}New Message{% endblock %}
+
+{% block messaging_content %}
+<div class="row">
+    <div class="col-12 col-md-8 col-lg-6 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- Subject -->
+                    <div class="mb-3">
+                        <label for="{{ form.subject.id_for_label }}" class="form-label">Subject</label>
+                        {{ form.subject }}
+                        {% if form.subject.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.subject.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Recipients -->
+                    <div class="mb-3">
+                        <label for="{{ form.participants.id_for_label }}" class="form-label">Recipients</label>
+                        {{ form.participants }}
+                        {% if form.participants.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.participants.errors }}
+                        </div>
+                        {% endif %}
+                        <small class="form-text text-muted">{{ form.participants.help_text }}</small>
+                    </div>
+
+                    <!-- Message -->
+                    <div class="mb-3">
+                        <label for="{{ form.initial_message.id_for_label }}" class="form-label">Message</label>
+                        {{ form.initial_message }}
+                        {% if form.initial_message.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.initial_message.errors }}
+                        </div>
+                        {% endif %}
+                        <small class="form-text text-muted">{{ form.initial_message.help_text }}</small>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send"></i> Send Message
+                        </button>
+                        <a href="{% url 'messaging:inbox' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Select2 for recipients
+        $('#{{ form.participants.id_for_label }}').select2({
+            theme: 'bootstrap-5',
+            placeholder: 'Select recipients...',
+            allowClear: true,
+            width: '100%'
+        });
+
+        // Auto-expand textarea
+        const textarea = document.querySelector('#{{ form.initial_message.id_for_label }}');
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %} 

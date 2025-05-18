@@ -1,0 +1,293 @@
+{% extends 'teachers/base.html' %}
+{% load static %}
+
+{% block teacher_content %}
+<div class="assignment-detail-header">
+    <h1>{{ assignment.title }}</h1>
+    <p class="subtitle">{{ assignment.class_subject.class_name.name }} - {{ assignment.class_subject.subject.name }}</p>
+</div>
+
+<div class="assignment-detail-grid">
+    <!-- Assignment Information -->
+    <div class="card">
+        <h2>Assignment Details</h2>
+        <div class="info-grid">
+            <div class="info-item">
+                <label>Due Date:</label>
+                <p>{{ assignment.due_date|date:"F j, Y" }}</p>
+            </div>
+            <div class="info-item">
+                <label>Created:</label>
+                <p>{{ assignment.created_at|date:"F j, Y" }}</p>
+            </div>
+            <div class="info-item">
+                <label>Total Submissions:</label>
+                <p>{{ submissions.count }}</p>
+            </div>
+        </div>
+        <div class="description-section">
+            <h3>Description</h3>
+            <p>{{ assignment.description }}</p>
+        </div>
+    </div>
+
+    <!-- Submissions List -->
+    <div class="card">
+        <h2>Student Submissions</h2>
+        {% if submissions %}
+            <div class="submissions-list">
+                {% for submission in submissions %}
+                    <div class="submission-item">
+                        <div class="submission-info">
+                            <h3>{{ submission.student.user.get_full_name }}</h3>
+                            <p>Submitted: {{ submission.submission_date|date:"F j, Y" }}</p>
+                            {% if submission.grade %}
+                                <p class="grade">Grade: {{ submission.grade }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="submission-actions">
+                            <a href="{{ submission.file.url }}" class="btn-primary" target="_blank">View Submission</a>
+                            <button class="btn-secondary grade-btn" data-submission-id="{{ submission.pk }}">Grade</button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No submissions yet.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Grade Modal -->
+<div id="gradeModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Grade Submission</h2>
+            <button class="close-modal">&times;</button>
+        </div>
+        <form id="gradeForm" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="submission_id" id="submissionId">
+            <div class="form-group">
+                <label for="grade">Grade (0-100)</label>
+                <input type="number" id="grade" name="grade" min="0" max="100" step="0.1" required>
+            </div>
+            <div class="form-group">
+                <label for="feedback">Feedback</label>
+                <textarea id="feedback" name="feedback" rows="4"></textarea>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">Submit Grade</button>
+                <button type="button" class="btn-secondary close-modal">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .assignment-detail-header {
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .assignment-detail-header h1 {
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+        color: var(--secondary-color);
+        font-size: 1.1rem;
+    }
+
+    .assignment-detail-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .info-grid {
+        display: grid;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .info-item label {
+        color: var(--secondary-color);
+        font-size: 0.875rem;
+    }
+
+    .info-item p {
+        margin: 0;
+        color: var(--text-color);
+    }
+
+    .description-section {
+        margin-top: 1.5rem;
+    }
+
+    .description-section h3 {
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .submissions-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .submission-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background-color: var(--background-color);
+        border: 1px solid var(--primary-light);
+        border-radius: 0.5rem;
+    }
+
+    .submission-info h3 {
+        color: var(--primary-color);
+        margin: 0 0 0.5rem 0;
+    }
+
+    .submission-info p {
+        margin: 0;
+        color: var(--secondary-color);
+        font-size: 0.875rem;
+    }
+
+    .grade {
+        color: var(--primary-color);
+        font-weight: 500;
+    }
+
+    .submission-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+    }
+
+    .modal-content {
+        position: relative;
+        background-color: var(--background-color);
+        margin: 10% auto;
+        padding: 2rem;
+        width: 90%;
+        max-width: 500px;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .modal-header h2 {
+        color: var(--primary-color);
+        margin: 0;
+    }
+
+    .close-modal {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: var(--secondary-color);
+        cursor: pointer;
+        padding: 0.5rem;
+    }
+
+    .close-modal:hover {
+        color: var(--primary-color);
+    }
+
+    @media (max-width: 768px) {
+        .submission-item {
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .submission-actions {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+{% block extra_js %}
+<script>
+    // Modal functionality
+    const modal = document.getElementById('gradeModal');
+    const gradeBtns = document.querySelectorAll('.grade-btn');
+    const closeBtns = document.querySelectorAll('.close-modal');
+    const gradeForm = document.getElementById('gradeForm');
+    const submissionIdInput = document.getElementById('submissionId');
+
+    gradeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            submissionIdInput.value = btn.dataset.submissionId;
+            modal.style.display = 'block';
+        });
+    });
+
+    closeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+    });
+
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
+    // Form submission
+    gradeForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(gradeForm);
+        
+        try {
+            const response = await fetch(`/teachers/assignments/submissions/${formData.get('submission_id')}/grade/`, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            });
+
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                alert('Error submitting grade. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error submitting grade. Please try again.');
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %} 

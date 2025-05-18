@@ -1,0 +1,117 @@
+{% extends 'teachers/base.html' %}
+{% load static %}
+
+{% block teacher_content %}
+<div class="dashboard-header">
+    <h1>Welcome, {{ teacher.user.get_full_name }}</h1>
+    <p class="subtitle">Teacher Dashboard</p>
+</div>
+
+<div class="dashboard-grid">
+    <!-- Classes Section -->
+    <div class="card">
+        <h2>Your Classes</h2>
+        {% if classes %}
+            <div class="class-list">
+                {% for class_subject in classes %}
+                    <div class="class-item">
+                        <h3>{{ class_subject.class_name.name }} - {{ class_subject.subject.name }}</h3>
+                        <p>Grade Level: {{ class_subject.class_name.grade_level }}</p>
+                        <p>Section: {{ class_subject.class_name.section }}</p>
+                        <a href="{% url 'teachers:class_detail' class_subject.pk %}" class="btn-primary">View Details</a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No classes assigned yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- Recent Assignments Section -->
+    <div class="card">
+        <h2>Recent Assignments</h2>
+        {% if assignments %}
+            <div class="assignment-list">
+                {% for assignment in assignments %}
+                    <div class="assignment-item">
+                        <h3>{{ assignment.title }}</h3>
+                        <p>Class: {{ assignment.class_subject.class_name.name }} - {{ assignment.class_subject.subject.name }}</p>
+                        <p>Due Date: {{ assignment.due_date|date:"F j, Y" }}</p>
+                        <a href="{% url 'teachers:assignment_detail' assignment.pk %}" class="btn-primary">View Submissions</a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No recent assignments.</p>
+        {% endif %}
+    </div>
+
+    <!-- Quick Actions Section -->
+    <div class="card">
+        <h2>Quick Actions</h2>
+        <div class="quick-actions">
+            <a href="{% url 'teachers:class_list' %}" class="btn-primary">View All Classes</a>
+            <a href="{% url 'teachers:profile' %}" class="btn-primary">Update Profile</a>
+            <a href="{% url 'teachers:attendance_list' classes.first.pk %}" class="btn-primary">Take Attendance</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .dashboard-header {
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .dashboard-header h1 {
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+        color: var(--secondary-color);
+        font-size: 1.1rem;
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .class-list, .assignment-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .class-item, .assignment-item {
+        background-color: var(--background-color);
+        border: 1px solid var(--primary-light);
+        border-radius: 0.5rem;
+        padding: 1rem;
+    }
+
+    .class-item h3, .assignment-item h3 {
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .quick-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .quick-actions .btn-primary {
+        text-align: center;
+        text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %} 

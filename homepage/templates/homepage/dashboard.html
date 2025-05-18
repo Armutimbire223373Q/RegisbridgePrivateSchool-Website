@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="dashboard-container">
+    <h1>Welcome, {{ user.get_full_name|default:user.username }}</h1>
+    
+    <div class="dashboard-grid">
+        <div class="dashboard-card">
+            <h3>Attendance</h3>
+            <p>View and manage student attendance</p>
+            <a href="{% url 'attendance:dashboard' %}" class="card-link">Go to Attendance</a>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>Students</h3>
+            <p>Manage student profiles and information</p>
+            <a href="{% url 'students:index' %}" class="card-link">View Students</a>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>Assignments</h3>
+            <p>Create and manage assignments</p>
+            <a href="#" class="card-link">View Assignments</a>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>Grades</h3>
+            <p>Record and view student grades</p>
+            <a href="#" class="card-link">View Grades</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .dashboard-container h1 {
+        margin-bottom: 30px;
+        color: #333;
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .dashboard-card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: transform 0.3s;
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .dashboard-card h3 {
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .dashboard-card p {
+        color: #666;
+        margin-bottom: 15px;
+    }
+
+    .card-link {
+        display: inline-block;
+        padding: 8px 16px;
+        background-color: #4CAF50;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+    }
+
+    .card-link:hover {
+        background-color: #45a049;
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %} 

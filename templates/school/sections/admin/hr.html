@@ -1,0 +1,336 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}HR Management - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Welcome Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3">HR Management Dashboard</h1>
+        <div class="d-flex gap-2">
+            <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
+                <i class="fas fa-user-plus"></i> New Employee
+            </button>
+            <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#recruitmentModal">
+                <i class="fas fa-briefcase"></i> Post Job
+            </button>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card h-100 border-primary">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Total Employees</h6>
+                    <h2 class="card-title mb-0">156</h2>
+                    <small class="text-success">
+                        <i class="fas fa-arrow-up"></i> 5 new this month
+                    </small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 border-success">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Active Positions</h6>
+                    <h2 class="card-title mb-0">8</h2>
+                    <small class="text-info">Currently recruiting</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 border-warning">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Leave Requests</h6>
+                    <h2 class="card-title mb-0">12</h2>
+                    <small class="text-warning">Pending approval</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 border-info">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Payroll Status</h6>
+                    <h2 class="card-title mb-0">Due</h2>
+                    <small class="text-danger">In 3 days</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="row g-4">
+        <!-- Employee Directory -->
+        <div class="col-md-8">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Employee Directory</h5>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-light">Export</button>
+                        <button class="btn btn-sm btn-light">Filter</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Employee</th>
+                                    <th>Department</th>
+                                    <th>Position</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="{% static 'images/placeholder.jpg' %}" class="rounded-circle me-2" width="32" height="32">
+                                            John Smith
+                                        </div>
+                                    </td>
+                                    <td>Mathematics</td>
+                                    <td>Senior Teacher</td>
+                                    <td><span class="badge bg-success">Active</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
+                                        <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="{% static 'images/placeholder.jpg' %}" class="rounded-circle me-2" width="32" height="32">
+                                            Sarah Johnson
+                                        </div>
+                                    </td>
+                                    <td>Science</td>
+                                    <td>Department Head</td>
+                                    <td><span class="badge bg-success">Active</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
+                                        <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-primary">
+                            <i class="fas fa-money-check-alt"></i> Process Payroll
+                        </button>
+                        <button class="btn btn-outline-success">
+                            <i class="fas fa-file-alt"></i> Generate Reports
+                        </button>
+                        <button class="btn btn-outline-warning">
+                            <i class="fas fa-calendar-alt"></i> Schedule Interview
+                        </button>
+                        <button class="btn btn-outline-info">
+                            <i class="fas fa-chart-bar"></i> View Analytics
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leave Requests -->
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-warning">
+                    <h5 class="card-title mb-0">Leave Requests</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Employee</th>
+                                    <th>Type</th>
+                                    <th>From</th>
+                                    <th>To</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Michael Brown</td>
+                                    <td>Annual Leave</td>
+                                    <td>Mar 20</td>
+                                    <td>Mar 25</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-success"><i class="fas fa-check"></i></button>
+                                        <button class="btn btn-sm btn-danger"><i class="fas fa-times"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Emma Wilson</td>
+                                    <td>Sick Leave</td>
+                                    <td>Mar 22</td>
+                                    <td>Mar 23</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-success"><i class="fas fa-check"></i></button>
+                                        <button class="btn btn-sm btn-danger"><i class="fas fa-times"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Applications -->
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">Recent Applications</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">Physics Teacher</h6>
+                                <small class="text-muted">5 applications</small>
+                            </div>
+                            <p class="mb-1">Senior position - Science Department</p>
+                            <small class="text-muted">Posted 2 days ago</small>
+                        </div>
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">School Counselor</h6>
+                                <small class="text-muted">3 applications</small>
+                            </div>
+                            <p class="mb-1">Full-time position</p>
+                            <small class="text-muted">Posted 1 week ago</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Employee Modal -->
+<div class="modal fade" id="addEmployeeModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Employee</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="employeeForm">
+                    <div class="mb-3">
+                        <label for="fullName" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="fullName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="department" class="form-label">Department</label>
+                        <select class="form-select" id="department" required>
+                            <option value="">Choose...</option>
+                            <option value="mathematics">Mathematics</option>
+                            <option value="science">Science</option>
+                            <option value="english">English</option>
+                            <option value="admin">Administration</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="position" class="form-label">Position</label>
+                        <input type="text" class="form-control" id="position" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="startDate" class="form-label">Start Date</label>
+                        <input type="date" class="form-control" id="startDate" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary">Add Employee</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Post Job Modal -->
+<div class="modal fade" id="recruitmentModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Post New Position</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="jobPostForm">
+                    <div class="mb-3">
+                        <label for="jobTitle" class="form-label">Job Title</label>
+                        <input type="text" class="form-control" id="jobTitle" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="jobDepartment" class="form-label">Department</label>
+                        <select class="form-select" id="jobDepartment" required>
+                            <option value="">Choose...</option>
+                            <option value="mathematics">Mathematics</option>
+                            <option value="science">Science</option>
+                            <option value="english">English</option>
+                            <option value="admin">Administration</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="jobType" class="form-label">Employment Type</label>
+                        <select class="form-select" id="jobType" required>
+                            <option value="full_time">Full Time</option>
+                            <option value="part_time">Part Time</option>
+                            <option value="contract">Contract</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="jobDescription" class="form-label">Job Description</label>
+                        <textarea class="form-control" id="jobDescription" rows="4" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="requirements" class="form-label">Requirements</label>
+                        <textarea class="form-control" id="requirements" rows="4" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="deadline" class="form-label">Application Deadline</label>
+                        <input type="date" class="form-control" id="deadline" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary">Post Position</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    // Add any additional JavaScript for HR management functionality here
+    document.getElementById('department').addEventListener('change', function() {
+        // Update position options based on selected department
+        // This would typically make an AJAX call to get available positions
+    });
+</script>
+{% endblock %}
+{% endblock %} 

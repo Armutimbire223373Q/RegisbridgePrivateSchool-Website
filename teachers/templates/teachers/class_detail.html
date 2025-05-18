@@ -1,0 +1,216 @@
+{% extends 'teachers/base.html' %}
+{% load static %}
+
+{% block teacher_content %}
+<div class="class-detail-header">
+    <h1>{{ class_subject.class_name.name }} - {{ class_subject.subject.name }}</h1>
+    <p class="subtitle">{{ class_subject.class_name.grade_level }} {{ class_subject.class_name.section }} | {{ class_subject.class_name.academic_year }}</p>
+</div>
+
+<div class="class-detail-grid">
+    <!-- Class Information -->
+    <div class="card">
+        <h2>Class Information</h2>
+        <div class="info-grid">
+            <div class="info-item">
+                <label>Schedule:</label>
+                <p>{{ class_subject.schedule }}</p>
+            </div>
+            <div class="info-item">
+                <label>Teacher:</label>
+                <p>{{ class_subject.teacher.user.get_full_name }}</p>
+            </div>
+            <div class="info-item">
+                <label>Total Students:</label>
+                <p>{{ students.count }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student List -->
+    <div class="card">
+        <div class="card-header">
+            <h2>Students</h2>
+            <a href="{% url 'teachers:attendance_list' class_subject.pk %}" class="btn-primary">Take Attendance</a>
+        </div>
+        <div class="student-list">
+            {% if students %}
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Student ID</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                            <tr>
+                                <td>{{ student.student.user.get_full_name }}</td>
+                                <td>{{ student.student.student_id }}</td>
+                                <td>
+                                    <a href="#" class="btn-link">View Profile</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No students enrolled in this class.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Assignments -->
+    <div class="card">
+        <div class="card-header">
+            <h2>Assignments</h2>
+            <a href="{% url 'teachers:create_assignment' class_subject.pk %}" class="btn-primary">Create Assignment</a>
+        </div>
+        <div class="assignment-list">
+            {% if assignments %}
+                {% for assignment in assignments %}
+                    <div class="assignment-item">
+                        <div class="assignment-info">
+                            <h3>{{ assignment.title }}</h3>
+                            <p>Due Date: {{ assignment.due_date|date:"F j, Y" }}</p>
+                        </div>
+                        <div class="assignment-actions">
+                            <a href="{% url 'teachers:assignment_detail' assignment.pk %}" class="btn-primary">View Submissions</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No assignments created yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .class-detail-header {
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .class-detail-header h1 {
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+        color: var(--secondary-color);
+        font-size: 1.1rem;
+    }
+
+    .class-detail-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .card-header h2 {
+        color: var(--primary-color);
+        margin: 0;
+    }
+
+    .info-grid {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .info-item label {
+        color: var(--secondary-color);
+        font-size: 0.875rem;
+    }
+
+    .info-item p {
+        margin: 0;
+        color: var(--text-color);
+    }
+
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid var(--primary-light);
+    }
+
+    .data-table th {
+        background-color: var(--primary-light);
+        color: white;
+    }
+
+    .data-table tr:hover {
+        background-color: rgba(107, 70, 193, 0.1);
+    }
+
+    .btn-link {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-size: 0.875rem;
+    }
+
+    .btn-link:hover {
+        text-decoration: underline;
+    }
+
+    .assignment-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .assignment-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background-color: var(--background-color);
+        border: 1px solid var(--primary-light);
+        border-radius: 0.5rem;
+    }
+
+    .assignment-info h3 {
+        color: var(--primary-color);
+        margin: 0 0 0.5rem 0;
+    }
+
+    .assignment-info p {
+        margin: 0;
+        color: var(--secondary-color);
+        font-size: 0.875rem;
+    }
+
+    @media (max-width: 768px) {
+        .class-detail-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .assignment-item {
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %} 

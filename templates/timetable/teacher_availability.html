@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Manage Availability - {{ block.super }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .availability-list {
+        max-height: 600px;
+        overflow-y: auto;
+    }
+    .availability-item {
+        border-left: 4px solid;
+        margin-bottom: 10px;
+        padding: 10px 15px;
+        background-color: #f8f9fa;
+    }
+    .availability-item.available {
+        border-left-color: #28a745;
+    }
+    .availability-item.unavailable {
+        border-left-color: #dc3545;
+    }
+    .availability-time {
+        font-weight: 600;
+    }
+    .availability-reason {
+        font-style: italic;
+        color: #6c757d;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Manage Teaching Availability</h2>
+            <p class="text-muted">Set your availability for different time slots</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Availability Form -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Set Availability</h5>
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Current Availabilities -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Current Availabilities</h5>
+                    <div class="availability-list">
+                        {% regroup availabilities by time_slot.get_day_of_week_display as availability_days %}
+                        {% for day in availability_days %}
+                            <h6 class="mt-3">{{ day.grouper }}</h6>
+                            {% for availability in day.list %}
+                                <div class="availability-item {% if availability.is_available %}available{% else %}unavailable{% endif %}">
+                                    <div class="availability-time">
+                                        {{ availability.time_slot.start_time|time:"H:i" }} - {{ availability.time_slot.end_time|time:"H:i" }}
+                                    </div>
+                                    <div class="availability-status">
+                                        Status: 
+                                        {% if availability.is_available %}
+                                            <span class="text-success">Available</span>
+                                        {% else %}
+                                            <span class="text-danger">Unavailable</span>
+                                        {% endif %}
+                                    </div>
+                                    {% if not availability.is_available and availability.reason %}
+                                        <div class="availability-reason">
+                                            Reason: {{ availability.reason }}
+                                        </div>
+                                    {% endif %}
+                                    <div class="mt-2">
+                                        <button class="btn btn-sm btn-outline-danger delete-availability" 
+                                                data-id="{{ availability.id }}"
+                                                data-time="{{ availability.time_slot }}">
+                                            <i class="fas fa-trash"></i> Remove
+                                        </button>
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <p class="text-muted">No availabilities set for {{ day.grouper }}</p>
+                            {% endfor %}
+                        {% empty %}
+                            <p class="text-muted">No availabilities set yet</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle availability deletion
+    document.querySelectorAll('.delete-availability').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (confirm('Are you sure you want to remove this availability?')) {
+                const availabilityId = this.dataset.id;
+                fetch(`/timetable/availability/${availabilityId}/delete/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    },
+                }).then(response => {
+                    if (response.ok) {
+                        window.location.reload();
+                    } else {
+                        alert('Error removing availability');
+                    }
+                });
+            }
+        });
+    });
+
+    // Show reason field only when marking as unavailable
+    const availableCheckbox = document.querySelector('#id_is_available');
+    const reasonField = document.querySelector('#div_id_reason');
+    
+    if (availableCheckbox && reasonField) {
+        function toggleReasonField() {
+            reasonField.style.display = availableCheckbox.checked ? 'none' : 'block';
+        }
+        
+        toggleReasonField();
+        availableCheckbox.addEventListener('change', toggleReasonField);
+    }
+});
+</script>
+{% endblock %} 

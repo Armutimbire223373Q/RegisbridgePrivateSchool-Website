@@ -1,0 +1,7 @@
+{% extends "main/error_base.html" %}
+
+{% block content %}
+{% with error_code="404" error_title="Page Not Found" error_message="The page you're looking for doesn't exist." %}
+{{ block.super }}
+{% endwith %}
+{% endblock %} 

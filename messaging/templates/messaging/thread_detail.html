@@ -1,0 +1,115 @@
+{% extends "messaging/base_messaging.html" %}
+{% load humanize %}
+
+{% block page_title %}{{ thread.subject }}{% endblock %}
+
+{% block page_actions %}
+<div class="flex space-x-2">
+    <a href="{% url 'messaging:archive_thread' pk=thread.pk %}" 
+       class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700">
+        {% if thread.archived %}
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+        </svg>
+        Unarchive
+        {% else %}
+        <svg class="w-4 h-4 mr-2" fill="currentColor" stroke="none" viewBox="0 0 24 24">
+            <path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+        </svg>
+        Archive
+        {% endif %}
+    </a>
+</div>
+{% endblock %}
+
+{% block messaging_content %}
+<div class="space-y-6">
+    <!-- Thread participants -->
+    <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg overflow-hidden">
+        <div class="p-4">
+            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Participants:</h3>
+            <div class="mt-2 flex flex-wrap gap-2">
+                {% for participant in thread.participants.all %}
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+                    {{ participant.get_full_name }}
+                    {% if participant == request.user %}(you){% endif %}
+                </span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="messages-container">
+        {% for message in thread.messages.all %}
+        <div class="message {% if message.sender == request.user %}message-sent{% else %}message-received{% endif %}">
+            <div class="flex justify-between items-center mb-2">
+                <div class="flex items-center">
+                    <span class="font-medium text-gray-900 dark:text-gray-100">
+                        {{ message.sender.get_full_name }}
+                        {% if message.sender == request.user %}(you){% endif %}
+                    </span>
+                </div>
+                <time datetime="{{ message.sent_at|date:'c' }}" class="text-xs text-gray-500 dark:text-gray-400">
+                    {{ message.sent_at|naturaltime }}
+                </time>
+            </div>
+            <div class="prose prose-sm max-w-none text-gray-900 dark:text-gray-100">
+                {{ message.body|linebreaks }}
+            </div>
+            {% if message.attachments.exists %}
+            <div class="message-attachments">
+                <span class="text-xs text-gray-500 dark:text-gray-400">Attachments:</span>
+                <ul class="mt-1 space-y-1">
+                    {% for attachment in message.attachments.all %}
+                    <li class="flex items-center text-sm">
+                        <svg class="w-4 h-4 mr-1.5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+                        </svg>
+                        <a href="{{ attachment.file.url }}" 
+                           class="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
+                           target="_blank">
+                            {{ attachment.filename }}
+                        </a>
+                        <span class="ml-1.5 text-gray-500 dark:text-gray-400">({{ attachment.file_size|filesizeformat }})</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Reply form -->
+    <div class="reply-form">
+        <form method="post" action="{% url 'messaging:send_message' thread_id=thread.id %}" 
+              enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                {{ message_form.body }}
+                {% if message_form.body.errors %}
+                <p class="mt-1 text-sm text-red-600 dark:text-red-500">
+                    {{ message_form.body.errors }}
+                </p>
+                {% endif %}
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300" for="{{ message_form.attachments.id_for_label }}">
+                    Attachments
+                </label>
+                <div class="mt-1">
+                    {{ message_form.attachments }}
+                    {% if message_form.attachments.errors %}
+                    <p class="mt-1 text-sm text-red-600 dark:text-red-500">
+                        {{ message_form.attachments.errors }}
+                    </p>
+                    {% endif %}
+                </div>
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    {{ message_form.attachments.help_text }}
+                </p>
+            </div>
+            <div class="flex justify-end">
+                <button type="submit" 
+ 

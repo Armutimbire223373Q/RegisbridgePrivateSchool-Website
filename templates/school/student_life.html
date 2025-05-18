@@ -22,7 +22,9 @@
                         {% for facility in facilities %}
                         <div class="col-md-6 mb-4">
                             <div class="card h-100">
-                                <img src="{{ facility.photo.url }}" class="card-img-top" alt="{{ facility.name }}" style="height: 200px; object-fit: cover;">
+                                {% if facility.image %}
+                                <img src="{{ facility.image.url }}" class="card-img-top" alt="{{ facility.name }}" style="height: 200px; object-fit: cover;">
+                                {% endif %}
                                 <div class="card-body">
                                     <h5 class="card-title">{{ facility.name }}</h5>
                                     <p class="card-text">{{ facility.description }}</p>
@@ -144,35 +146,39 @@
 
 <!-- Emergency Contacts Modal -->
 <div class="modal fade" id="emergencyContactsModal" tabindex="-1" aria-labelledby="emergencyContactsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
+            <div class="modal-header">
                 <h5 class="modal-title" id="emergencyContactsModalLabel">Emergency Contacts</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <ul class="list-unstyled">
                     <li class="mb-3">
-                        <h6 class="fw-bold">Medical Emergency</h6>
-                        <p class="mb-0"><i class="fas fa-phone me-2"></i>+1 (555) 911</p>
-                        <p class="mb-0"><i class="fas fa-user-md me-2"></i>School Nurse: +1 (555) 345-6789</p>
+                        <strong><i class="fas fa-ambulance me-2"></i>Medical Emergency</strong><br>
+                        <span class="ms-3">+1 (555) 911-9111</span>
                     </li>
                     <li class="mb-3">
-                        <h6 class="fw-bold">Security</h6>
-                        <p class="mb-0"><i class="fas fa-shield-alt me-2"></i>+1 (555) 456-7890</p>
+                        <strong><i class="fas fa-shield-alt me-2"></i>Security</strong><br>
+                        <span class="ms-3">+1 (555) 222-3333</span>
+                    </li>
+                    <li class="mb-3">
+                        <strong><i class="fas fa-user-md me-2"></i>School Nurse</strong><br>
+                        <span class="ms-3">+1 (555) 444-5555</span>
                     </li>
                     <li>
-                        <h6 class="fw-bold">Counselor</h6>
-                        <p class="mb-0"><i class="fas fa-heart me-2"></i>+1 (555) 567-8901</p>
+                        <strong><i class="fas fa-phone-alt me-2"></i>24/7 Helpline</strong><br>
+                        <span class="ms-3">+1 (555) 888-9999</span>
                     </li>
                 </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
 
-{% block extra_css %}
 <style>
     .service-card {
         background-color: #fff;

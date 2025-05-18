@@ -19,6 +19,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.sitemaps.views import sitemap
+from django.conf.urls.i18n import i18n_patterns
 from blog.sitemaps import PostSitemap, CategorySitemap
 
 sitemaps = {
@@ -26,15 +27,23 @@ sitemaps = {
     'categories': CategorySitemap,
 }
 
+# URLs that don't need to be translated
 urlpatterns = [
+    path('i18n/', include('django.conf.urls.i18n')),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+]
+
+# URLs that should be translated
+urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
     path('', include('main.urls', namespace='main')),
     path('admissions/', include('admissions.urls')),
     path('blog/', include('blog.urls')),
     path('school/', include('school.urls', namespace='school')),
-    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
-]
+    prefix_default_language=False,
+)
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += [path('__debug__/', include('debug_toolbar.urls'))]

@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-color: #6B46C1;
+        --primary-dark: #553C9A;
+        --primary-light: #9F7AEA;
+        --secondary-color: #4A5568;
+        --background-light: #F7FAFC;
+        --background-dark: #2D3748;
+        --text-light: #2D3748;
+        --text-dark: #F7FAFC;
+    }
+
+    [data-theme="dark"] {
+        --background-color: var(--background-dark);
+        --text-color: var(--text-dark);
+    }
+
+    [data-theme="light"] {
+        --background-color: var(--background-light);
+        --text-color: var(--text-light);
+    }
+
+    .teacher-nav {
+        background-color: var(--primary-color);
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .teacher-nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        gap: 1rem;
+    }
+
+    .teacher-nav a {
+        color: white;
+        text-decoration: none;
+        padding: 0.5rem 1rem;
+        border-radius: 0.25rem;
+        transition: background-color 0.2s;
+    }
+
+    .teacher-nav a:hover {
+        background-color: var(--primary-dark);
+    }
+
+    .teacher-nav a.active {
+        background-color: var(--primary-dark);
+    }
+
+    .content-container {
+        background-color: var(--background-color);
+        color: var(--text-color);
+        padding: 2rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .card {
+        background-color: var(--background-color);
+        border: 1px solid var(--primary-light);
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 0.25rem;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .btn-primary:hover {
+        background-color: var(--primary-dark);
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--text-color);
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid var(--primary-light);
+        border-radius: 0.25rem;
+        background-color: var(--background-color);
+        color: var(--text-color);
+    }
+
+    .alert {
+        padding: 1rem;
+        border-radius: 0.25rem;
+        margin-bottom: 1rem;
+    }
+
+    .alert-success {
+        background-color: #C6F6D5;
+        color: #2F855A;
+        border: 1px solid #9AE6B4;
+    }
+
+    .alert-error {
+        background-color: #FED7D7;
+        color: #C53030;
+        border: 1px solid #FEB2B2;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="teacher-nav">
+    <ul>
+        <li><a href="{% url 'teachers:dashboard' %}" {% if request.resolver_match.url_name == 'dashboard' %}class="active"{% endif %}>Dashboard</a></li>
+        <li><a href="{% url 'teachers:profile' %}" {% if request.resolver_match.url_name == 'profile' %}class="active"{% endif %}>Profile</a></li>
+        <li><a href="{% url 'teachers:class_list' %}" {% if request.resolver_match.url_name == 'class_list' %}class="active"{% endif %}>Classes</a></li>
+    </ul>
+</div>
+
+<div class="content-container">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% block teacher_content %}{% endblock %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Theme toggle functionality
+    const themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+    }
+
+    // Initialize Select2 for multiple select fields
+    $(document).ready(function() {
+        $('.select2').select2({
+            theme: 'classic',
+            width: '100%'
+        });
+    });
+</script>
+{% endblock %} 

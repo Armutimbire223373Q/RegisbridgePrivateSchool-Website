@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block title %}Search Results - {{ query }}{% endblock %}
+
+{% block breadcrumbs %}
+<li class="breadcrumb-item active">Search Results</li>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">Search Results for "{{ query }}"</h1>
+    
+    {% if not query %}
+        <div class="alert alert-info">
+            Please enter a search term.
+        </div>
+    {% else %}
+        <!-- News Results -->
+        {% if news_results %}
+        <section class="mb-5">
+            <h2 class="h4 mb-3">News</h2>
+            <div class="row">
+                {% for news in news_results %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        {% if news.image %}
+                        <img src="{{ news.image.url }}" class="card-img-top" alt="{{ news.title }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ news.title }}</h5>
+                            <p class="card-text">{{ news.content|truncatewords:30 }}</p>
+                            <p class="card-text"><small class="text-muted">{{ news.date_posted|date:"F j, Y" }}</small></p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Event Results -->
+        {% if event_results %}
+        <section class="mb-5">
+            <h2 class="h4 mb-3">Events</h2>
+            <div class="row">
+                {% for event in event_results %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        {% if event.image %}
+                        <img src="{{ event.image.url }}" class="card-img-top" alt="{{ event.title }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ event.title }}</h5>
+                            <p class="card-text">{{ event.description|truncatewords:30 }}</p>
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar me-1"></i>{{ event.start_date|date:"F j, Y" }}
+                                </small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Announcement Results -->
+        {% if announcement_results %}
+        <section class="mb-5">
+            <h2 class="h4 mb-3">Announcements</h2>
+            <div class="row">
+                {% for announcement in announcement_results %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ announcement.title }}</h5>
+                            <p class="card-text">{{ announcement.content|truncatewords:30 }}</p>
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    <i class="fas fa-clock me-1"></i>{{ announcement.created_at|date:"F j, Y" }}
+                                </small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        {% if not news_results and not event_results and not announcement_results %}
+        <div class="alert alert-info">
+            No results found for "{{ query }}".
+        </div>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %} 

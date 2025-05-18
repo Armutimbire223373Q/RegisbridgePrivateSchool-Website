@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Grade Students - {{ class_subject.class_name.name }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Grade Students</h2>
+            <p class="text-muted">{{ class_subject.class_name.name }} - {{ class_subject.subject.name }}</p>
+        </div>
+        <div class="col-auto">
+            <a href="{% url 'teachers:class_detail' class_subject.class_name.id %}" class="btn btn-secondary">
+                Back to Class
+            </a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Score</th>
+                                <th>Date</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in students %}
+                            <tr>
+                                <td>{{ student.user.get_full_name }}</td>
+                                <td>
+                                    <input type="number" class="form-control" name="score_{{ student.id }}" 
+                                           min="0" max="100" step="0.1" required>
+                                </td>
+                                <td>
+                                    <input type="date" class="form-control" name="date_{{ student.id }}" 
+                                           value="{{ today|date:'Y-m-d' }}" required>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" name="notes_{{ student.id }}" 
+                                           placeholder="Optional notes">
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center">No students enrolled</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-end mt-3">
+                    <button type="submit" class="btn btn-primary">Save Grades</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

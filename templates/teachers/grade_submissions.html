@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Grade Submissions - {{ assignment.title }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Grade Submissions</h2>
+            <p class="text-muted">{{ assignment.class_subject.class_name.name }} - {{ assignment.class_subject.subject.name }}</p>
+            <h5>{{ assignment.title }}</h5>
+            <p class="text-muted">Due: {{ assignment.due_date|date:"F d, Y" }}</p>
+        </div>
+        <div class="col-auto">
+            <a href="{% url 'teachers:class_detail' assignment.class_subject.class_name.id %}" class="btn btn-secondary">
+                Back to Class
+            </a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Submission Date</th>
+                                <th>File</th>
+                                <th>Score</th>
+                                <th>Feedback</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for submission in submissions %}
+                            <tr>
+                                <td>{{ submission.student.user.get_full_name }}</td>
+                                <td>{{ submission.submission_date|date:"M d, Y" }}</td>
+                                <td>
+                                    {% if submission.file %}
+                                    <a href="{{ submission.file.url }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                                        View File
+                                    </a>
+                                    {% else %}
+                                    -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control" name="score_{{ submission.id }}" 
+                                           min="0" max="{{ assignment.max_score }}" step="0.1" 
+                                           value="{{ submission.grade|default:'' }}" required>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" name="feedback_{{ submission.id }}" 
+                                           value="{{ submission.feedback|default:'' }}" 
+                                           placeholder="Optional feedback">
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center">No submissions yet</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-end mt-3">
+                    <button type="submit" class="btn btn-primary">Save Grades</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

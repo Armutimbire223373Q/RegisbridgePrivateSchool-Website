@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Create Announcement - Regisbridge Private School{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4">Create Announcement</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="title" name="title" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="content" class="form-label">Content</label>
+                            <textarea class="form-control" id="content" name="content" rows="6" required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Select Classes</label>
+                            <div class="row">
+                                {% for class_group in teacher_classes %}
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" 
+                                               name="class_groups" value="{{ class_group.id }}" 
+                                               id="class_{{ class_group.id }}">
+                                        <label class="form-check-label" for="class_{{ class_group.id }}">
+                                            {{ class_group.name }}
+                                        </label>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane me-2"></i>Post Announcement
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Recent Announcements</h5>
+                </div>
+                <div class="card-body">
+                    {% for announcement in recent_announcements %}
+                    <div class="announcement-item mb-3">
+                        <h6>{{ announcement.title }}</h6>
+                        <p class="text-muted small mb-1">
+                            Posted {{ announcement.created_at|timesince }} ago
+                        </p>
+                        <p class="mb-1">{{ announcement.content|truncatewords:20 }}</p>
+                        <small class="text-muted">
+                            For: {{ announcement.class_groups.all|join:", " }}
+                        </small>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted">No recent announcements</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_css %}
+<style>
+.announcement-item {
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #dee2e6;
+}
+.announcement-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+</style>
+{% endblock %}
+{% endblock %} 

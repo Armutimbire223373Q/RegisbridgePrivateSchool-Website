@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="attendance-container">
+    <h1>Attendance Dashboard</h1>
+    <div class="date-selector">
+        <label for="attendance-date">Select Date:</label>
+        <input type="date" id="attendance-date" value="{{ today|date:'Y-m-d' }}">
+    </div>
+    
+    <div class="attendance-list">
+        {% for student in students %}
+        <div class="student-attendance-card" data-student-id="{{ student.id }}">
+            <div class="student-info">
+                <h3>{{ student.first_name }} {{ student.last_name }}</h3>
+                <p>Grade: {{ student.grade_level }}</p>
+                <p>ID: {{ student.student_id }}</p>
+            </div>
+            <div class="attendance-controls">
+                <select class="status-select" data-student-id="{{ student.id }}">
+                    <option value="">Select Status</option>
+                    <option value="present">Present</option>
+                    <option value="absent">Absent</option>
+                    <option value="late">Late</option>
+                    <option value="excused">Excused</option>
+                </select>
+                <textarea class="remarks-input" placeholder="Add remarks..."></textarea>
+                <button class="save-attendance">Save</button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .attendance-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .date-selector {
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .date-selector label {
+        font-weight: bold;
+    }
+
+    .attendance-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .student-attendance-card {
+        background: white;
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .student-info {
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .student-info h3 {
+        margin: 0;
+        color: #333;
+    }
+
+    .student-info p {
+        margin: 5px 0;
+        color: #666;
+    }
+
+    .attendance-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .status-select {
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        font-size: 14px;
+    }
+
+    .remarks-input {
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        resize: vertical;
+        min-height: 60px;
+        font-size: 14px;
+    }
+
+    .save-attendance {
+        background: #4CAF50;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background 0.3s;
+        font-size: 14px;
+    }
+
+    .save-attendance:hover {
+        background: #45a049;
+    }
+
+    @media (max-width: 768px) {
+        .attendance-list {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const saveButtons = document.querySelectorAll('.save-attendance');
+    const dateInput = document.getElementById('attendance-date');
+    
+    saveButtons.forEach(button => {
+        button.addEventListener('click', async function() {
+            const card = this.closest('.student-attendance-card');
+            const studentId = card.dataset.studentId;
+            const status = card.querySelector('.status-select').value;
+            const remarks = card.querySelector('.remarks-input').value;
+            const date = dateInput.value;
+
+            if (!status) {
+                alert('Please select an attendance status');
+                return;
+            }
+
+            try {
+                const response = await fetch('/attendance/mark-attendance/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({
+                        student_id: studentId,
+                        status: status,
+                        notes: remarks,
+                        date: date
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Attendance marked successfully');
+                } else {
+                    alert('Error marking attendance: ' + data.message);
+                }
+            } catch (error) {
+                alert('Error marking attendance');
+                console.error(error);
+            }
+        });
+    });
+});
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+{% endblock %} 

@@ -1,0 +1,224 @@
+{% extends 'teachers/base.html' %}
+{% load static %}
+
+{% block teacher_content %}
+<div class="attendance-header">
+    <h1>Take Attendance</h1>
+    <p class="subtitle">{{ class_subject.class_name.name }} - {{ class_subject.subject.name }}</p>
+</div>
+
+<div class="attendance-container">
+    <div class="card">
+        <div class="attendance-info">
+            <div class="info-item">
+                <label>Date:</label>
+                <input type="date" id="attendanceDate" value="{{ today|date:'Y-m-d' }}">
+            </div>
+            <div class="info-item">
+                <label>Total Students:</label>
+                <p>{{ students.count }}</p>
+            </div>
+        </div>
+
+        <form id="attendanceForm" class="attendance-form">
+            {% csrf_token %}
+            <div class="students-list">
+                {% for student in students %}
+                    <div class="student-attendance-item">
+                        <div class="student-info">
+                            <h3>{{ student.student.user.get_full_name }}</h3>
+                            <p>{{ student.student.student_id }}</p>
+                        </div>
+                        <div class="attendance-options">
+                            <label class="radio-label">
+                                <input type="radio" name="attendance_{{ student.student.pk }}" value="present" checked>
+                                <span>Present</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="attendance_{{ student.student.pk }}" value="absent">
+                                <span>Absent</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="attendance_{{ student.student.pk }}" value="late">
+                                <span>Late</span>
+                            </label>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">Save Attendance</button>
+                <a href="{% url 'teachers:class_detail' class_subject.pk %}" class="btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .attendance-header {
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .attendance-header h1 {
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+        color: var(--secondary-color);
+        font-size: 1.1rem;
+    }
+
+    .attendance-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .attendance-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--primary-light);
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .info-item label {
+        color: var(--text-color);
+        font-weight: 500;
+    }
+
+    .info-item input[type="date"] {
+        padding: 0.5rem;
+        border: 1px solid var(--primary-light);
+        border-radius: 0.25rem;
+        background-color: var(--background-color);
+        color: var(--text-color);
+    }
+
+    .students-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .student-attendance-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background-color: var(--background-color);
+        border: 1px solid var(--primary-light);
+        border-radius: 0.5rem;
+    }
+
+    .student-info h3 {
+        color: var(--primary-color);
+        margin: 0 0 0.25rem 0;
+    }
+
+    .student-info p {
+        margin: 0;
+        color: var(--secondary-color);
+        font-size: 0.875rem;
+    }
+
+    .attendance-options {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .radio-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+    }
+
+    .radio-label input[type="radio"] {
+        margin: 0;
+    }
+
+    .radio-label span {
+        color: var(--text-color);
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    @media (max-width: 768px) {
+        .student-attendance-item {
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .attendance-options {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            width: 100%;
+        }
+    }
+</style>
+
+{% block extra_js %}
+<script>
+    const attendanceForm = document.getElementById('attendanceForm');
+    const attendanceDate = document.getElementById('attendanceDate');
+
+    attendanceForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append('date', attendanceDate.value);
+        formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+
+        // Collect attendance data
+        const attendanceInputs = document.querySelectorAll('input[type="radio"]:checked');
+        attendanceInputs.forEach(input => {
+            const studentId = input.name.split('_')[1];
+            formData.append(`student_id`, studentId);
+            formData.append(`status`, input.value);
+        });
+
+        try {
+            const response = await fetch(`/teachers/classes/{{ class_subject.pk }}/attendance/mark/`, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            });
+
+            if (response.ok) {
+                window.location.href = "{% url 'teachers:class_detail' class_subject.pk %}";
+            } else {
+                alert('Error saving attendance. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error saving attendance. Please try again.');
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %} 

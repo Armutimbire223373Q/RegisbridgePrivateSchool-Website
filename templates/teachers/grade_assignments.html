@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Grade Assignments - Regisbridge Private School{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4">Grade Assignments</h2>
+        </div>
+    </div>
+
+    {% for assignment in pending_assignments %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">{{ assignment.title }}</h5>
+            <small class="text-muted">
+                Class: {{ assignment.class_group.name }} | 
+                Subject: {{ assignment.subject.name }} |
+                Due Date: {{ assignment.due_date|date:"F d, Y" }}
+            </small>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Submission</th>
+                            <th>Grade</th>
+                            <th>Feedback</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for submission in assignment.submissions.all %}
+                        <tr>
+                            <td>{{ submission.student.user.get_full_name }}</td>
+                            <td>
+                                {% if submission.file %}
+                                <a href="{{ submission.file.url }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                                    <i class="fas fa-file me-1"></i>View Submission
+                                </a>
+                                {% else %}
+                                <span class="text-muted">No file submitted</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <input type="number" class="form-control form-control-sm grade-input" 
+                                       name="grade_{{ submission.id }}" 
+                                       value="{{ submission.grade|default:'' }}"
+                                       min="0" max="100" step="0.1">
+                            </td>
+                            <td>
+                                <textarea class="form-control form-control-sm feedback-input" 
+                                          name="feedback_{{ submission.id }}" 
+                                          rows="1">{{ submission.feedback|default:'' }}</textarea>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-success save-grade" 
+                                        data-submission-id="{{ submission.id }}">
+                                    <i class="fas fa-save"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center">No submissions yet</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="alert alert-info">
+        No pending assignments to grade.
+    </div>
+    {% endfor %}
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle grade submission
+    document.querySelectorAll('.save-grade').forEach(button => {
+        button.addEventListener('click', function() {
+            const submissionId = this.dataset.submissionId;
+            const gradeInput = document.querySelector(`input[name="grade_${submissionId}"]`);
+            const feedbackInput = document.querySelector(`textarea[name="feedback_${submissionId}"]`);
+            
+            const data = {
+                grade: gradeInput.value,
+                feedback: feedbackInput.value,
+                submission_id: submissionId
+            };
+
+            fetch('{% url "teachers:grade_assignments" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show success message
+                    const toast = new bootstrap.Toast(document.createElement('div'));
+                    toast.show();
+                } else {
+                    alert('Error saving grade: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error saving grade. Please try again.');
+            });
+        });
+    });
+});
+</script>
+{% endblock %}
+{% endblock %} 

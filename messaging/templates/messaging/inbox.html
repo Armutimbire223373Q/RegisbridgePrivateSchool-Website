@@ -1,0 +1,81 @@
+{% extends "messaging/base_messaging.html" %}
+{% load humanize %}
+
+{% block page_title %}Inbox{% endblock %}
+
+{% block page_actions %}
+<div class="flex space-x-2">
+    <a href="{% url 'messaging:create_thread' %}" 
+       class="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+        </svg>
+        New Message
+    </a>
+</div>
+{% endblock %}
+
+{% block messaging_content %}
+<div class="space-y-4">
+    {% if threads %}
+    <div class="divide-y divide-gray-200 dark:divide-gray-700">
+        {% for thread in threads %}
+        <a href="{% url 'messaging:thread_detail' pk=thread.pk %}" 
+           class="block p-4 transition duration-150 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg">
+            <div class="flex justify-between items-start">
+                <div class="flex-1 min-w-0">
+                    <h3 class="text-base font-medium text-gray-900 dark:text-gray-100 {% if thread.unread_count %}font-bold{% endif %}">
+                        {{ thread.subject }}
+                    </h3>
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                        Participants: 
+                        {% for participant in thread.participants.all %}
+                            {% if participant != request.user %}
+                                {{ participant.get_full_name }}{% if not forloop.last %}, {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </p>
+                </div>
+                <div class="flex flex-col items-end ml-4">
+                    {% if thread.unread_count %}
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-100">
+                        {{ thread.unread_count }}
+                    </span>
+                    {% endif %}
+                    <time datetime="{{ thread.last_message_time|date:'c' }}" class="text-xs text-gray-500 dark:text-gray-400">
+                        {{ thread.last_message_time|naturaltime }}
+                    </time>
+                </div>
+            </div>
+            {% with last_message=thread.messages.last %}
+            {% if last_message %}
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-300 truncate">
+                {{ last_message.sender.get_full_name }}: {{ last_message.body }}
+            </p>
+            {% endif %}
+            {% endwith %}
+        </a>
+        {% endfor %}
+    </div>
+
+    {% if is_paginated %}
+    <nav class="flex items-center justify-center mt-6" aria-label="Pagination">
+        <ul class="flex space-x-1">
+            {% if page_obj.has_previous %}
+            <li>
+                <a href="?page={{ page_obj.previous_page_number }}" 
+                   class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700">
+                    Previous
+                </a>
+            </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+            <li>
+                <span class="px-3 py-2 text-sm font-medium text-white bg-primary-600 border border-primary-600 rounded-md">
+                    {{ num }}
+                </span>
+            </li>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            

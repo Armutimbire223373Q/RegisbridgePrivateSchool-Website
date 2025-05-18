@@ -1,0 +1,157 @@
+{% extends "messaging/base_messaging.html" %}
+{% load humanize %}
+
+{% block page_title %}Announcements{% endblock %}
+
+{% block page_actions %}
+{% if perms.messaging.add_announcement %}
+<div class="btn-toolbar mb-2 mb-md-0">
+    <div class="btn-group me-2">
+        <a href="{% url 'messaging:announcement_create' %}" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-plus-circle"></i> New Announcement
+        </a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block messaging_content %}
+<div class="row">
+    <div class="col-12">
+        {% if announcements %}
+        <div class="announcement-list">
+            {% for announcement in announcements %}
+            <div class="card mb-3 {% if not announcement.is_read %}border-primary{% endif %}">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="badge bg-{{ announcement.get_priority_display|lower }}">
+                            {{ announcement.get_priority_display }}
+                        </span>
+                        <small class="text-muted ms-2">
+                            Posted by {{ announcement.sender.get_full_name }}
+                            {{ announcement.created_at|naturaltime }}
+                        </small>
+                    </div>
+                    {% if not announcement.is_read %}
+                    <span class="badge bg-primary">New</span>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ announcement.title }}</h5>
+                    <div class="card-text">{{ announcement.body|linebreaks }}</div>
+                    
+                    {% if announcement.attachment %}
+                    <div class="mt-3">
+                        <i class="bi bi-paperclip"></i>
+                        <a href="{{ announcement.attachment.url }}" target="_blank">
+                            {{ announcement.attachment.name|cut:"announcements/"|cut:announcement.created_at|date:"Y/m/" }}
+                        </a>
+                    </div>
+                    {% endif %}
+                    
+                    {% if announcement.expires_at %}
+                    <div class="mt-2">
+                        <small class="text-muted">
+                            Expires: {{ announcement.expires_at|naturaltime }}
+                        </small>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer text-muted">
+                    <small>
+                        For: {{ announcement.get_recipient_group_display }}
+                        {% if announcement.send_email %}
+                        • Email notifications sent
+                        {% endif %}
+                        {% if announcement.send_sms %}
+                        • SMS notifications sent
+                        {% endif %}
+                    </small>
+                    {% if not announcement.is_read %}
+                    <button class="btn btn-sm btn-outline-primary float-end mark-read" 
+                            data-announcement-id="{{ announcement.id }}">
+                        Mark as Read
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if is_paginated %}
+        <nav aria-label="Announcement navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                </li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active">
+                    <span class="page-link">{{ num }}</span>
+                </li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+                {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-megaphone h1 text-muted"></i>
+            <h3 class="mt-3">No announcements</h3>
+            {% if perms.messaging.add_announcement %}
+            <p class="text-muted">Create a new announcement to keep everyone informed.</p>
+            <a href="{% url 'messaging:announcement_create' %}" class="btn btn-primary mt-3">
+                <i class="bi bi-plus-circle"></i> New Announcement
+            </a>
+            {% else %}
+            <p class="text-muted">There are no announcements to display at this time.</p>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle marking announcements as read
+        document.querySelectorAll('.mark-read').forEach(button => {
+            button.addEventListener('click', function() {
+                const announcementId = this.dataset.announcementId;
+                fetch(`/messaging/announcements/${announcementId}/read/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Update UI
+                        const card = this.closest('.card');
+                        card.classList.remove('border-primary');
+                        this.closest('.card-footer').querySelector('.mark-read').remove();
+                        card.querySelector('.badge.bg-primary')?.remove();
+                    }
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %} 

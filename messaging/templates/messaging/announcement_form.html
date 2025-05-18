@@ -1,0 +1,149 @@
+{% extends "messaging/base_messaging.html" %}
+
+{% block page_title %}
+{% if object %}Edit Announcement{% else %}New Announcement{% endif %}
+{% endblock %}
+
+{% block messaging_content %}
+<div class="row">
+    <div class="col-12 col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- Title -->
+                    <div class="mb-3">
+                        <label for="{{ form.title.id_for_label }}" class="form-label">Title</label>
+                        {{ form.title }}
+                        {% if form.title.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.title.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Priority and Recipient Group -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.priority.id_for_label }}" class="form-label">Priority</label>
+                            {{ form.priority }}
+                            {% if form.priority.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.priority.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.recipient_group.id_for_label }}" class="form-label">Recipients</label>
+                            {{ form.recipient_group }}
+                            {% if form.recipient_group.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.recipient_group.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="mb-3">
+                        <label for="{{ form.body.id_for_label }}" class="form-label">Content</label>
+                        {{ form.body }}
+                        {% if form.body.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.body.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Expiry -->
+                    <div class="mb-3">
+                        <label for="{{ form.expires_at.id_for_label }}" class="form-label">Expiry Date/Time</label>
+                        {{ form.expires_at }}
+                        {% if form.expires_at.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.expires_at.errors }}
+                        </div>
+                        {% endif %}
+                        <small class="form-text text-muted">{{ form.expires_at.help_text }}</small>
+                    </div>
+
+                    <!-- Notifications -->
+                    <div class="mb-3">
+                        <div class="form-check">
+                            {{ form.send_email }}
+                            <label class="form-check-label" for="{{ form.send_email.id_for_label }}">
+                                Send email notifications
+                            </label>
+                            <small class="form-text text-muted d-block">{{ form.send_email.help_text }}</small>
+                        </div>
+                        <div class="form-check mt-2">
+                            {{ form.send_sms }}
+                            <label class="form-check-label" for="{{ form.send_sms.id_for_label }}">
+                                Send SMS notifications
+                            </label>
+                            <small class="form-text text-muted d-block">{{ form.send_sms.help_text }}</small>
+                        </div>
+                    </div>
+
+                    <!-- Attachment -->
+                    <div class="mb-3">
+                        <label for="{{ form.attachment.id_for_label }}" class="form-label">Attachment</label>
+                        {{ form.attachment }}
+                        {% if form.attachment.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.attachment.errors }}
+                        </div>
+                        {% endif %}
+                        <small class="form-text text-muted">{{ form.attachment.help_text }}</small>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-megaphone"></i> 
+                            {% if object %}Update{% else %}Post{% endif %} Announcement
+                        </button>
+                        <a href="{% url 'messaging:announcement_list' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Style select elements
+        const selects = document.querySelectorAll('select');
+        selects.forEach(select => {
+            select.classList.add('form-select');
+        });
+
+        // Style file input
+        const fileInput = document.querySelector('input[type="file"]');
+        fileInput.classList.add('form-control');
+
+        // Auto-expand textarea
+        const textarea = document.querySelector('#{{ form.body.id_for_label }}');
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+
+        // Update priority badge color
+        const prioritySelect = document.querySelector('#{{ form.priority.id_for_label }}');
+        const updatePriorityClass = () => {
+            prioritySelect.className = prioritySelect.className.replace(/bg-\w+/, '');
+            const value = prioritySelect.value.toLowerCase();
+            prioritySelect.classList.add(`bg-${value}`);
+        };
+        prioritySelect.addEventListener('change', updatePriorityClass);
+        updatePriorityClass();
+    });
+</script>
+{% endblock %}
+{% endblock %} 

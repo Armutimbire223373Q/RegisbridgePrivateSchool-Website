@@ -1,0 +1,85 @@
+{% extends 'accounts/dashboard_base.html' %}
+{% load static %}
+
+{% block title %}Edit Event{% endblock %}
+
+{% block dashboard_content %}
+<div class="container py-4">
+    <h1 class="mb-4">Edit Event</h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            {{ form.title.label_tag }}
+                            {{ form.title }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.description.label_tag }}
+                            {{ form.description }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.start_date.label_tag }}
+                            {{ form.start_date }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.end_date.label_tag }}
+                            {{ form.end_date }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.location.label_tag }}
+                            {{ form.location }}
+                        </div>
+
+                        <div class="mb-3">
+                            {% if event.image %}
+                            <div class="mb-2">
+                                <img src="{{ event.image.url }}" alt="Current event image" class="img-fluid mb-2" style="max-height: 200px;">
+                                <p class="text-muted">Current image</p>
+                            </div>
+                            {% endif %}
+                            {{ form.image.label_tag }}
+                            {{ form.image }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.is_featured.label_tag }}
+                            {{ form.is_featured }}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <a href="{% url 'core:manage_events' %}" class="btn btn-secondary">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h4>Quick Actions</h4>
+                    <div class="list-group">
+                        <a href="{% url 'core:manage_homepage' %}" class="list-group-item list-group-item-action">
+                            Manage Home Page
+                        </a>
+                        <a href="{% url 'core:manage_news' %}" class="list-group-item list-group-item-action">
+                            Manage News
+                        </a>
+                        <a href="{% url 'homepage:home' %}" class="list-group-item list-group-item-action" target="_blank">
+                            Preview Home Page
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

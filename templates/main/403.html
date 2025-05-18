@@ -1,0 +1,7 @@
+{% extends "main/error_base.html" %}
+
+{% block content %}
+{% with error_code="403" error_title="Access Denied" error_message="You don't have permission to access this page." %}
+{{ block.super }}
+{% endwith %}
+{% endblock %} 

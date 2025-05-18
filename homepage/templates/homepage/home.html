@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="home-container">
+    <div class="hero-section">
+        <h1>Welcome to Regisbridge Private School</h1>
+        <p>Empowering minds, shaping futures</p>
+        {% if user.is_authenticated %}
+            <a href="{% url 'accounts:dashboard' %}" class="cta-button">Go to Dashboard</a>
+        {% else %}
+            <a href="{% url 'accounts:login' %}" class="cta-button">Login</a>
+        {% endif %}
+    </div>
+
+    <div class="features-section">
+        <div class="feature-card">
+            <h3>Quality Education</h3>
+            <p>Providing excellence in education with a focus on holistic development.</p>
+        </div>
+        <div class="feature-card">
+            <h3>Experienced Faculty</h3>
+            <p>Our teachers are dedicated to nurturing young minds.</p>
+        </div>
+        <div class="feature-card">
+            <h3>Modern Facilities</h3>
+            <p>State-of-the-art facilities for optimal learning experience.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .home-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .hero-section {
+        text-align: center;
+        padding: 60px 20px;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        border-radius: 10px;
+        margin-bottom: 40px;
+    }
+
+    .hero-section h1 {
+        font-size: 2.5em;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .hero-section p {
+        font-size: 1.2em;
+        color: #666;
+        margin-bottom: 30px;
+    }
+
+    .cta-button {
+        display: inline-block;
+        padding: 12px 30px;
+        background-color: #4CAF50;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: background-color 0.3s;
+    }
+
+    .cta-button:hover {
+        background-color: #45a049;
+    }
+
+    .features-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        padding: 20px 0;
+    }
+
+    .feature-card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+
+    .feature-card h3 {
+        color: #333;
+        margin-bottom: 15px;
+    }
+
+    .feature-card p {
+        color: #666;
+        line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+        .hero-section {
+            padding: 40px 20px;
+        }
+
+        .hero-section h1 {
+            font-size: 2em;
+        }
+
+        .features-section {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %} 

@@ -1,0 +1,307 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Teacher Portal - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Welcome Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3">Welcome, {{ user.get_full_name }}</h1>
+        <div class="d-flex gap-2">
+            <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#notificationsModal">
+                <i class="fas fa-bell"></i> Notifications
+                <span class="badge bg-danger">2</span>
+            </button>
+            <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#addGradeModal">
+                <i class="fas fa-plus"></i> Add Grade
+            </button>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card h-100 border-primary">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Total Students</h6>
+                    <h2 class="card-title mb-0">120</h2>
+                    <small class="text-muted">Across 4 classes</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 border-success">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Class Average</h6>
+                    <h2 class="card-title mb-0">85%</h2>
+                    <small class="text-success">
+                        <i class="fas fa-arrow-up"></i> 3% from last term
+                    </small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 border-warning">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Pending Tasks</h6>
+                    <h2 class="card-title mb-0">5</h2>
+                    <small class="text-warning">Due this week</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 border-info">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Office Hours</h6>
+                    <h2 class="card-title mb-0">3</h2>
+                    <small class="text-info">Appointments today</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="row g-4">
+        <!-- Class Schedule -->
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Today's Schedule</h5>
+                    <button class="btn btn-sm btn-light">View Full Schedule</button>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Class</th>
+                                    <th>Room</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>08:00 AM</td>
+                                    <td>Mathematics 10A</td>
+                                    <td>Room 201</td>
+                                    <td><span class="badge bg-success">Completed</span></td>
+                                </tr>
+                                <tr>
+                                    <td>10:00 AM</td>
+                                    <td>Mathematics 11B</td>
+                                    <td>Room 205</td>
+                                    <td><span class="badge bg-warning">Current</span></td>
+                                </tr>
+                                <tr>
+                                    <td>01:00 PM</td>
+                                    <td>Mathematics 9C</td>
+                                    <td>Room 203</td>
+                                    <td><span class="badge bg-secondary">Upcoming</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Submissions -->
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Recent Submissions</h5>
+                    <button class="btn btn-sm btn-light">Grade All</button>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">Algebra Quiz - Class 10A</h6>
+                                <small>5 mins ago</small>
+                            </div>
+                            <p class="mb-1">15 new submissions</p>
+                            <small class="text-muted">Due date: Today</small>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">Homework 5 - Class 11B</h6>
+                                <small>2 hours ago</small>
+                            </div>
+                            <p class="mb-1">8 new submissions</p>
+                            <small class="text-muted">Due date: Yesterday</small>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Student Performance -->
+        <div class="col-md-8">
+            <div class="card h-100">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">Class Performance Overview</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="performanceChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upcoming Tasks -->
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header bg-warning">
+                    <h5 class="card-title mb-0">Upcoming Tasks</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Grade Midterm Papers
+                            <span class="badge bg-danger">Today</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Parent-Teacher Meeting
+                            <span class="badge bg-warning">Tomorrow</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Submit Progress Reports
+                            <span class="badge bg-info">Next Week</span>
+                        </li>
+                    </ul>
+                    <div class="text-end mt-3">
+                        <button class="btn btn-sm btn-warning">Add Task</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Notifications Modal -->
+<div class="modal fade" id="notificationsModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Recent Notifications</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="list-group">
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">New Assignment Submission</h6>
+                            <small>Just now</small>
+                        </div>
+                        <p class="mb-1">John Smith submitted Algebra Quiz</p>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">Meeting Reminder</h6>
+                            <small>1 hour ago</small>
+                        </div>
+                        <p class="mb-1">Department meeting at 3 PM today</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Mark All as Read</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Grade Modal -->
+<div class="modal fade" id="addGradeModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Grade</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="gradeForm">
+                    <div class="mb-3">
+                        <label for="classSelect" class="form-label">Select Class</label>
+                        <select class="form-select" id="classSelect" required>
+                            <option value="">Choose...</option>
+                            <option value="10A">Mathematics 10A</option>
+                            <option value="11B">Mathematics 11B</option>
+                            <option value="9C">Mathematics 9C</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="assignmentSelect" class="form-label">Assignment</label>
+                        <select class="form-select" id="assignmentSelect" required>
+                            <option value="">Choose...</option>
+                            <option value="quiz1">Quiz 1</option>
+                            <option value="midterm">Midterm Exam</option>
+                            <option value="homework">Homework</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="studentSelect" class="form-label">Student</label>
+                        <select class="form-select" id="studentSelect" required>
+                            <option value="">Choose...</option>
+                            <option value="1">John Smith</option>
+                            <option value="2">Jane Doe</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="gradeInput" class="form-label">Grade</label>
+                        <input type="number" class="form-control" id="gradeInput" min="0" max="100" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="commentInput" class="form-label">Comments</label>
+                        <textarea class="form-control" id="commentInput" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save Grade</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Performance Chart
+    const ctx = document.getElementById('performanceChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Class 10A', 'Class 11B', 'Class 9C'],
+            datasets: [{
+                label: 'Class Average (%)',
+                data: [85, 78, 92],
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.5)',
+                    'rgba(255, 99, 132, 0.5)',
+                    'rgba(75, 192, 192, 0.5)'
+                ],
+                borderColor: [
+                    'rgb(54, 162, 235)',
+                    'rgb(255, 99, 132)',
+                    'rgb(75, 192, 192)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %} 

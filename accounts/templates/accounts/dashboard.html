@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="welcome-section">
+        <h1>Welcome, {{ user.username }}!</h1>
+        <p>Here's your personalized dashboard</p>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="dashboard-card">
+            <h3>Profile</h3>
+            <p>Role: {{ user.role|title }}</p>
+            <p>Email: {{ user.email }}</p>
+            <a href="{% url 'accounts:profile' %}" class="btn btn-outline-primary">Edit Profile</a>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>Quick Actions</h3>
+            <div class="action-buttons">
+                <a href="#" class="btn btn-primary mb-2 w-100">View Schedule</a>
+                <a href="#" class="btn btn-primary mb-2 w-100">Check Grades</a>
+                <a href="#" class="btn btn-primary w-100">View Attendance</a>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <h3>Announcements</h3>
+            <div class="announcement-list">
+                <p>No new announcements</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-color: #6f42c1;
+        --primary-hover: #5a32a3;
+        --gradient-start: #6f42c1;
+        --gradient-end: #8b5cf6;
+    }
+
+    [data-bs-theme="dark"] {
+        --primary-color: #8b5cf6;
+        --primary-hover: #7c3aed;
+        --gradient-start: #4c1d95;
+        --gradient-end: #6d28d9;
+    }
+
+    .dashboard-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .welcome-section {
+        text-align: center;
+        padding: 40px 20px;
+        background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+        border-radius: 10px;
+        margin-bottom: 40px;
+        color: white;
+    }
+
+    .welcome-section h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+    }
+
+    .welcome-section p {
+        font-size: 1.2em;
+        opacity: 0.9;
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        padding: 20px 0;
+    }
+
+    .dashboard-card {
+        background: var(--bs-body-bg);
+        padding: 25px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border: 1px solid var(--bs-border-color);
+    }
+
+    .dashboard-card h3 {
+        color: var(--bs-body-color);
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--bs-border-color);
+    }
+
+    .dashboard-card p {
+        color: var(--bs-body-color);
+        opacity: 0.8;
+        line-height: 1.6;
+        margin-bottom: 15px;
+    }
+
+    .action-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .btn-primary:hover {
+        background-color: var(--primary-hover);
+        border-color: var(--primary-hover);
+    }
+
+    .btn-outline-primary {
+        color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .btn-outline-primary:hover {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .announcement-list {
+        color: var(--bs-body-color);
+        opacity: 0.8;
+    }
+
+    @media (max-width: 768px) {
+        .welcome-section {
+            padding: 30px 20px;
+        }
+
+        .welcome-section h1 {
+            font-size: 2em;
+        }
+
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %} 

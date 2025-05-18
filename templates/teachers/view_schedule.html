@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Schedule - Regisbridge Private School{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4">My Schedule</h2>
+            <p class="text-muted">Week of {{ week_start|date:"F d, Y" }}</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            {% for day in week_days %}
+                            <th>{{ day|date:"l" }}<br>{{ day|date:"M d" }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for time_slot in time_slots %}
+                        <tr>
+                            <td>{{ time_slot|time:"H:i" }}</td>
+                            {% for day in week_days %}
+                            <td>
+                                {% with schedule=weekly_schedule|get_item:day|get_item:time_slot %}
+                                {% if schedule %}
+                                <div class="schedule-item p-2">
+                                    <strong>{{ schedule.class_group.name }}</strong><br>
+                                    {{ schedule.subject.name }}<br>
+                                    <small class="text-muted">{{ schedule.room }}</small>
+                                </div>
+                                {% endif %}
+                                {% endwith %}
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <a href="?week={{ previous_week|date:'Y-m-d' }}" class="btn btn-outline-primary">
+                        <i class="fas fa-chevron-left me-2"></i>Previous Week
+                    </a>
+                </div>
+                <div>
+                    <a href="?week={{ next_week|date:'Y-m-d' }}" class="btn btn-outline-primary">
+                        Next Week<i class="fas fa-chevron-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_css %}
+<style>
+.schedule-item {
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    margin-bottom: 4px;
+}
+.schedule-item:hover {
+    background-color: #e9ecef;
+}
+</style>
+{% endblock %}
+{% endblock %} 

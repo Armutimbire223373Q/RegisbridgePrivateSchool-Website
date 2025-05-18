@@ -1,0 +1,7 @@
+{% extends "main/error_base.html" %}
+
+{% block content %}
+{% with error_code="500" error_title="Server Error" error_message="Something went wrong on our end. Please try again later." %}
+{{ block.super }}
+{% endwith %}
+{% endblock %} 

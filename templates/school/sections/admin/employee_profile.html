@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Employee Profile - {{ employee.full_name }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Employee Profile Header -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    {% if employee.photo %}
+                        <img src="{{ employee.photo.url }}" alt="{{ employee.full_name }}" class="rounded-circle img-fluid mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                    {% else %}
+                        <img src="{% static 'images/default-avatar.png' %}" alt="Default Avatar" class="rounded-circle img-fluid mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                    {% endif %}
+                    <h5 class="card-title">{{ employee.full_name }}</h5>
+                    <p class="card-text text-muted">{{ employee.designation }}</p>
+                    <p class="card-text"><small class="text-muted">ID: {{ employee.employee_id }}</small></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Personal Information</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Email:</strong> {{ employee.email }}</p>
+                            <p><strong>Phone:</strong> {{ employee.phone }}</p>
+                            <p><strong>Department:</strong> {{ employee.department }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Join Date:</strong> {{ employee.join_date|date:"M d, Y" }}</p>
+                            <p><strong>Status:</strong> <span class="badge bg-success">Active</span></p>
+                            <p><strong>Employee Type:</strong> {{ employee.employment_type }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Documents Section -->
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Documents</h5>
+            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadDocumentModal">
+                Upload Document
+            </button>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Document Name</th>
+                            <th>Type</th>
+                            <th>Upload Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for document in documents %}
+                        <tr>
+                            <td>{{ document.name }}</td>
+                            <td>{{ document.document_type }}</td>
+                            <td>{{ document.uploaded_at|date:"M d, Y" }}</td>
+                            <td>
+                                <a href="{{ document.file.url }}" class="btn btn-sm btn-info" target="_blank">View</a>
+                                <button class="btn btn-sm btn-danger delete-document" data-document-id="{{ document.id }}">Delete</button>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center">No documents uploaded yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leave Requests Section -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Leave Requests</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for leave in leave_requests %}
+                        <tr>
+                            <td>{{ leave.leave_type }}</td>
+                            <td>{{ leave.start_date|date:"M d, Y" }}</td>
+                            <td>{{ leave.end_date|date:"M d, Y" }}</td>
+                            <td>
+                                <span class="badge bg-{{ leave.status|lower }}">{{ leave.status }}</span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center">No leave requests found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Reviews Section -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Performance Reviews</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Review Period</th>
+                            <th>Rating</th>
+                            <th>Reviewer</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for review in performance_reviews %}
+                        <tr>
+                            <td>{{ review.review_period }}</td>
+                            <td>
+                                <div class="stars">
+                                    {% for i in "12345"|make_list %}
+                                    <i class="bi bi-star{% if forloop.counter <= review.rating %}-fill{% endif %} text-warning"></i>
+                                    {% endfor %}
+                                </div>
+                            </td>
+                            <td>{{ review.reviewer }}</td>
+                            <td>{{ review.review_date|date:"M d, Y" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center">No performance reviews available.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upload Document Modal -->
+<div class="modal fade" id="uploadDocumentModal" tabindex="-1" aria-labelledby="uploadDocumentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadDocumentModalLabel">Upload Document</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="documentUploadForm" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="documentName" class="form-label">Document Name</label>
+                        <input type="text" class="form-control" id="documentName" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="documentType" class="form-label">Document Type</label>
+                        <select class="form-select" id="documentType" name="document_type" required>
+                            <option value="">Select document type</option>
+                            <option value="ID">ID Proof</option>
+                            <option value="CERTIFICATE">Certificate</option>
+                            <option value="CONTRACT">Contract</option>
+                            <option value="OTHER">Other</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="documentFile" class="form-label">File</label>
+                        <input type="file" class="form-control" id="documentFile" name="file" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Document Upload Form Submission
+    const documentUploadForm = document.getElementById('documentUploadForm');
+    documentUploadForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        
+        fetch('{% url "school:employee_document_upload" employee.id %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error uploading document: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error uploading document');
+        });
+    });
+
+    // Document Deletion
+    document.querySelectorAll('.delete-document').forEach(button => {
+        button.addEventListener('click', function() {
+            if (confirm('Are you sure you want to delete this document?')) {
+                const documentId = this.dataset.documentId;
+                
+                fetch(`{% url "school:employee_document_delete" employee.id 0 %}`.replace('0', documentId), {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Error deleting document: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error deleting document');
+                });
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
+{% endblock %} 

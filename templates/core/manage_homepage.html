@@ -1,0 +1,111 @@
+{% extends 'accounts/dashboard_base.html' %}
+{% load static %}
+
+{% block title %}Manage Home Page Content{% endblock %}
+
+{% block dashboard_content %}
+<div class="container py-4">
+    <h1 class="mb-4">Manage Home Page Content</h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <h4>Site Information</h4>
+                            {{ form.title.label_tag }}
+                            {{ form.title }}
+                            {{ form.subtitle.label_tag }}
+                            {{ form.subtitle }}
+                        </div>
+
+                        <div class="mb-3">
+                            <h4>Hero Section</h4>
+                            {% if content.hero_image %}
+                            <div class="mb-2">
+                                <img src="{{ content.hero_image.url }}" alt="Current hero image" class="img-fluid mb-2" style="max-height: 200px;">
+                                <p class="text-muted">Current hero image</p>
+                            </div>
+                            {% endif %}
+                            {{ form.hero_image.label_tag }}
+                            {{ form.hero_image }}
+                            {{ form.hero_text.label_tag }}
+                            {{ form.hero_text }}
+                        </div>
+
+                        <div class="mb-3">
+                            <h4>About Section</h4>
+                            {{ form.about_section.label_tag }}
+                            {{ form.about_section }}
+                            {{ form.mission_statement.label_tag }}
+                            {{ form.mission_statement }}
+                            {{ form.vision_statement.label_tag }}
+                            {{ form.vision_statement }}
+                        </div>
+
+                        <div class="mb-3">
+                            <h4>Contact Information</h4>
+                            {{ form.contact_email.label_tag }}
+                            {{ form.contact_email }}
+                            {{ form.contact_phone.label_tag }}
+                            {{ form.contact_phone }}
+                            {{ form.address.label_tag }}
+                            {{ form.address }}
+                        </div>
+
+                        <div class="mb-3">
+                            <h4>Social Media Links</h4>
+                            {{ form.facebook_url.label_tag }}
+                            {{ form.facebook_url }}
+                            {{ form.twitter_url.label_tag }}
+                            {{ form.twitter_url }}
+                            {{ form.instagram_url.label_tag }}
+                            {{ form.instagram_url }}
+                            {{ form.youtube_url.label_tag }}
+                            {{ form.youtube_url }}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h4>Quick Actions</h4>
+                    <div class="list-group">
+                        <a href="{% url 'core:manage_news' %}" class="list-group-item list-group-item-action">
+                            Manage News
+                        </a>
+                        <a href="{% url 'core:manage_events' %}" class="list-group-item list-group-item-action">
+                            Manage Events
+                        </a>
+                        <a href="{% url 'homepage:home' %}" class="list-group-item list-group-item-action" target="_blank">
+                            Preview Home Page
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4>Last Update</h4>
+                    {% if content.last_updated %}
+                    <p>Last updated on {{ content.last_updated|date:"F j, Y, g:i a" }}</p>
+                    {% if content.updated_by %}
+                    <p>Updated by {{ content.updated_by.get_full_name }}</p>
+                    {% endif %}
+                    {% else %}
+                    <p>No updates yet</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

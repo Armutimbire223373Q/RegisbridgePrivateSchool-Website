@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mark Attendance - Regisbridge Private School{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4">Mark Attendance</h2>
+            <p class="text-muted">Date: {{ today|date:"F d, Y" }}</p>
+        </div>
+    </div>
+
+    {% for schedule in today_schedule %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">{{ schedule.class_group.name }} - {{ schedule.subject.name }}</h5>
+            <small class="text-muted">{{ schedule.start_time|time:"H:i" }} - {{ schedule.end_time|time:"H:i" }}</small>
+        </div>
+        <div class="card-body">
+            <form method="post" action="{% url 'teachers:mark_attendance' %}">
+                {% csrf_token %}
+                <input type="hidden" name="class_subject" value="{{ schedule.id }}">
+                <input type="hidden" name="date" value="{{ today|date:'Y-m-d' }}">
+                
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Status</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in schedule.class_group.students.all %}
+                            <tr>
+                                <td>{{ student.user.get_full_name }}</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <input type="radio" class="btn-check" name="status_{{ student.id }}" 
+                                               id="present_{{ student.id }}" value="present" checked>
+                                        <label class="btn btn-outline-success" for="present_{{ student.id }}">
+                                            Present
+                                        </label>
+                                        
+                                        <input type="radio" class="btn-check" name="status_{{ student.id }}" 
+                                               id="absent_{{ student.id }}" value="absent">
+                                        <label class="btn btn-outline-danger" for="absent_{{ student.id }}">
+                                            Absent
+                                        </label>
+                                        
+                                        <input type="radio" class="btn-check" name="status_{{ student.id }}" 
+                                               id="late_{{ student.id }}" value="late">
+                                        <label class="btn btn-outline-warning" for="late_{{ student.id }}">
+                                            Late
+                                        </label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" name="notes_{{ student.id }}" 
+                                           placeholder="Optional notes">
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center">No students enrolled in this class</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-2"></i>Save Attendance
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% empty %}
+    <div class="alert alert-info">
+        No classes scheduled for today.
+    </div>
+    {% endfor %}
+</div>
+{% endblock %} 

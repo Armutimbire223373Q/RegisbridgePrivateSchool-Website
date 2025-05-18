@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block breadcrumbs %}
+<li class="breadcrumb-item active">Notifications</li>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0">Notifications</h1>
+                <button class="btn btn-outline-primary" id="markAllRead">
+                    <i class="fas fa-check-double me-2"></i>Mark All as Read
+                </button>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    {% if notifications %}
+                        <div class="list-group list-group-flush">
+                            {% for notification in notifications %}
+                            <div class="list-group-item notification-item" data-id="{{ notification.id }}">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h5 class="mb-1">{{ notification.title }}</h5>
+                                        <p class="mb-1">{{ notification.message }}</p>
+                                        <small class="text-muted">
+                                            <i class="fas fa-clock me-1"></i>
+                                            {{ notification.created_at|timesince }} ago
+                                        </small>
+                                    </div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-link text-muted" type="button" data-bs-toggle="dropdown">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li>
+                                                <a class="dropdown-item mark-read" href="#" data-id="{{ notification.id }}">
+                                                    <i class="fas fa-check me-2"></i>Mark as Read
+                                                </a>
+                                            </li>
+                                            {% if notification.link %}
+                                            <li>
+                                                <a class="dropdown-item" href="{{ notification.link }}">
+                                                    <i class="fas fa-external-link-alt me-2"></i>View
+                                                </a>
+                                            </li>
+                                            {% endif %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-bell-slash fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No new notifications</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Mark single notification as read
+    document.querySelectorAll('.mark-read').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const notificationId = this.dataset.id;
+            markNotificationRead(notificationId);
+        });
+    });
+
+    // Mark all notifications as read
+    document.getElementById('markAllRead').addEventListener('click', function() {
+        markAllRead();
+    });
+
+    function markNotificationRead(notificationId) {
+        fetch(`/core/notifications/mark-read/${notificationId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                const notification = document.querySelector(`.notification-item[data-id="${notificationId}"]`);
+                notification.remove();
+                updateUnreadCount();
+            }
+        });
+    }
+
+    function markAllRead() {
+        fetch('/core/notifications/mark-all-read/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                location.reload();
+            }
+        });
+    }
+
+    function updateUnreadCount() {
+        fetch('/core/notifications/unread-count/')
+        .then(response => response.json())
+        .then(data => {
+            const badge = document.querySelector('.notification-badge');
+            if (badge) {
+                badge.textContent = data.count;
+                if (data.count === 0) {
+                    badge.style.display = 'none';
+                } else {
+                    badge.style.display = 'block';
+                }
+            }
+        });
+    }
+
+    // Function to get CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+});
+</script>
+{% endblock %} 

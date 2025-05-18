@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+{% if form.instance.pk %}
+Edit Class Schedule - {{ form.instance }}
+{% else %}
+Add New Class Schedule
+{% endif %} - {{ block.super }}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    .conflict-warning {
+        display: none;
+        margin-top: 10px;
+        padding: 10px;
+        border-radius: 4px;
+        background-color: #fff3cd;
+        border: 1px solid #ffeeba;
+        color: #856404;
+    }
+    .conflict-warning ul {
+        margin-bottom: 0;
+        padding-left: 20px;
+    }
+    .form-group {
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>
+                {% if form.instance.pk %}
+                Edit Class Schedule
+                {% else %}
+                Add New Class Schedule
+                {% endif %}
+            </h2>
+            <p class="text-muted">
+                {% if form.instance.pk %}
+                Modify the existing class schedule
+                {% else %}
+                Create a new class schedule entry
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+    <div class="form-container">
+        <div class="card">
+            <div class="card-body">
+                <form method="post" id="scheduleForm">
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form.class_group|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.subject|as_crispy_field }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form.teacher|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.room|as_crispy_field }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form.time_slot|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>&nbsp;</label>
+                                <div class="form-check mt-2">
+                                    {{ form.is_recurring|as_crispy_field }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Conflict warnings will appear here -->
+                    <div class="conflict-warning" id="conflictWarning">
+                        <strong><i class="fas fa-exclamation-triangle"></i> Scheduling Conflicts:</strong>
+                        <ul id="conflictList"></ul>
+                    </div>
+
+                    <!-- Form errors -->
+                    {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <strong>Please correct the following errors:</strong>
+                        {{ form.non_field_errors }}
+                        {% for field in form %}
+                            {% if field.errors %}
+                            <div>
+                                <strong>{{ field.label }}:</strong> {{ field.errors|striptags }}
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> 
+                            {% if form.instance.pk %}
+                            Save Changes
+                            {% else %}
+                            Create Schedule
+                            {% endif %}
+                        </button>
+                        <a href="{% url 'timetable:class_schedule_list' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('scheduleForm');
+    const conflictWarning = document.getElementById('conflictWarning');
+    const conflictList = document.getElementById('conflictList');
+    
+    // Fields to watch for changes
+    const timeSlotField = document.getElementById('id_time_slot');
+    const teacherField = document.getElementById('id_teacher');
+    const roomField = document.getElementById('id_room');
+    const classGroupField = document.getElementById('id_class_group');
+
+    // Function to check for conflicts
+    function checkConflicts() {
+        const timeSlot = timeSlotField.value;
+        const teacher = teacherField.value;
+        const room = roomField.value;
+        const classGroup = classGroupField.value;
+
+        if (timeSlot && teacher && room && classGroup) {
+            fetch(`/timetable/ajax/check-conflicts/?time_slot=${timeSlot}&teacher=${teacher}&room=${room}&class_group=${classGroup}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.conflicts && data.conflicts.length > 0) {
+                        conflictList.innerHTML = data.conflicts.map(conflict => `<li>${conflict}</li>`).join('');
+                        conflictWarning.style.display = 'block';
+                    } else {
+                        conflictWarning.style.display = 'none';
+                    }
+                });
+        }
+    }
+
+    // Add change event listeners
+    [timeSlotField, teacherField, roomField, classGroupField].forEach(field => {
+        field.addEventListener('change', checkConflicts);
+    });
+
+    // Initialize select2 for better dropdown experience
+    if (typeof $.fn.select2 !== 'undefined') {
+        $('#id_class_group, #id_subject, #id_teacher, #id_room, #id_time_slot').select2({
+            theme: 'bootstrap-5',
+            width: '100%'
+        });
+    }
+});
+</script>
+{% endblock %} 

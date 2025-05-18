@@ -21,6 +21,9 @@
     <meta name="twitter:description" content="{% block twitter_description %}{{ meta_description }}{% endblock %}">
     <meta name="twitter:image" content="{% block twitter_image %}{% static 'images/twitter-card.jpg' %}{% endblock %}">
     
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5031801301729089" crossorigin="anonymous"></script>
+    
     <title>{% block title %}Regisbridge Private School{% endblock %}</title>
     
     <!-- Favicon -->
@@ -110,7 +113,7 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'main:home' %}">Regisbridge Private School</a>
+            <a class="navbar-brand" href="{% url 'main:home' %}">Regisbridge School</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -123,39 +126,71 @@
                         <a class="nav-link" href="{% url 'main:academics' %}">Academics</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'admissions:index' %}">Admissions</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'school:student_life' %}">Student Life</a>
+                        <a class="nav-link" href="{% url 'admissions:home' %}">Admissions</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'main:contact' %}">Contact</a>
                     </li>
                 </ul>
+
+                {% if user.is_authenticated %}
                 <ul class="navbar-nav">
-                    {% if user.is_authenticated %}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user me-1"></i>{{ user.get_full_name|default:user.username }}
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                {% if user.is_student %}
-                                    <li><a class="dropdown-item" href="{% url 'school:student_portal' %}">Student Portal</a></li>
-                                {% elif user.is_parent %}
-                                    <li><a class="dropdown-item" href="{% url 'school:parent_portal' %}">Parent Portal</a></li>
-                                {% elif user.is_teacher %}
-                                    <li><a class="dropdown-item" href="{% url 'school:teacher_portal' %}">Teacher Portal</a></li>
-                                {% endif %}
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{% url 'school:logout' %}">Logout</a></li>
-                            </ul>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'school:login' %}">Login</a>
-                        </li>
-                    {% endif %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="portalDropdown" role="button" data-bs-toggle="dropdown">
+                            Portals
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <!-- Academic Section -->
+                            <li><h6 class="dropdown-header">Academic</h6></li>
+                            {% if user.is_student or user.is_parent %}
+                            <li><a class="dropdown-item" href="{% url 'school:student_portal' %}">Student & Parent Portal</a></li>
+                            {% endif %}
+                            {% if user.is_teacher %}
+                            <li><a class="dropdown-item" href="{% url 'school:teacher_portal' %}">Teacher Portal</a></li>
+                            {% endif %}
+                            
+                            <!-- Administrative Section -->
+                            {% if user.is_staff or user.is_superuser %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Administrative</h6></li>
+                            <li><a class="dropdown-item" href="{% url 'school:admin_portal' %}">Admin Dashboard</a></li>
+                            <li><a class="dropdown-item" href="{% url 'school:accounting' %}">Accounting</a></li>
+                            <li><a class="dropdown-item" href="{% url 'school:boarding' %}">Boarding</a></li>
+                            <li><a class="dropdown-item" href="{% url 'school:hr' %}">HR Management</a></li>
+                            <li><a class="dropdown-item" href="{% url 'school:inventory' %}">Inventory</a></li>
+                            {% endif %}
+
+                            <!-- Staff Section -->
+                            {% if user.is_staff %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header">Staff</h6></li>
+                            {% if user.groups.accountant %}
+                            <li><a class="dropdown-item" href="{% url 'school:accountant' %}">Accountant</a></li>
+                            {% endif %}
+                            {% if user.groups.librarian %}
+                            <li><a class="dropdown-item" href="{% url 'school:library' %}">Library</a></li>
+                            {% endif %}
+                            {% if user.groups.nurse %}
+                            <li><a class="dropdown-item" href="{% url 'school:health' %}">Health Center</a></li>
+                            {% endif %}
+                            {% if user.groups.boarding_staff %}
+                            <li><a class="dropdown-item" href="{% url 'school:boarding_staff' %}">Boarding Staff</a></li>
+                            {% endif %}
+                            {% endif %}
+
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'accounts:profile' %}">My Profile</a></li>
+                            <li><a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a></li>
+                        </ul>
+                    </li>
                 </ul>
+                {% else %}
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'account_login' %}">Login</a>
+                    </li>
+                </ul>
+                {% endif %}
             </div>
         </div>
     </nav>
@@ -182,8 +217,8 @@
                     <ul class="list-unstyled">
                         <li><a href="{% url 'main:about' %}" class="text-white">About Us</a></li>
                         <li><a href="{% url 'admissions:index' %}" class="text-white">Admissions</a></li>
-                        <li><a href="{% url 'school:tuition' %}" class="text-white">Tuition & Fees</a></li>
-                        <li><a href="{% url 'school:privacy_policy' %}" class="text-white">Privacy Policy</a></li>
+                        <li><a href="{% url 'main:contact' %}" class="text-white">Contact Us</a></li>
+                        <li><a href="{% url 'main:academics' %}" class="text-white">Academics</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">

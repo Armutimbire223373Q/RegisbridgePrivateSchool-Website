@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Student & Parent Portal - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Welcome Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3">Welcome, {{ user.get_full_name }}</h1>
+        <div class="dropdown">
+            <button class="btn btn-primary position-relative" type="button" data-bs-toggle="modal" data-bs-target="#notificationsModal">
+                <i class="fas fa-bell"></i> Notifications
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    3
+                </span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card h-100 border-primary">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Attendance</h6>
+                    <h2 class="card-title mb-0">95%</h2>
+                    <small class="text-success">
+                        <i class="fas fa-arrow-up"></i> 2% from last month
+                    </small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 border-success">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Current GPA</h6>
+                    <h2 class="card-title mb-0">3.8</h2>
+                    <small class="text-success">
+                        <i class="fas fa-arrow-up"></i> 0.2 from last semester
+                    </small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 border-info">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Assignments</h6>
+                    <h2 class="card-title mb-0">2</h2>
+                    <small class="text-warning">Due this week</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 border-warning">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Balance Due</h6>
+                    <h2 class="card-title mb-0">$250</h2>
+                    <small class="text-danger">Due by 15th</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="row g-4">
+        <!-- Academic Progress -->
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">Academic Progress</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Mathematics
+                            <span class="badge bg-success rounded-pill">A</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            English
+                            <span class="badge bg-success rounded-pill">A-</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Science
+                            <span class="badge bg-primary rounded-pill">B+</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            History
+                            <span class="badge bg-primary rounded-pill">B</span>
+                        </li>
+                    </ul>
+                    <div class="text-end mt-3">
+                        <a href="#" class="btn btn-sm btn-primary">View Full Report</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upcoming Assignments -->
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">Upcoming Assignments</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Assignment</th>
+                                    <th>Due Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Mathematics</td>
+                                    <td>Algebra Quiz</td>
+                                    <td>Mar 15</td>
+                                    <td><span class="badge bg-warning">Pending</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Science</td>
+                                    <td>Lab Report</td>
+                                    <td>Mar 18</td>
+                                    <td><span class="badge bg-danger">Not Started</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Attendance Record -->
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">Attendance Record</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="attendanceChart" width="400" height="200"></canvas>
+                    <div class="text-end mt-3">
+                        <a href="#" class="btn btn-sm btn-success">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Communication Center -->
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-warning">
+                    <h5 class="card-title mb-0">Communication Center</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">Parent-Teacher Meeting</h6>
+                                <small>3 days ago</small>
+                            </div>
+                            <p class="mb-1">Schedule for next week's meeting is now available.</p>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">Field Trip Permission</h6>
+                                <small>1 week ago</small>
+                            </div>
+                            <p class="mb-1">Please submit the signed permission slip by Friday.</p>
+                        </a>
+                    </div>
+                    <div class="text-end mt-3">
+                        <button class="btn btn-sm btn-warning">Send Message</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Notifications Modal -->
+<div class="modal fade" id="notificationsModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Recent Notifications</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="list-group">
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">New Assignment Posted</h6>
+                            <small>Just now</small>
+                        </div>
+                        <p class="mb-1">Mathematics: Algebra Quiz due March 15</p>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">Grade Updated</h6>
+                            <small>2 hours ago</small>
+                        </div>
+                        <p class="mb-1">Your Science test grade has been posted</p>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">Attendance Alert</h6>
+                            <small>1 day ago</small>
+                        </div>
+                        <p class="mb-1">Your attendance has been marked for yesterday</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Mark All as Read</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Attendance Chart
+    const ctx = document.getElementById('attendanceChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'Attendance Rate (%)',
+                data: [92, 95, 93, 97, 94, 95],
+                borderColor: 'rgb(40, 167, 69)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    min: 80,
+                    max: 100
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %} 

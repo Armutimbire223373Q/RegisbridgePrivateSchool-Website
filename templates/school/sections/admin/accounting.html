@@ -1,0 +1,300 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Accounting Management - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Welcome Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3">Financial Management Dashboard</h1>
+        <div class="d-flex gap-2">
+            <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#addTransactionModal">
+                <i class="fas fa-plus"></i> New Transaction
+            </button>
+            <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#generateReportModal">
+                <i class="fas fa-file-export"></i> Generate Report
+            </button>
+        </div>
+    </div>
+
+    <!-- Financial Overview -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card h-100 border-success">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Total Revenue</h6>
+                    <h2 class="card-title mb-0">$125,000</h2>
+                    <small class="text-success">
+                        <i class="fas fa-arrow-up"></i> 15% from last month
+                    </small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 border-danger">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Total Expenses</h6>
+                    <h2 class="card-title mb-0">$85,000</h2>
+                    <small class="text-danger">
+                        <i class="fas fa-arrow-up"></i> 8% from last month
+                    </small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 border-warning">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Outstanding Fees</h6>
+                    <h2 class="card-title mb-0">$15,000</h2>
+                    <small class="text-warning">From 25 students</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 border-info">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Net Profit</h6>
+                    <h2 class="card-title mb-0">$40,000</h2>
+                    <small class="text-info">This month</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="row g-4">
+        <!-- Recent Transactions -->
+        <div class="col-md-8">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Recent Transactions</h5>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-light">Export CSV</button>
+                        <button class="btn btn-sm btn-light">Filter</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                    <th>Category</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>2024-03-15</td>
+                                    <td>Term 2 Fees - John Smith</td>
+                                    <td>Tuition</td>
+                                    <td class="text-success">+$2,500</td>
+                                    <td><span class="badge bg-success">Completed</span></td>
+                                </tr>
+                                <tr>
+                                    <td>2024-03-14</td>
+                                    <td>Staff Salary - March</td>
+                                    <td>Payroll</td>
+                                    <td class="text-danger">-$35,000</td>
+                                    <td><span class="badge bg-success">Completed</span></td>
+                                </tr>
+                                <tr>
+                                    <td>2024-03-13</td>
+                                    <td>Library Books Purchase</td>
+                                    <td>Resources</td>
+                                    <td class="text-danger">-$1,200</td>
+                                    <td><span class="badge bg-warning">Pending</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-primary">
+                            <i class="fas fa-file-invoice"></i> Generate Invoice
+                        </button>
+                        <button class="btn btn-outline-success">
+                            <i class="fas fa-money-check"></i> Process Payroll
+                        </button>
+                        <button class="btn btn-outline-warning">
+                            <i class="fas fa-envelope"></i> Send Fee Reminder
+                        </button>
+                        <button class="btn btn-outline-info">
+                            <i class="fas fa-chart-pie"></i> View Analytics
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Financial Chart -->
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">Financial Overview</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="financialChart" height="100"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Transaction Modal -->
+<div class="modal fade" id="addTransactionModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Transaction</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="transactionForm">
+                    <div class="mb-3">
+                        <label for="transactionType" class="form-label">Transaction Type</label>
+                        <select class="form-select" id="transactionType" required>
+                            <option value="">Choose...</option>
+                            <option value="income">Income</option>
+                            <option value="expense">Expense</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category</label>
+                        <select class="form-select" id="category" required>
+                            <option value="">Choose...</option>
+                            <option value="tuition">Tuition</option>
+                            <option value="payroll">Payroll</option>
+                            <option value="resources">Resources</option>
+                            <option value="utilities">Utilities</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="amount" class="form-label">Amount</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" class="form-control" id="amount" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" rows="2"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="date" class="form-label">Date</label>
+                        <input type="date" class="form-control" id="date" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary">Save Transaction</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Generate Report Modal -->
+<div class="modal fade" id="generateReportModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Generate Financial Report</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="reportForm">
+                    <div class="mb-3">
+                        <label for="reportType" class="form-label">Report Type</label>
+                        <select class="form-select" id="reportType" required>
+                            <option value="">Choose...</option>
+                            <option value="income">Income Statement</option>
+                            <option value="expense">Expense Report</option>
+                            <option value="balance">Balance Sheet</option>
+                            <option value="fees">Outstanding Fees</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="dateRange" class="form-label">Date Range</label>
+                        <select class="form-select" id="dateRange" required>
+                            <option value="">Choose...</option>
+                            <option value="month">This Month</option>
+                            <option value="quarter">This Quarter</option>
+                            <option value="year">This Year</option>
+                            <option value="custom">Custom Range</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="format" class="form-label">Format</label>
+                        <select class="form-select" id="format" required>
+                            <option value="pdf">PDF</option>
+                            <option value="excel">Excel</option>
+                            <option value="csv">CSV</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary">Generate</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Financial Chart
+    const ctx = document.getElementById('financialChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'Revenue',
+                data: [95000, 88000, 125000, 105000, 115000, 130000],
+                borderColor: 'rgb(40, 167, 69)',
+                tension: 0.1
+            },
+            {
+                label: 'Expenses',
+                data: [75000, 72000, 85000, 80000, 82000, 88000],
+                borderColor: 'rgb(220, 53, 69)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return '$' + value.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %} 

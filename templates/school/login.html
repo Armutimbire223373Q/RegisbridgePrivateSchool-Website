@@ -4,23 +4,24 @@
 {% block title %}Login - Regisbridge Private School{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card shadow">
-                <div class="card-header bg-primary text-white text-center">
-                    <h2 class="h4 mb-0">Portal Login</h2>
-                </div>
                 <div class="card-body">
+                    <h2 class="h3 text-center mb-4">School Portal Login</h2>
+                    
                     {% if messages %}
+                    <div class="messages mb-4">
                         {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }}">
-                                {{ message }}
-                            </div>
+                        <div class="alert alert-{{ message.tags }}">
+                            {{ message }}
+                        </div>
                         {% endfor %}
+                    </div>
                     {% endif %}
 
-                    <form method="post" action="{% url 'school:login' %}">
+                    <form method="post">
                         {% csrf_token %}
                         <div class="mb-3">
                             <label for="username" class="form-label">Username</label>
@@ -30,44 +31,30 @@
                             <label for="password" class="form-label">Password</label>
                             <input type="password" class="form-control" id="password" name="password" required>
                         </div>
-                        <div class="mb-3">
-                            <label for="role" class="form-label">Select Portal</label>
-                            <select class="form-select" id="role" name="role" required>
-                                <option value="">Choose a portal...</option>
-                                <option value="student">Student Portal</option>
-                                <option value="parent">Parent Portal</option>
-                                <option value="teacher">Teacher Portal</option>
-                            </select>
-                        </div>
+                        {% if next %}
+                            <input type="hidden" name="next" value="{{ next }}">
+                        {% endif %}
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">Login</button>
+                            <button type="submit" class="btn btn-primary btn-lg">Sign In</button>
                         </div>
                     </form>
-                </div>
-                <div class="card-footer text-center">
-                    <p class="mb-0">
-                        <a href="{% url 'school:password_reset' %}" class="text-decoration-none">Forgot Password?</a>
-                    </p>
                 </div>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
 
-{% block extra_css %}
 <style>
-    .card {
-        border-radius: 10px;
-    }
-    
-    .card-header {
-        border-radius: 10px 10px 0 0 !important;
-    }
-    
-    .form-control:focus {
-        border-color: #0d6efd;
-        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-    }
+.card {
+    border: none;
+    border-radius: 10px;
+}
+.btn-primary {
+    padding: 12px 0;
+    font-weight: 500;
+}
+.form-control {
+    padding: 10px 15px;
+}
 </style>
 {% endblock %} 

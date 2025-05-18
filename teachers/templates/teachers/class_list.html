@@ -1,0 +1,152 @@
+{% extends 'teachers/base.html' %}
+{% load static %}
+
+{% block teacher_content %}
+<div class="class-list-header">
+    <h1>Your Classes</h1>
+    <p class="subtitle">View and manage your assigned classes</p>
+</div>
+
+<div class="class-grid">
+    {% if classes %}
+        {% for class_subject in classes %}
+            <div class="class-card">
+                <div class="class-header">
+                    <h2>{{ class_subject.class_name.name }}</h2>
+                    <span class="subject-badge">{{ class_subject.subject.name }}</span>
+                </div>
+                
+                <div class="class-info">
+                    <div class="info-item">
+                        <label>Grade Level:</label>
+                        <p>{{ class_subject.class_name.grade_level }}</p>
+                    </div>
+                    <div class="info-item">
+                        <label>Section:</label>
+                        <p>{{ class_subject.class_name.section }}</p>
+                    </div>
+                    <div class="info-item">
+                        <label>Academic Year:</label>
+                        <p>{{ class_subject.class_name.academic_year }}</p>
+                    </div>
+                    <div class="info-item">
+                        <label>Schedule:</label>
+                        <p>{{ class_subject.schedule }}</p>
+                    </div>
+                </div>
+
+                <div class="class-actions">
+                    <a href="{% url 'teachers:class_detail' class_subject.pk %}" class="btn-primary">View Details</a>
+                    <a href="{% url 'teachers:attendance_list' class_subject.pk %}" class="btn-primary">Take Attendance</a>
+                    <a href="{% url 'teachers:create_assignment' class_subject.pk %}" class="btn-primary">Create Assignment</a>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="no-classes">
+            <p>No classes assigned yet.</p>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .class-list-header {
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .class-list-header h1 {
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+        color: var(--secondary-color);
+        font-size: 1.1rem;
+    }
+
+    .class-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .class-card {
+        background-color: var(--background-color);
+        border: 1px solid var(--primary-light);
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .class-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .class-header h2 {
+        color: var(--primary-color);
+        margin: 0;
+    }
+
+    .subject-badge {
+        background-color: var(--primary-light);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 1rem;
+        font-size: 0.875rem;
+    }
+
+    .class-info {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .info-item label {
+        color: var(--secondary-color);
+        font-size: 0.875rem;
+    }
+
+    .info-item p {
+        margin: 0;
+        color: var(--text-color);
+    }
+
+    .class-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-top: auto;
+    }
+
+    .class-actions .btn-primary {
+        text-align: center;
+        text-decoration: none;
+    }
+
+    .no-classes {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 2rem;
+        background-color: var(--background-color);
+        border: 1px solid var(--primary-light);
+        border-radius: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .class-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %} 

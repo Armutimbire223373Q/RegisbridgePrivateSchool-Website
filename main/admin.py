@@ -10,152 +10,129 @@ class PageAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
     readonly_fields = ('created_at', 'updated_at')
 
+class AboutPageInline(admin.StackedInline):
+    model = AboutPage
+    extra = 1
+    max_num = 1
+
+class AcademicsPageInline(admin.StackedInline):
+    model = AcademicsPage
+    extra = 1
+    max_num = 1
+
+class CurriculumPageInline(admin.StackedInline):
+    model = CurriculumPage
+    extra = 1
+    max_num = 1
+
+class StudentLifePageInline(admin.StackedInline):
+    model = StudentLifePage
+    extra = 1
+    max_num = 1
+
+class ContactPageInline(admin.StackedInline):
+    model = ContactPage
+    extra = 1
+    max_num = 1
+
 @admin.register(AboutPage)
 class AboutPageAdmin(admin.ModelAdmin):
-    list_display = ('page', 'get_page_status', 'created_at')
-    list_filter = ('page__is_published',)
-    search_fields = ('page__title', 'mission_statement', 'vision_statement')
-    readonly_fields = ('created_at', 'updated_at')
+    list_display = ('get_title', 'get_is_published', 'get_created_at')
+    list_filter = ('page__is_published', 'page__created_at')
+    search_fields = ('page__title', 'page__content', 'mission_statement', 'vision_statement')
 
-    def get_page_status(self, obj):
-        return format_html(
-            '<span style="color: {};">{}</span>',
-            'green' if obj.page.is_published else 'red',
-            'Published' if obj.page.is_published else 'Draft'
-        )
-    get_page_status.short_description = 'Status'
+    def get_title(self, obj):
+        return obj.page.title
+    get_title.short_description = 'Title'
+
+    def get_is_published(self, obj):
+        return obj.page.is_published
+    get_is_published.short_description = 'Published'
+    get_is_published.boolean = True
+
+    def get_created_at(self, obj):
+        return obj.page.created_at
+    get_created_at.short_description = 'Created At'
 
 @admin.register(AcademicsPage)
 class AcademicsPageAdmin(admin.ModelAdmin):
-    list_display = ('page', 'get_page_status', 'created_at')
-    list_filter = ('page__is_published',)
-    search_fields = ('page__title', 'programs_overview', 'curriculum_overview')
-    readonly_fields = ('created_at', 'updated_at')
-    fieldsets = (
-        ('Page Reference', {
-            'fields': ('page',)
-        }),
-        ('Programs', {
-            'fields': ('programs_overview', 'curriculum_overview')
-        }),
-        ('Faculty', {
-            'fields': ('faculty_highlight', 'academic_support')
-        }),
-        ('Media', {
-            'fields': ('featured_image',)
-        })
-    )
+    list_display = ('get_title', 'get_is_published', 'get_created_at')
+    list_filter = ('page__is_published', 'page__created_at')
+    search_fields = ('page__title', 'page__content', 'programs_overview', 'curriculum_overview')
 
-    def get_page_status(self, obj):
-        return format_html(
-            '<span style="color: {};">{}</span>',
-            'green' if obj.page.is_published else 'red',
-            'Published' if obj.page.is_published else 'Draft'
-        )
-    get_page_status.short_description = 'Status'
+    def get_title(self, obj):
+        return obj.page.title
+    get_title.short_description = 'Title'
+
+    def get_is_published(self, obj):
+        return obj.page.is_published
+    get_is_published.short_description = 'Published'
+    get_is_published.boolean = True
+
+    def get_created_at(self, obj):
+        return obj.page.created_at
+    get_created_at.short_description = 'Created At'
 
 @admin.register(CurriculumPage)
 class CurriculumPageAdmin(admin.ModelAdmin):
-    list_display = ('page', 'grade_level', 'get_page_status', 'created_at')
-    list_filter = ('grade_level', 'page__is_published')
-    search_fields = ('page__title', 'grade_level', 'subjects')
-    readonly_fields = ('created_at', 'updated_at')
-    fieldsets = (
-        ('Page Reference', {
-            'fields': ('page',)
-        }),
-        ('Grade Information', {
-            'fields': ('grade_level',)
-        }),
-        ('Curriculum Details', {
-            'fields': ('subjects', 'learning_outcomes')
-        }),
-        ('Media', {
-            'fields': ('featured_image',)
-        })
-    )
+    list_display = ('get_title', 'grade_level', 'get_is_published', 'get_created_at')
+    list_filter = ('grade_level', 'page__is_published', 'page__created_at')
+    search_fields = ('page__title', 'page__content', 'subjects', 'learning_outcomes')
 
-    def get_page_status(self, obj):
-        return format_html(
-            '<span style="color: {};">{}</span>',
-            'green' if obj.page.is_published else 'red',
-            'Published' if obj.page.is_published else 'Draft'
-        )
-    get_page_status.short_description = 'Status'
+    def get_title(self, obj):
+        return obj.page.title
+    get_title.short_description = 'Title'
+
+    def get_is_published(self, obj):
+        return obj.page.is_published
+    get_is_published.short_description = 'Published'
+    get_is_published.boolean = True
+
+    def get_created_at(self, obj):
+        return obj.page.created_at
+    get_created_at.short_description = 'Created At'
 
 @admin.register(StudentLifePage)
 class StudentLifePageAdmin(admin.ModelAdmin):
-    list_display = ('page', 'get_page_status', 'created_at')
-    list_filter = ('page__is_published',)
-    search_fields = ('page__title', 'activities', 'clubs')
-    readonly_fields = ('created_at', 'updated_at')
-    fieldsets = (
-        ('Page Reference', {
-            'fields': ('page',)
-        }),
-        ('Activities', {
-            'fields': ('activities',)
-        }),
-        ('Clubs and Sports', {
-            'fields': ('clubs', 'sports')
-        }),
-        ('Media', {
-            'fields': ('featured_image',)
-        })
-    )
+    list_display = ('get_title', 'get_is_published', 'get_created_at')
+    list_filter = ('page__is_published', 'page__created_at')
+    search_fields = ('page__title', 'page__content', 'activities', 'clubs', 'sports')
 
-    def get_page_status(self, obj):
-        return format_html(
-            '<span style="color: {};">{}</span>',
-            'green' if obj.page.is_published else 'red',
-            'Published' if obj.page.is_published else 'Draft'
-        )
-    get_page_status.short_description = 'Status'
+    def get_title(self, obj):
+        return obj.page.title
+    get_title.short_description = 'Title'
+
+    def get_is_published(self, obj):
+        return obj.page.is_published
+    get_is_published.short_description = 'Published'
+    get_is_published.boolean = True
+
+    def get_created_at(self, obj):
+        return obj.page.created_at
+    get_created_at.short_description = 'Created At'
 
 @admin.register(ContactPage)
 class ContactPageAdmin(admin.ModelAdmin):
-    list_display = ('page', 'email', 'phone', 'get_page_status', 'created_at')
-    list_filter = ('page__is_published',)
-    search_fields = ('page__title', 'address', 'email', 'phone')
-    readonly_fields = ('created_at', 'updated_at')
-    fieldsets = (
-        ('Page Reference', {
-            'fields': ('page',)
-        }),
-        ('Contact Information', {
-            'fields': ('address', 'phone', 'email', 'office_hours')
-        }),
-        ('Map', {
-            'fields': ('map_embed_code',)
-        }),
-        ('Media', {
-            'fields': ('featured_image',)
-        })
-    )
+    list_display = ('get_title', 'get_is_published', 'get_created_at')
+    list_filter = ('page__is_published', 'page__created_at')
+    search_fields = ('page__title', 'page__content', 'address', 'email')
 
-    def get_page_status(self, obj):
-        return format_html(
-            '<span style="color: {};">{}</span>',
-            'green' if obj.page.is_published else 'red',
-            'Published' if obj.page.is_published else 'Draft'
-        )
-    get_page_status.short_description = 'Status'
+    def get_title(self, obj):
+        return obj.page.title
+    get_title.short_description = 'Title'
+
+    def get_is_published(self, obj):
+        return obj.page.is_published
+    get_is_published.short_description = 'Published'
+    get_is_published.boolean = True
+
+    def get_created_at(self, obj):
+        return obj.page.created_at
+    get_created_at.short_description = 'Created At'
 
 @admin.register(FAQ)
 class FAQAdmin(admin.ModelAdmin):
     list_display = ('question', 'category', 'is_published', 'order', 'created_at')
-    list_filter = ('category', 'is_published')
-    search_fields = ('question', 'answer', 'category')
-    list_editable = ('order', 'is_published')
-    readonly_fields = ('created_at', 'updated_at')
-    fieldsets = (
-        ('Question', {
-            'fields': ('question', 'answer')
-        }),
-        ('Organization', {
-            'fields': ('category', 'order')
-        }),
-        ('Status', {
-            'fields': ('is_published',)
-        })
-    )
+    list_filter = ('category', 'is_published', 'created_at')
+    search_fields = ('question', 'answer')
+    ordering = ('order', 'created_at')

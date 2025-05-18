@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Weekly Schedule - {{ block.super }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .schedule-table {
+        min-width: 800px;
+    }
+    .time-slot {
+        min-height: 100px;
+        border: 1px solid #dee2e6;
+        padding: 10px;
+        background-color: #fff;
+    }
+    .class-item {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 5px;
+    }
+    .class-item:last-child {
+        margin-bottom: 0;
+    }
+    .class-subject {
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+    .class-details {
+        font-size: 0.9em;
+    }
+    .table-responsive {
+        max-height: 80vh;
+    }
+    .day-header {
+        position: sticky;
+        top: 0;
+        background-color: #f8f9fa;
+        z-index: 1;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Weekly Schedule</h2>
+            <p class="text-muted">{{ term }}</p>
+        </div>
+        <div class="col-auto">
+            <a href="?refresh=1" class="btn btn-outline-primary">
+                <i class="fas fa-sync-alt"></i> Refresh Schedule
+            </a>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table schedule-table">
+            <thead>
+                <tr>
+                    <th class="day-header" style="width: 100px;">Time</th>
+                    {% for day in days %}
+                    <th class="day-header text-center">{{ day }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for hour in "89101112131415161718"|make_list %}
+                <tr>
+                    <td class="font-weight-bold">{{ hour }}:00</td>
+                    {% for day in "01234"|make_list %}
+                    <td class="time-slot">
+                        {% for class in schedule|get_item:day %}
+                            {% if class.start_time|slice:":2" == hour %}
+                            <div class="class-item">
+                                <div class="class-subject">{{ class.subject }}</div>
+                                <div class="class-details">
+                                    <div><i class="fas fa-user-tie"></i> {{ class.teacher }}</div>
+                                    <div><i class="fas fa-door-open"></i> {{ class.room }}</div>
+                                    <div><i class="far fa-clock"></i> {{ class.start_time }} - {{ class.end_time }}</div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add any JavaScript enhancements here
+    const refreshBtn = document.querySelector('a[href="?refresh=1"]');
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            this.classList.add('disabled');
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+            window.location.href = this.href;
+        });
+    }
+});
+</script>
+{% endblock %} 

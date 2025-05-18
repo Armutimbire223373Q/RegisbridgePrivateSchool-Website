@@ -1,0 +1,330 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Boarding Management - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Welcome Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3">Boarding Management Dashboard</h1>
+        <div class="d-flex gap-2">
+            <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+                <i class="fas fa-user-plus"></i> New Boarding Student
+            </button>
+            <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#roomAssignmentModal">
+                <i class="fas fa-bed"></i> Room Assignment
+            </button>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card h-100 border-primary">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Total Boarders</h6>
+                    <h2 class="card-title mb-0">245</h2>
+                    <small class="text-muted">In 4 dormitories</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 border-success">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Room Occupancy</h6>
+                    <h2 class="card-title mb-0">92%</h2>
+                    <small class="text-success">15 rooms available</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 border-warning">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Maintenance Requests</h6>
+                    <h2 class="card-title mb-0">8</h2>
+                    <small class="text-warning">3 urgent</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 border-info">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Leave Requests</h6>
+                    <h2 class="card-title mb-0">12</h2>
+                    <small class="text-info">Pending approval</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="row g-4">
+        <!-- Dormitory Overview -->
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Dormitory Overview</h5>
+                    <button class="btn btn-sm btn-light">View All</button>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Dormitory</th>
+                                    <th>Capacity</th>
+                                    <th>Occupied</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Boys Block A</td>
+                                    <td>100</td>
+                                    <td>95</td>
+                                    <td><span class="badge bg-success">Good</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Boys Block B</td>
+                                    <td>100</td>
+                                    <td>88</td>
+                                    <td><span class="badge bg-warning">Maintenance</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Girls Block A</td>
+                                    <td>80</td>
+                                    <td>75</td>
+                                    <td><span class="badge bg-success">Good</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activities -->
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">Recent Activities</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">Room Change Request</h6>
+                                <small>5 mins ago</small>
+                            </div>
+                            <p class="mb-1">John Smith requested room change from A102 to B205</p>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">Maintenance Alert</h6>
+                                <small>2 hours ago</small>
+                            </div>
+                            <p class="mb-1">Water heater maintenance required in Girls Block A</p>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">New Student Check-in</h6>
+                                <small>1 day ago</small>
+                            </div>
+                            <p class="mb-1">Sarah Johnson checked into room G205</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leave Requests -->
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-warning">
+                    <h5 class="card-title mb-0">Leave Requests</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>From</th>
+                                    <th>To</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Emma Wilson</td>
+                                    <td>Mar 20</td>
+                                    <td>Mar 22</td>
+                                    <td><span class="badge bg-warning">Pending</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-success"><i class="fas fa-check"></i></button>
+                                        <button class="btn btn-sm btn-danger"><i class="fas fa-times"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Michael Brown</td>
+                                    <td>Mar 25</td>
+                                    <td>Mar 27</td>
+                                    <td><span class="badge bg-warning">Pending</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-success"><i class="fas fa-check"></i></button>
+                                        <button class="btn btn-sm btn-danger"><i class="fas fa-times"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Maintenance Requests -->
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="card-title mb-0">Maintenance Requests</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">Water Heater Repair</h6>
+                                <span class="badge bg-danger">Urgent</span>
+                            </div>
+                            <p class="mb-1">Girls Block A - Third Floor</p>
+                            <small class="text-muted">Reported: 2 hours ago</small>
+                        </div>
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">Light Fixture Replacement</h6>
+                                <span class="badge bg-warning">Normal</span>
+                            </div>
+                            <p class="mb-1">Boys Block B - Room B205</p>
+                            <small class="text-muted">Reported: 1 day ago</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Student Modal -->
+<div class="modal fade" id="addStudentModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Boarding Student</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="boardingStudentForm">
+                    <div class="mb-3">
+                        <label for="studentName" class="form-label">Student Name</label>
+                        <input type="text" class="form-control" id="studentName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="studentId" class="form-label">Student ID</label>
+                        <input type="text" class="form-control" id="studentId" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="dormitory" class="form-label">Dormitory</label>
+                        <select class="form-select" id="dormitory" required>
+                            <option value="">Choose...</option>
+                            <option value="boys_a">Boys Block A</option>
+                            <option value="boys_b">Boys Block B</option>
+                            <option value="girls_a">Girls Block A</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="roomNumber" class="form-label">Room Number</label>
+                        <input type="text" class="form-control" id="roomNumber" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="guardianContact" class="form-label">Guardian Contact</label>
+                        <input type="tel" class="form-control" id="guardianContact" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary">Add Student</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Room Assignment Modal -->
+<div class="modal fade" id="roomAssignmentModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Room Assignment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="roomAssignmentForm">
+                    <div class="mb-3">
+                        <label for="assignDormitory" class="form-label">Select Dormitory</label>
+                        <select class="form-select" id="assignDormitory" required>
+                            <option value="">Choose...</option>
+                            <option value="boys_a">Boys Block A</option>
+                            <option value="boys_b">Boys Block B</option>
+                            <option value="girls_a">Girls Block A</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="floor" class="form-label">Floor</label>
+                        <select class="form-select" id="floor" required>
+                            <option value="">Choose...</option>
+                            <option value="1">First Floor</option>
+                            <option value="2">Second Floor</option>
+                            <option value="3">Third Floor</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="availableRooms" class="form-label">Available Rooms</label>
+                        <select class="form-select" id="availableRooms" required>
+                            <option value="">Select Floor First</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="studentsList" class="form-label">Select Students</label>
+                        <select class="form-select" id="studentsList" multiple required>
+                            <option value="1">John Smith</option>
+                            <option value="2">Michael Brown</option>
+                            <option value="3">David Wilson</option>
+                        </select>
+                        <small class="text-muted">Hold Ctrl/Cmd to select multiple students</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary">Assign Room</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    // Add any additional JavaScript for room assignment logic here
+    document.getElementById('assignDormitory').addEventListener('change', function() {
+        // Update available rooms based on selected dormitory and floor
+        // This would typically make an AJAX call to get available rooms
+    });
+
+    document.getElementById('floor').addEventListener('change', function() {
+        // Update available rooms based on selected floor
+        // This would typically make an AJAX call to get available rooms
+    });
+</script>
+{% endblock %}
+{% endblock %} 

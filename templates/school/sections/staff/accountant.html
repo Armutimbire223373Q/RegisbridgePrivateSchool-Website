@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Important Dates - Regisbridge Private School{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <header class="text-center mb-5">
+        <h1 class="display-4 fw-bold">Important Dates</h1>
+        <p class="lead text-muted">Stay informed about key events and deadlines</p>
+    </header>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="h4 mb-0">Upcoming Events & Deadlines</h2>
+                </div>
+                <div class="card-body">
+                    {% if dates %}
+                    <div class="timeline">
+                        {% for date in dates %}
+                        <div class="timeline-item">
+                            <div class="timeline-date">
+                                <span class="day">{{ date.date|date:"d" }}</span>
+                                <span class="month">{{ date.date|date:"M" }}</span>
+                            </div>
+                            <div class="timeline-content">
+                                <h5 class="mb-1">{{ date.title }}</h5>
+                                <p class="mb-0">{{ date.description }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>No important dates currently available.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h2 class="h4 mb-0">Academic Calendar</h2>
+                </div>
+                <div class="card-body">
+                    <div class="calendar-widget">
+                        <div class="calendar-header">
+                            <h5 class="mb-3">2024 Academic Year</h5>
+                        </div>
+                        <div class="calendar-body">
+                            <div class="term mb-4">
+                                <h6 class="text-primary">Term 1</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-calendar-alt me-2"></i>Start: January 8, 2024</li>
+                                    <li><i class="fas fa-calendar-alt me-2"></i>End: April 5, 2024</li>
+                                </ul>
+                            </div>
+                            <div class="term mb-4">
+                                <h6 class="text-primary">Term 2</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-calendar-alt me-2"></i>Start: April 22, 2024</li>
+                                    <li><i class="fas fa-calendar-alt me-2"></i>End: July 19, 2024</li>
+                                </ul>
+                            </div>
+                            <div class="term">
+                                <h6 class="text-primary">Term 3</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-calendar-alt me-2"></i>Start: August 5, 2024</li>
+                                    <li><i class="fas fa-calendar-alt me-2"></i>End: November 22, 2024</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h2 class="h4 mb-0">Stay Updated</h2>
+                </div>
+                <div class="card-body">
+                    <p>Subscribe to our newsletter to receive updates about important dates and events.</p>
+                    <form method="post" action="{% url 'blog:newsletter_subscribe' %}">
+                        {% csrf_token %}
+                        <div class="input-group mb-3">
+                            <input type="email" name="email" class="form-control" placeholder="Your email" required>
+                            <button class="btn btn-primary" type="submit">Subscribe</button>
+                        </div>
+                    </form>
+                    <div class="mt-3">
+                        <a href="#" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-download me-2"></i>Download Calendar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .timeline {
+        position: relative;
+        padding: 20px 0;
+    }
+    
+    .timeline-item {
+        position: relative;
+        padding-left: 100px;
+        margin-bottom: 30px;
+    }
+    
+    .timeline-date {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 80px;
+        text-align: center;
+        background-color: #f8f9fa;
+        padding: 10px;
+        border-radius: 5px;
+    }
+    
+    .timeline-date .day {
+        display: block;
+        font-size: 24px;
+        font-weight: bold;
+        color: #0d6efd;
+    }
+    
+    .timeline-date .month {
+        display: block;
+        font-size: 14px;
+        color: #6c757d;
+    }
+    
+    .timeline-content {
+        background-color: #fff;
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .timeline-content h5 {
+        color: #0d6efd;
+    }
+    
+    .calendar-widget {
+        background-color: #fff;
+        border-radius: 5px;
+    }
+    
+    .calendar-header {
+        text-align: center;
+        padding: 10px;
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .calendar-body {
+        padding: 15px;
+    }
+    
+    .term {
+        padding: 10px;
+        border-radius: 5px;
+        background-color: #f8f9fa;
+    }
+    
+    .term h6 {
+        font-weight: bold;
+    }
+</style>
+{% endblock %} 

@@ -1,22 +1,44 @@
-Django==5.0.2
-Pillow==10.2.0
-django-crispy-forms==2.1
-crispy-bootstrap5==2024.2
-python-dotenv==1.0.1
+# Django and core dependencies
+Django>=5.0.2
 django-environ==0.11.2
-django-compressor==4.4
-django-storages==1.14.2
-django-allauth==0.61.1
-django-ckeditor==6.7.1
-django-cleanup==8.1.0
-django-cors-headers==4.3.1
-django-celery-beat==2.6.0
-django-celery-results==2.5.1
-gunicorn==21.2.0
-whitenoise==6.6.0
+django-crispy-forms>=2.1
+crispy-bootstrap5>=2024.2
+django-taggit>=6.1.0
+django-debug-toolbar>=4.3.0
+django-cors-headers>=4.7.0
+django-compressor>=4.4
+django-redis==5.4.0
+django-celery-beat>=2.6.0
+django-celery-results>=2.5.1
+
+# Database
 psycopg2-binary==2.9.9
-redis==5.0.1
-celery==5.3.6
-rcssmin==1.1.1
-rjsmin==1.2.1
+
+# Task queue
+celery>=5.3.6
+redis>=5.0.1
+
+# Image processing
+Pillow>=10.2.0
+
+# WYSIWYG editor
+django-summernote>=0.8.20.0
+
+# Security
+whitenoise>=6.6.0
+python-dotenv>=1.0.1
+
+# Production server
+gunicorn==21.2.0
+
+# Monitoring
 sentry-sdk==1.40.6
+
+# Development tools
+pytest==8.0.0
+pytest-django==4.8.0
+coverage==7.4.1
+black==24.1.1
+flake8==7.0.0
+isort==5.13.2
+pre-commit==3.6.0

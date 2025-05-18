@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-box">
+        <h2>Profile Settings</h2>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.help_text %}
+                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% if field.errors %}
+                        <div class="alert alert-danger">
+                            {{ field.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary mt-3 w-100">Save Changes</button>
+        </form>
+
+        <div class="mt-4">
+            <h3>Account Security</h3>
+            <p>Want to change your password? <a href="{% url 'accounts:password_change' %}" class="btn btn-outline-primary btn-sm">Change Password</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-color: #6f42c1;
+        --primary-hover: #5a32a3;
+        --gradient-start: #6f42c1;
+        --gradient-end: #8b5cf6;
+    }
+
+    [data-bs-theme="dark"] {
+        --primary-color: #8b5cf6;
+        --primary-hover: #7c3aed;
+        --gradient-start: #4c1d95;
+        --gradient-end: #6d28d9;
+    }
+
+    .profile-container {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 70vh;
+        padding: 40px 20px;
+    }
+
+    .profile-box {
+        background: var(--bs-body-bg);
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        width: 100%;
+        max-width: 500px;
+        border: 1px solid var(--bs-border-color);
+    }
+
+    .profile-box h2 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: var(--bs-body-color);
+    }
+
+    .profile-box h3 {
+        color: var(--bs-body-color);
+        margin-bottom: 15px;
+        font-size: 1.2em;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        color: var(--bs-body-color);
+        opacity: 0.8;
+        font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid var(--bs-border-color);
+        border-radius: 4px;
+        font-size: 14px;
+        background-color: var(--bs-body-bg);
+        color: var(--bs-body-color);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(111, 66, 193, 0.2);
+    }
+
+    .form-text {
+        font-size: 12px;
+        color: var(--bs-body-color);
+        opacity: 0.6;
+        margin-top: 5px;
+        display: block;
+    }
+
+    .alert {
+        padding: 12px 15px;
+        border-radius: 4px;
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
+    .alert-success {
+        background-color: var(--bs-success-bg-subtle);
+        border-color: var(--bs-success-border-subtle);
+        color: var(--bs-success-text);
+    }
+
+    .alert-danger {
+        background-color: var(--bs-danger-bg-subtle);
+        border-color: var(--bs-danger-border-subtle);
+        color: var(--bs-danger-text);
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .btn-primary:hover {
+        background-color: var(--primary-hover);
+        border-color: var(--primary-hover);
+    }
+
+    .btn-outline-primary {
+        color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .btn-outline-primary:hover {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+</style>
+{% endblock %} 

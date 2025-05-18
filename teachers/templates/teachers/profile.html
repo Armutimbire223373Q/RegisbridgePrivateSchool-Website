@@ -1,0 +1,138 @@
+{% extends 'teachers/base.html' %}
+{% load static %}
+
+{% block teacher_content %}
+<div class="profile-header">
+    <h1>Teacher Profile</h1>
+    <p class="subtitle">Update your profile information</p>
+</div>
+
+<div class="profile-container">
+    <div class="profile-info">
+        <div class="info-group">
+            <label>Name:</label>
+            <p>{{ teacher.user.get_full_name }}</p>
+        </div>
+        <div class="info-group">
+            <label>Email:</label>
+            <p>{{ teacher.user.email }}</p>
+        </div>
+        <div class="info-group">
+            <label>Teacher ID:</label>
+            <p>{{ teacher.teacher_id }}</p>
+        </div>
+        <div class="info-group">
+            <label>Qualification:</label>
+            <p>{{ teacher.qualification }}</p>
+        </div>
+        <div class="info-group">
+            <label>Specialization:</label>
+            <p>{{ teacher.specialization }}</p>
+        </div>
+        <div class="info-group">
+            <label>Joining Date:</label>
+            <p>{{ teacher.joining_date|date:"F j, Y" }}</p>
+        </div>
+    </div>
+
+    <div class="profile-form">
+        <h2>Update Profile</h2>
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="error-message">
+                            {% for error in field.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    {% if field.help_text %}
+                        <p class="help-text">{{ field.help_text }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn-primary">Save Changes</button>
+        </form>
+    </div>
+</div>
+
+<style>
+    .profile-header {
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .profile-header h1 {
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+        color: var(--secondary-color);
+        font-size: 1.1rem;
+    }
+
+    .profile-container {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 2rem;
+    }
+
+    .profile-info {
+        background-color: var(--background-color);
+        border: 1px solid var(--primary-light);
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+    }
+
+    .info-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .info-group label {
+        display: block;
+        color: var(--primary-color);
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    .info-group p {
+        margin: 0;
+        color: var(--text-color);
+    }
+
+    .profile-form {
+        background-color: var(--background-color);
+        border: 1px solid var(--primary-light);
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+    }
+
+    .profile-form h2 {
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+    }
+
+    .error-message {
+        color: #E53E3E;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .help-text {
+        color: var(--secondary-color);
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    @media (max-width: 768px) {
+        .profile-container {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %} 

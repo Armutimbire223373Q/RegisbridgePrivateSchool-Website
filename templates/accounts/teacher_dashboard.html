@@ -1,0 +1,167 @@
+{% extends 'accounts/dashboard_base.html' %}
+{% load static %}
+
+{% block title %}Teacher Dashboard - Regisbridge Private School{% endblock %}
+
+{% block dashboard_content %}
+<div class="row">
+    <!-- Quick Stats -->
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Total Students</h5>
+                <h2 class="card-text">{{ total_students }}</h2>
+                <p class="text-muted">Across all classes</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Classes Today</h5>
+                <h2 class="card-text">{{ classes_today }}</h2>
+                <p class="text-muted">Next: {{ next_class }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Pending Assignments</h5>
+                <h2 class="card-text">{{ pending_assignments }}</h2>
+                <p class="text-muted">To be graded</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Today's Schedule -->
+    <div class="col-md-8 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Today's Schedule</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Class</th>
+                                <th>Subject</th>
+                                <th>Room</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for schedule in today_schedule %}
+                            <tr>
+                                <td>{{ schedule.start_time|time:"H:i" }} - {{ schedule.end_time|time:"H:i" }}</td>
+                                <td>{{ schedule.class_group.name }}</td>
+                                <td>{{ schedule.subject.name }}</td>
+                                <td>{{ schedule.room }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center">No classes scheduled for today</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'teachers:mark_attendance' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-user-plus me-2"></i>Take Attendance
+                    </a>
+                    <a href="{% url 'teachers:grade_assignments' %}" class="btn btn-outline-success">
+                        <i class="fas fa-tasks me-2"></i>Grade Assignments
+                    </a>
+                    <a href="{% url 'teachers:view_schedule' %}" class="btn btn-outline-info">
+                        <i class="fas fa-calendar me-2"></i>View Schedule
+                    </a>
+                    <a href="{% url 'teachers:create_announcement' %}" class="btn btn-outline-warning">
+                        <i class="fas fa-comment me-2"></i>Send Announcement
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Recent Assignments -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Recent Assignments</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    {% for assignment in recent_assignments %}
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ assignment.title }}</h6>
+                            <small>{{ assignment.created_at|date:"M d, Y" }}</small>
+                        </div>
+                        <p class="mb-1">{{ assignment.class_group.name }} - {{ assignment.subject.name }}</p>
+                        <small class="text-muted">Due: {{ assignment.due_date|date:"M d, Y" }}</small>
+                    </div>
+                    {% empty %}
+                    <div class="list-group-item text-center">No recent assignments</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Class Performance -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Class Performance</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Class</th>
+                                <th>Subject</th>
+                                <th>Average Grade</th>
+                                <th>Attendance Rate</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for performance in class_performance %}
+                            <tr>
+                                <td>{{ performance.class_group.name }}</td>
+                                <td>{{ performance.subject.name }}</td>
+                                <td>{{ performance.average_grade|floatformat:1 }}</td>
+                                <td>{{ performance.attendance_rate|floatformat:1 }}%</td>
+                                <td>{{ performance.date|date:"M d, Y" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center">No performance data available</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
