@@ -3,7 +3,7 @@ from .models import (
     ImportantDate, LeadershipMember, ParentResource, PaymentMethod,
     PrivacyPolicy, Scholarship, StudentService, TuitionFee, HostelFacility,
     ParentProfile, TeacherProfile, AcademicYear, Class, Subject, Student, Teacher,
-    Staff, Attendance, Grade, Payment, Dormitory, InventoryItem
+    Staff, Attendance, Grade, Payment, Dormitory, InventoryItem, Assessment
 )
 
 @admin.register(HostelFacility)
@@ -94,14 +94,16 @@ class ClassAdmin(admin.ModelAdmin):
 
 @admin.register(Subject)
 class SubjectAdmin(admin.ModelAdmin):
-    list_display = ('name', 'code')
+    list_display = ('name', 'code', 'department')
+    list_filter = ('department',)
     search_fields = ('name', 'code')
 
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ('admission_number', 'user', 'current_class', 'is_boarder')
-    search_fields = ('admission_number', 'user__first_name', 'user__last_name')
-    list_filter = ('current_class', 'is_boarder')
+    list_display = ('user', 'admission_number', 'current_class', 'date_admitted')
+    list_filter = ('current_class', 'date_admitted')
+    search_fields = ('user__username', 'user__first_name', 'user__last_name', 'admission_number')
+    raw_id_fields = ('user',)
 
 @admin.register(Teacher)
 class TeacherAdmin(admin.ModelAdmin):
@@ -122,9 +124,16 @@ class AttendanceAdmin(admin.ModelAdmin):
 
 @admin.register(Grade)
 class GradeAdmin(admin.ModelAdmin):
-    list_display = ('student', 'subject', 'academic_year', 'term', 'score')
-    search_fields = ('student__user__first_name', 'student__user__last_name')
-    list_filter = ('academic_year', 'term', 'subject')
+    list_display = ('student', 'subject', 'assessment', 'grade_letter', 'score', 'date_recorded')
+    list_filter = ('assessment', 'grade_letter', 'subject', 'date_recorded')
+    search_fields = ('student__user__username', 'subject__name', 'grade_letter')
+    raw_id_fields = ('student', 'subject', 'recorded_by')
+    readonly_fields = ('date_recorded', 'last_modified')
+    
+    def save_model(self, request, obj, form, change):
+        if not change:  # Only set recorded_by on creation
+            obj.recorded_by = request.user
+        super().save_model(request, obj, form, change)
 
 @admin.register(Payment)
 class PaymentAdmin(admin.ModelAdmin):
@@ -141,4 +150,10 @@ class DormitoryAdmin(admin.ModelAdmin):
 class InventoryItemAdmin(admin.ModelAdmin):
     list_display = ('name', 'category', 'quantity', 'unit_price', 'reorder_level')
     search_fields = ('name',)
-    list_filter = ('category',) 
+    list_filter = ('category',)
+
+@admin.register(Assessment)
+class AssessmentAdmin(admin.ModelAdmin):
+    list_display = ('name', 'subject', 'assessment_type', 'date')
+    list_filter = ('assessment_type', 'date', 'subject')
+    search_fields = ('name', 'subject__name') 

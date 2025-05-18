@@ -1,11 +1,12 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+from django.conf import settings
 
 User = get_user_model()
 
 class HomePageContent(models.Model):
-    """Model for managing home page content."""
+    """Model for managing homepage content."""
     title = models.CharField(max_length=200)
     subtitle = models.CharField(max_length=200, blank=True)
     hero_image = models.ImageField(upload_to='home/', blank=True)

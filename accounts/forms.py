@@ -1,23 +1,27 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.utils.translation import gettext_lazy as _
-
-from .models import CustomUser
+from .models import User
 
 
 class CustomUserCreationForm(UserCreationForm):
     """Form for creating new users."""
     
     class Meta(UserCreationForm.Meta):
-        model = CustomUser
-        fields = ('email', 'first_name', 'last_name', 'user_type', 
-                 'date_of_birth', 'phone_number')
+        model = User
+        fields = ('username', 'email', 'first_name', 'last_name', 'date_of_birth', 
+                 'phone_number', 'address', 'profile_picture')
         
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
+
     def clean_email(self):
         """Validate email is unique."""
-        email = self.cleaned_data['email']
-        if CustomUser.objects.filter(email=email).exists():
-            raise forms.ValidationError(_('This email is already registered.'))
+        email = self.cleaned_data.get('email')
+        if email and User.objects.filter(email=email).exists():
+            raise forms.ValidationError(_('Email address must be unique.'))
         return email
 
 
@@ -26,24 +30,29 @@ class CustomUserChangeForm(UserChangeForm):
     
     password = None  # Remove password field from the form
     
-    class Meta:
-        model = CustomUser
-        fields = ('email', 'first_name', 'last_name', 'date_of_birth',
-                 'phone_number', 'address', 'bio', 'profile_picture')
-        widgets = {
-            'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
-        }
+    class Meta(UserChangeForm.Meta):
+        model = User
+        fields = ('username', 'email', 'first_name', 'last_name', 'date_of_birth',
+                 'phone_number', 'address', 'profile_picture')
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
 
 
 class UserProfileForm(forms.ModelForm):
     """Form for users to update their profile."""
     
     class Meta:
-        model = CustomUser
-        fields = ('first_name', 'last_name', 'phone_number', 'address',
-                 'bio', 'profile_picture')
+        model = User
+        fields = ('first_name', 'last_name', 'email', 'date_of_birth',
+                 'phone_number', 'address', 'profile_picture')
         widgets = {
-            'bio': forms.Textarea(attrs={'rows': 4}),
+            'date_of_birth': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'phone_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'profile_picture': forms.FileInput(attrs={'class': 'form-control'}),
         }
 
 

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Error - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h1 class="mb-4">Oops! Something went wrong</h1>
+            {% if error_message %}
+                <div class="alert alert-danger">
+                    {{ error_message }}
+                </div>
+            {% endif %}
+            <p class="mb-4">We apologize for the inconvenience. Please try again later.</p>
+            <a href="{% url 'homepage:home' %}" class="btn btn-primary">Return to Home</a>
+        </div>
+    </div>
+</div>
+{% endblock %} 

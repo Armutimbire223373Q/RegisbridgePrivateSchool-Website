@@ -4,7 +4,7 @@ FROM python:3.11-slim
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    DJANGO_SETTINGS_MODULE=regisbribdge.settings.production
+    DJANGO_SETTINGS_MODULE=regisbridge.settings.production
 
 # Set work directory
 WORKDIR /app
@@ -27,4 +27,4 @@ COPY . .
 RUN python manage.py collectstatic --noinput
 
 # Run gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "regisbribdge.wsgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "regisbridge.wsgi:application"]

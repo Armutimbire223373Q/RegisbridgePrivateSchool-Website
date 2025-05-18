@@ -123,11 +123,12 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_EMAIL_VERIFICATION = 'optional'
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_UNIQUE_EMAIL = True
-LOGIN_REDIRECT_URL = '/school/portal/'
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/school/profile/'
 LOGOUT_REDIRECT_URL = '/'
 
 # Email settings (to be overridden in environment-specific settings)
@@ -161,8 +162,11 @@ CACHES = {
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_AGE = 1209600  # 2 weeks in seconds
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
 
-# Security Settings (to be potentially overridden in production)
+# Security Settings (development settings)
+SECURE_SSL_REDIRECT = False
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY' 

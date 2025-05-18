@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Admin Portal - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">Admin Portal</h1>
+    
+    <div class="row g-4">
+        <!-- Quick Links -->
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Administrative Tools</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <a href="{% url 'school:accounting' %}" class="text-decoration-none">Accounting Management</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="{% url 'school:boarding' %}" class="text-decoration-none">Boarding Management</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="{% url 'school:hr' %}" class="text-decoration-none">HR Management</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="{% url 'school:inventory' %}" class="text-decoration-none">Inventory Management</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Overview -->
+        <div class="col-md-8">
+            <div class="row g-4">
+                <!-- Statistics Cards -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Students</h5>
+                            <h2 class="card-text">{{ total_students|default:"0" }}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Teachers</h5>
+                            <h2 class="card-text">{{ total_teachers|default:"0" }}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Staff Members</h5>
+                            <h2 class="card-text">{{ total_staff|default:"0" }}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Pending Tasks</h5>
+                            <h2 class="card-text">{{ pending_tasks|default:"0" }}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

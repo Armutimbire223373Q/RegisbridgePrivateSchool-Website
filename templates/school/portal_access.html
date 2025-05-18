@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Portal Access - Regisbridge Private School{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="text-center mb-4">Welcome, {{ user.get_full_name|default:user.username }}</h2>
+                    
+                    {% if not user.is_authenticated %}
+                    <div class="alert alert-info text-center">
+                        <h4>Please log in to access the portals</h4>
+                        <a href="{% url 'accounts:login' %}" class="btn btn-primary mt-3">Login</a>
+                    </div>
+                    {% else %}
+                    
+                    <div class="row g-4">
+                        {% if user.is_student %}
+                        <div class="col-md-6">
+                            <div class="card h-100 border-primary">
+                                <div class="card-body">
+                                    <h5 class="card-title text-primary">
+                                        <i class="fas fa-user-graduate me-2"></i>Student Portal
+                                    </h5>
+                                    <p class="card-text">Access your courses, grades, assignments, and more.</p>
+                                    <a href="{% url 'school:student_portal' %}" class="btn btn-primary">Enter Student Portal</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if user.is_parent %}
+                        <div class="col-md-6">
+                            <div class="card h-100 border-info">
+                                <div class="card-body">
+                                    <h5 class="card-title text-info">
+                                        <i class="fas fa-users me-2"></i>Parent Portal
+                                    </h5>
+                                    <p class="card-text">Monitor your child's progress, attendance, and communicate with teachers.</p>
+                                    <a href="{% url 'school:student_portal' %}" class="btn btn-info text-white">Enter Parent Portal</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if user.is_teacher %}
+                        <div class="col-md-6">
+                            <div class="card h-100 border-success">
+                                <div class="card-body">
+                                    <h5 class="card-title text-success">
+                                        <i class="fas fa-chalkboard-teacher me-2"></i>Teacher Portal
+                                    </h5>
+                                    <p class="card-text">Manage your classes, grades, attendance, and course materials.</p>
+                                    <a href="{% url 'school:teacher_portal' %}" class="btn btn-success">Enter Teacher Portal</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if user.is_staff or user.is_superuser %}
+                        <div class="col-md-6">
+                            <div class="card h-100 border-danger">
+                                <div class="card-body">
+                                    <h5 class="card-title text-danger">
+                                        <i class="fas fa-user-shield me-2"></i>Admin Portal
+                                    </h5>
+                                    <p class="card-text">Access administrative functions and school management.</p>
+                                    <a href="{% url 'school:admin_portal' %}" class="btn btn-danger">Enter Admin Portal</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if user.groups.accountant %}
+                        <div class="col-md-6">
+                            <div class="card h-100 border-warning">
+                                <div class="card-body">
+                                    <h5 class="card-title text-warning">
+                                        <i class="fas fa-calculator me-2"></i>Accountant Portal
+                                    </h5>
+                                    <p class="card-text">Manage school finances, fees, and payments.</p>
+                                    <a href="{% url 'school:accountant' %}" class="btn btn-warning">Enter Accountant Portal</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if user.groups.librarian %}
+                        <div class="col-md-6">
+                            <div class="card h-100 border-secondary">
+                                <div class="card-body">
+                                    <h5 class="card-title text-secondary">
+                                        <i class="fas fa-book-reader me-2"></i>Library Portal
+                                    </h5>
+                                    <p class="card-text">Manage library resources and book circulation.</p>
+                                    <a href="{% url 'school:library' %}" class="btn btn-secondary">Enter Library Portal</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if user.groups.nurse %}
+                        <div class="col-md-6">
+                            <div class="card h-100 border-info">
+                                <div class="card-body">
+                                    <h5 class="card-title text-info">
+                                        <i class="fas fa-heartbeat me-2"></i>Health Center Portal
+                                    </h5>
+                                    <p class="card-text">Manage student health records and medical services.</p>
+                                    <a href="{% url 'school:health' %}" class="btn btn-info">Enter Health Portal</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if user.groups.boarding_staff %}
+                        <div class="col-md-6">
+                            <div class="card h-100 border-dark">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <i class="fas fa-home me-2"></i>Boarding Staff Portal
+                                    </h5>
+                                    <p class="card-text">Manage dormitory operations and student boarding.</p>
+                                    <a href="{% url 'school:boarding_staff' %}" class="btn btn-dark">Enter Boarding Portal</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    {% if not user.is_student and not user.is_parent and not user.is_teacher and not user.is_staff and not user.is_superuser and not user.groups.all %}
+                    <div class="alert alert-warning text-center mt-4">
+                        <h4>No Portal Access</h4>
+                        <p>Your account doesn't have access to any portals. Please contact the administrator.</p>
+                    </div>
+                    {% endif %}
+
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        transition: transform 0.2s;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+    }
+    .btn {
+        width: 100%;
+    }
+</style>
+{% endblock %} 

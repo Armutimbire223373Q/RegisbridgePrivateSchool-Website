@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Staff Portal - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">Staff Portal</h1>
+    
+    <div class="row g-4">
+        <!-- Quick Links -->
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Quick Links</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <a href="{% url 'school:accountant' %}" class="text-decoration-none">Accountant Portal</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="{% url 'school:library' %}" class="text-decoration-none">Library Portal</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="{% url 'school:health' %}" class="text-decoration-none">Health Center</a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="{% url 'school:boarding_staff' %}" class="text-decoration-none">Boarding Staff Portal</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Announcements -->
+        <div class="col-md-8">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Recent Announcements</h5>
+                </div>
+                <div class="card-body">
+                    {% if announcements %}
+                        {% for announcement in announcements %}
+                            <div class="mb-3">
+                                <h6>{{ announcement.title }}</h6>
+                                <p class="text-muted small">{{ announcement.date|date:"F j, Y" }}</p>
+                                <p>{{ announcement.content }}</p>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No recent announcements.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

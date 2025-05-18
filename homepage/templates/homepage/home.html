@@ -3,30 +3,148 @@
 
 {% block content %}
 <div class="home-container">
+    {% if content %}
     <div class="hero-section">
-        <h1>Welcome to Regisbridge Private School</h1>
-        <p>Empowering minds, shaping futures</p>
+        <h1>{{ content.title }}</h1>
+        <p>{{ content.subtitle }}</p>
+        {% if content.hero_image %}
+        <img src="{{ content.hero_image.url }}" alt="Hero Image" class="hero-image">
+        {% endif %}
+        <div class="hero-text">{{ content.hero_text }}</div>
         {% if user.is_authenticated %}
-            <a href="{% url 'accounts:dashboard' %}" class="cta-button">Go to Dashboard</a>
+            <a href="{% url 'accounts:profile' %}" class="cta-button">Go to Dashboard</a>
         {% else %}
             <a href="{% url 'accounts:login' %}" class="cta-button">Login</a>
         {% endif %}
     </div>
 
+    <div class="welcome-section">
+        <div class="section-title">
+            <h2>About Us</h2>
+        </div>
+        <p>{{ content.about_section }}</p>
+        <div class="mission-vision">
+            <div class="mission">
+                <h3>Our Mission</h3>
+                <p>{{ content.mission_statement }}</p>
+            </div>
+            <div class="vision">
+                <h3>Our Vision</h3>
+                <p>{{ content.vision_statement }}</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if news_items %}
+    <div class="news-section">
+        <div class="section-title">
+            <h2>Latest News</h2>
+        </div>
+        <div class="news-grid">
+            {% for news in news_items %}
+            <div class="news-card">
+                {% if news.image %}
+                <img src="{{ news.image.url }}" alt="{{ news.title }}" class="news-image">
+                {% endif %}
+                <div class="news-content">
+                    <h3>{{ news.title }}</h3>
+                    <p class="news-date">{{ news.date_posted|date:"F j, Y" }}</p>
+                    <p>{{ news.content|truncatewords:30 }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if events %}
+    <div class="events-section">
+        <div class="section-title">
+            <h2>Upcoming Events</h2>
+        </div>
+        <div class="events-grid">
+            {% for event in events %}
+            <div class="event-card">
+                {% if event.image %}
+                <img src="{{ event.image.url }}" alt="{{ event.title }}" class="event-image">
+                {% endif %}
+                <div class="event-content">
+                    <h3>{{ event.title }}</h3>
+                    <p class="event-date">{{ event.start_date|date:"F j, Y" }}</p>
+                    <p class="event-location"><i class="fas fa-map-marker-alt"></i> {{ event.location }}</p>
+                    <p>{{ event.description|truncatewords:20 }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
     <div class="features-section">
         <div class="feature-card">
+            <i class="fas fa-graduation-cap fa-3x"></i>
             <h3>Quality Education</h3>
             <p>Providing excellence in education with a focus on holistic development.</p>
         </div>
         <div class="feature-card">
+            <i class="fas fa-chalkboard-teacher fa-3x"></i>
             <h3>Experienced Faculty</h3>
             <p>Our teachers are dedicated to nurturing young minds.</p>
         </div>
         <div class="feature-card">
+            <i class="fas fa-school fa-3x"></i>
             <h3>Modern Facilities</h3>
             <p>State-of-the-art facilities for optimal learning experience.</p>
         </div>
     </div>
+
+    {% if content %}
+    <div class="contact-section">
+        <div class="section-title">
+            <h2>Contact Information</h2>
+        </div>
+        <div class="contact-grid">
+            <div class="contact-card">
+                <i class="fas fa-envelope fa-2x"></i>
+                <h3>Email</h3>
+                <p>{{ content.contact_email }}</p>
+            </div>
+            <div class="contact-card">
+                <i class="fas fa-phone fa-2x"></i>
+                <h3>Phone</h3>
+                <p>{{ content.contact_phone }}</p>
+            </div>
+            <div class="contact-card">
+                <i class="fas fa-map-marker-alt fa-2x"></i>
+                <h3>Address</h3>
+                <p>{{ content.address }}</p>
+            </div>
+        </div>
+        <div class="social-links">
+            {% if content.facebook_url %}
+            <a href="{{ content.facebook_url }}" target="_blank" class="social-link">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+            {% endif %}
+            {% if content.twitter_url %}
+            <a href="{{ content.twitter_url }}" target="_blank" class="social-link">
+                <i class="fab fa-twitter"></i>
+            </a>
+            {% endif %}
+            {% if content.instagram_url %}
+            <a href="{{ content.instagram_url }}" target="_blank" class="social-link">
+                <i class="fab fa-instagram"></i>
+            </a>
+            {% endif %}
+            {% if content.youtube_url %}
+            <a href="{{ content.youtube_url }}" target="_blank" class="social-link">
+                <i class="fab fa-youtube"></i>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}
 
@@ -40,37 +158,141 @@
 
     .hero-section {
         text-align: center;
-        padding: 60px 20px;
+        padding: 80px 20px;
         background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         border-radius: 10px;
         margin-bottom: 40px;
     }
 
     .hero-section h1 {
-        font-size: 2.5em;
+        font-size: 3em;
         color: #333;
         margin-bottom: 20px;
     }
 
     .hero-section p {
+        font-size: 1.5em;
+        color: #666;
+        margin-bottom: 30px;
+    }
+
+    .hero-image {
+        max-width: 100%;
+        height: auto;
+        margin-bottom: 30px;
+        border-radius: 10px;
+    }
+
+    .hero-text {
         font-size: 1.2em;
         color: #666;
         margin-bottom: 30px;
     }
 
+    .section-title {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .section-title h2 {
+        font-size: 2.5em;
+        color: #333;
+        position: relative;
+        display: inline-block;
+    }
+
+    .section-title h2:after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background-color: var(--primary-color);
+    }
+
+    .welcome-section {
+        text-align: center;
+        margin-bottom: 60px;
+    }
+
+    .mission-vision {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-top: 40px;
+    }
+
+    .mission, .vision {
+        padding: 30px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .news-grid, .events-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-bottom: 60px;
+    }
+
+    .news-card, .event-card {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .news-card:hover, .event-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .news-image, .event-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .news-content, .event-content {
+        padding: 20px;
+    }
+
+    .news-date, .event-date {
+        color: #666;
+        font-size: 0.9em;
+        margin-bottom: 10px;
+    }
+
+    .event-location {
+        color: #666;
+        font-size: 0.9em;
+        margin-bottom: 10px;
+    }
+
+    .event-location i {
+        margin-right: 5px;
+        color: var(--primary-color);
+    }
+
     .cta-button {
         display: inline-block;
-        padding: 12px 30px;
-        background-color: #4CAF50;
+        padding: 15px 40px;
+        background-color: var(--primary-color);
         color: white;
         text-decoration: none;
         border-radius: 5px;
         font-weight: bold;
+        font-size: 1.1em;
         transition: background-color 0.3s;
     }
 
     .cta-button:hover {
-        background-color: #45a049;
+        background-color: #5a32a3;
+        color: white;
+        text-decoration: none;
     }
 
     .features-section {
@@ -78,14 +300,25 @@
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 30px;
         padding: 20px 0;
+        margin-bottom: 60px;
     }
 
     .feature-card {
         background: white;
-        padding: 20px;
-        border-radius: 8px;
+        padding: 30px;
+        border-radius: 10px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         text-align: center;
+        transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .feature-card i {
+        color: var(--primary-color);
+        margin-bottom: 20px;
     }
 
     .feature-card h3 {
@@ -98,18 +331,75 @@
         line-height: 1.6;
     }
 
+    .contact-section {
+        text-align: center;
+        margin-bottom: 60px;
+    }
+
+    .contact-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        margin-bottom: 40px;
+    }
+
+    .contact-card {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+
+    .contact-card i {
+        color: var(--primary-color);
+        margin-bottom: 20px;
+    }
+
+    .social-links {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .social-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background-color: var(--primary-color);
+        color: white;
+        border-radius: 50%;
+        transition: transform 0.3s ease, background-color 0.3s;
+    }
+
+    .social-link:hover {
+        transform: translateY(-3px);
+        background-color: #5a32a3;
+        color: white;
+    }
+
     @media (max-width: 768px) {
         .hero-section {
-            padding: 40px 20px;
+            padding: 60px 20px;
         }
 
         .hero-section h1 {
+            font-size: 2.5em;
+        }
+
+        .hero-section p {
+            font-size: 1.2em;
+        }
+
+        .section-title h2 {
             font-size: 2em;
         }
 
-        .features-section {
+        .mission-vision, .news-grid, .events-grid, .features-section, .contact-grid {
             grid-template-columns: 1fr;
         }
     }
 </style>
-{% endblock %} 
+{% endblock %}

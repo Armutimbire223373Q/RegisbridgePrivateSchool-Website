@@ -91,25 +91,23 @@ class PrivacyPolicyView(DetailView):
 
 # Authentication Views
 def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('school:profile')
+        
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
+        
         if user is not None:
             login(request, user)
-            # Redirect based on user group
-            if user.groups.filter(name='Students').exists() or user.groups.filter(name='Parents').exists():
-                return redirect('school:student_section')
-            elif user.groups.filter(name='Teachers').exists():
-                return redirect('school:teacher_section')
-            elif user.groups.filter(name='Accountants').exists():
-                return redirect('school:accountant')
-            elif user.groups.filter(name='Admin').exists():
-                return redirect('school:admin_portal')
-            else:
-                return redirect('school:staff_portal')
+            next_url = request.GET.get('next')
+            if next_url:
+                return redirect(next_url)
+            return redirect('school:profile')
         else:
             messages.error(request, 'Invalid username or password.')
+            
     return render(request, 'school/login.html')
 
 # Main Portal Views
@@ -549,4 +547,35 @@ class PerformanceReviewCreateView(LoginRequiredMixin, RoleRequiredMixin, CreateV
 
 # Profile View
 class ProfileView(LoginRequiredMixin, TemplateView):
-    template_name = 'school/profile.html' 
+    template_name = 'school/profile.html'
+
+    def get(self, request, *args, **kwargs):
+        user = self.request.user
+        
+        # Check if user belongs to any group
+        if not user.groups.exists():
+            # If user doesn't belong to any group, show the default profile template
+            return super().get(request, *args, **kwargs)
+            
+        # Get all user groups
+        user_groups = user.groups.values_list('name', flat=True)
+        
+        # Redirect based on group priority
+        if 'Students' in user_groups or 'Parents' in user_groups:
+            return redirect('school:student_portal')
+        elif 'Teachers' in user_groups:
+            return redirect('school:teacher_portal')
+        elif 'Admin' in user_groups:
+            return redirect('school:admin_portal')
+        elif 'Accountants' in user_groups:
+            return redirect('school:accountant')
+        else:
+            return redirect('school:staff_portal')
+
+@login_required
+@require_http_methods(["GET"])
+def portal_access(request):
+    """
+    Main entry point for all portals. Shows available portals based on user role.
+    """
+    return render(request, 'school/portal_access.html') 

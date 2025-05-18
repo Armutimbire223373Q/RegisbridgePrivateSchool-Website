@@ -39,11 +39,14 @@ def server_error(request):
     logger.error(f"Server error: {request.path}")
     return render(request, 'main/500.html', status=500)
 
-def handle_error(request, error_message, redirect_url='main:home'):
+def handle_error(request, error_message, redirect_url=None):
     """Helper function to handle errors consistently."""
     logger.error(f"Error in {request.path}: {error_message}")
     messages.error(request, error_message)
-    return redirect(redirect_url)
+    if redirect_url:
+        return redirect(redirect_url)
+    # If no redirect_url is specified, render an error template
+    return render(request, 'main/error.html', {'error_message': error_message})
 
 @cache_page(60 * 15)  # Cache for 15 minutes
 def home(request):
@@ -54,7 +57,11 @@ def home(request):
         ).select_related('author').order_by('-created')[:3]
         return render(request, 'main/home.html', {'latest_posts': latest_posts})
     except Exception as e:
-        return handle_error(request, 'Error loading latest posts.')
+        # Instead of redirecting, render the home template with an error message
+        return render(request, 'main/home.html', {
+            'latest_posts': [],
+            'error_message': 'Error loading latest posts.'
+        })
 
 def about(request):
     """About page view."""

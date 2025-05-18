@@ -124,7 +124,7 @@ def student_grades(request):
         )
     else:
         messages.error(request, 'Invalid access.')
-        return redirect('main:home')
+        return redirect('homepage:home')
 
     # Group grades by subject
     subjects = {}
@@ -143,7 +143,7 @@ def student_grades(request):
 def generate_report_cards(request):
     if not request.user.is_staff and not request.user.groups.filter(name='Teachers').exists():
         messages.error(request, 'You do not have permission to generate report cards.')
-        return redirect('main:home')
+        return redirect('homepage:home')
 
     if request.method == 'POST':
         form = ReportCardGenerationForm(request.POST, school=request.user.school)

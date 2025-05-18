@@ -206,29 +206,34 @@ class Class(models.Model):
 
 class Subject(models.Model):
     name = models.CharField(max_length=100)
-    code = models.CharField(max_length=20)
+    code = models.CharField(max_length=10, unique=True)
+    department = models.ForeignKey('Department', on_delete=models.SET_NULL, null=True)
     description = models.TextField(blank=True)
-    classes = models.ManyToManyField(Class, related_name='subjects')
+    credits = models.PositiveIntegerField(default=1)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['name']
 
     def __str__(self):
-        return self.name
+        return f"{self.code} - {self.name}"
 
 # User Profile Models
 class Student(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.OneToOneField('accounts.User', on_delete=models.CASCADE)
     admission_number = models.CharField(max_length=20, unique=True)
-    current_class = models.ForeignKey(Class, on_delete=models.SET_NULL, null=True)
-    date_of_birth = models.DateField()
-    address = models.TextField()
-    phone = models.CharField(max_length=20)
-    parent_name = models.CharField(max_length=100)
-    parent_phone = models.CharField(max_length=20)
-    parent_email = models.EmailField()
-    is_boarder = models.BooleanField(default=False)
-    admission_date = models.DateField(auto_now_add=True)
-    
+    current_class = models.ForeignKey('Class', on_delete=models.SET_NULL, null=True)
+    date_admitted = models.DateField(auto_now_add=True)
+    guardian = models.ForeignKey('ParentProfile', on_delete=models.SET_NULL, null=True, blank=True)
+    emergency_contact = models.CharField(max_length=100, blank=True)
+    medical_info = models.TextField(blank=True)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['admission_number']
+
     def __str__(self):
-        return f"{self.user.get_full_name()} - {self.admission_number}"
+        return f"{self.user.get_full_name()} ({self.admission_number})"
 
 class Teacher(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -253,15 +258,48 @@ class Attendance(models.Model):
     class Meta:
         unique_together = ['student', 'date']
 
+class Assessment(models.Model):
+    ASSESSMENT_TYPES = [
+        ('exam', 'Examination'),
+        ('quiz', 'Quiz'),
+        ('assignment', 'Assignment'),
+        ('project', 'Project'),
+        ('presentation', 'Presentation'),
+        ('other', 'Other'),
+    ]
+    
+    name = models.CharField(max_length=100)
+    subject = models.ForeignKey('Subject', on_delete=models.CASCADE, related_name='school_assessments')
+    assessment_type = models.CharField(max_length=20, choices=ASSESSMENT_TYPES)
+    description = models.TextField(blank=True)
+    date = models.DateField()
+    max_score = models.DecimalField(max_digits=5, decimal_places=2, default=100.00)
+    weight = models.DecimalField(max_digits=5, decimal_places=2, default=1.00,
+                               help_text="Weight of this assessment in the final grade calculation")
+    
+    class Meta:
+        ordering = ['-date', 'subject']
+        
+    def __str__(self):
+        return f"{self.name} - {self.subject} ({self.get_assessment_type_display()})"
+
 class Grade(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
-    academic_year = models.ForeignKey(AcademicYear, on_delete=models.CASCADE)
-    term = models.CharField(max_length=20)
-    score = models.DecimalField(max_digits=5, decimal_places=2,
-                              validators=[MinValueValidator(0), MaxValueValidator(100)])
-    recorded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
+    student = models.ForeignKey('Student', on_delete=models.CASCADE)
+    subject = models.ForeignKey('Subject', on_delete=models.CASCADE)
+    assessment = models.ForeignKey('Assessment', on_delete=models.SET_NULL, null=True, blank=True)
+    score = models.DecimalField(max_digits=5, decimal_places=2)
+    grade_letter = models.CharField(max_length=2)
+    comments = models.TextField(blank=True)
+    recorded_by = models.ForeignKey('accounts.User', on_delete=models.SET_NULL, null=True)
     date_recorded = models.DateTimeField(auto_now_add=True)
+    last_modified = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('student', 'subject', 'assessment')
+        ordering = ['-date_recorded']
+
+    def __str__(self):
+        return f"{self.student} - {self.subject} - {self.grade_letter}"
 
 # Financial Models
 class FeeStructure(models.Model):
@@ -355,8 +393,14 @@ class InventoryItem(models.Model):
 
 class Department(models.Model):
     name = models.CharField(max_length=100)
+    code = models.CharField(max_length=10, unique=True)
+    head = models.ForeignKey('Teacher', on_delete=models.SET_NULL, null=True, blank=True,
+                            related_name='department_head')
     description = models.TextField(blank=True)
     
+    class Meta:
+        ordering = ['name']
+        
     def __str__(self):
         return self.name
 
@@ -468,4 +512,49 @@ class TrainingProgram(models.Model):
 
     @property
     def is_full(self):
-        return self.enrolled_count >= self.capacity 
+        return self.enrolled_count >= self.capacity
+
+class Term(models.Model):
+    """Academic term/semester"""
+    name = models.CharField(max_length=100)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    is_current = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-start_date']
+
+    def __str__(self):
+        return self.name
+
+class ClassGroup(models.Model):
+    """Class/Grade level group"""
+    name = models.CharField(max_length=100)
+    grade_level = models.IntegerField()
+    section = models.CharField(max_length=10, blank=True)
+    academic_year = models.IntegerField()
+    capacity = models.IntegerField()
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['grade_level', 'section']
+        unique_together = ['grade_level', 'section', 'academic_year']
+
+    def __str__(self):
+        return f"{self.name} ({self.academic_year})"
+
+class Room(models.Model):
+    """Physical room/classroom"""
+    name = models.CharField(max_length=100)
+    building = models.CharField(max_length=100)
+    floor = models.IntegerField()
+    room_number = models.CharField(max_length=20)
+    capacity = models.IntegerField()
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['building', 'floor', 'room_number']
+        unique_together = ['building', 'floor', 'room_number']
+
+    def __str__(self):
+        return f"{self.name} ({self.building} - {self.room_number})" 

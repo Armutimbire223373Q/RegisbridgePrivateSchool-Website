@@ -93,7 +93,7 @@ class Assessment(models.Model):
 
 class Grade(models.Model):
     """Individual student grades for assessments"""
-    student = models.ForeignKey('accounts.User', on_delete=models.CASCADE)
+    student = models.ForeignKey('accounts.User', on_delete=models.CASCADE, related_name='student_grades')
     assessment = models.ForeignKey(Assessment, on_delete=models.CASCADE)
     score = models.DecimalField(
         max_digits=6,
@@ -104,7 +104,7 @@ class Grade(models.Model):
     graded_by = models.ForeignKey(
         'accounts.User',
         on_delete=models.PROTECT,
-        related_name='grades_given'
+        related_name='graded_grades'
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -135,7 +135,7 @@ class Grade(models.Model):
 
 class ReportCard(models.Model):
     """Term/Semester report cards"""
-    student = models.ForeignKey('accounts.User', on_delete=models.CASCADE)
+    student = models.ForeignKey('accounts.User', on_delete=models.CASCADE, related_name='report_cards')
     term = models.ForeignKey('school.Term', on_delete=models.CASCADE)
     class_group = models.ForeignKey('school.ClassGroup', on_delete=models.CASCADE)
     average_gpa = models.DecimalField(max_digits=3, decimal_places=2, null=True)
@@ -149,15 +149,15 @@ class ReportCard(models.Model):
     )
     generated_by = models.ForeignKey(
         'accounts.User',
-        on_delete=models.PROTECT,
-        related_name='report_cards_generated'
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='generated_report_cards'
     )
     approved_by = models.ForeignKey(
         'accounts.User',
-        on_delete=models.PROTECT,
-        related_name='report_cards_approved',
+        on_delete=models.SET_NULL,
         null=True,
-        blank=True
+        related_name='approved_report_cards'
     )
     status = models.CharField(
         max_length=20,

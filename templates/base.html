@@ -113,12 +113,15 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'main:home' %}">Regisbridge School</a>
+            <a class="navbar-brand" href="{% url 'homepage:home' %}">Regisbridge School</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'homepage:home' %}">Home</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'main:about' %}">About</a>
                     </li>
@@ -126,7 +129,7 @@
                         <a class="nav-link" href="{% url 'main:academics' %}">Academics</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'admissions:home' %}">Admissions</a>
+                        <a class="nav-link" href="{% url 'admissions:index' %}">Admissions</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'main:contact' %}">Contact</a>
@@ -134,6 +137,13 @@
                 </ul>
 
                 {% if user.is_authenticated %}
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary text-white px-3" href="{% url 'school:portal_access' %}">
+                            <i class="fas fa-door-open me-1"></i>Portals
+                        </a>
+                    </li>
+                </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="portalDropdown" role="button" data-bs-toggle="dropdown">
@@ -180,14 +190,14 @@
 
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{% url 'accounts:profile' %}">My Profile</a></li>
-                            <li><a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a></li>
+                            <li><a class="dropdown-item" href="{% url 'accounts:logout' %}">Logout</a></li>
                         </ul>
                     </li>
                 </ul>
                 {% else %}
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'account_login' %}">Login</a>
+                        <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>
                     </li>
                 </ul>
                 {% endif %}

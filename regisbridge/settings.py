@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'compressor',
     
     # Local apps
+    'core.apps.CoreConfig',
     'main.apps.MainConfig',
     'accounts.apps.AccountsConfig',
     'admissions.apps.AdmissionsConfig',
@@ -100,9 +101,14 @@ SECURE_HSTS_PRELOAD = True
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
-CSRF_COOKIE_SECURE = not DEBUG
-SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = False  # Changed for development
+SESSION_COOKIE_SECURE = False  # Changed for development
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# CSRF Settings
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000', 'http://localhost:8000']
+CSRF_USE_SESSIONS = True  # Store CSRF token in session instead of cookie
+CSRF_COOKIE_HTTPONLY = False  # Allow JavaScript to access the cookie
 
 ROOT_URLCONF = 'regisbridge.urls'
 
@@ -214,12 +220,12 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Custom user model
-AUTH_USER_MODEL = 'accounts.CustomUser'
+AUTH_USER_MODEL = 'accounts.User'
 
 # Authentication settings
 LOGIN_URL = 'accounts:login'
-LOGIN_REDIRECT_URL = 'main:home'
-LOGOUT_REDIRECT_URL = 'main:home'
+LOGIN_REDIRECT_URL = 'homepage:home'
+LOGOUT_REDIRECT_URL = 'homepage:home'
 
 # Crispy Forms
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"

@@ -1,13 +1,20 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.utils.translation import gettext_lazy as _
+from django.core.mail import send_mail
+from django.conf import settings
+from .models import User
 
-from .models import CustomUser
-
-
-@receiver(post_save, sender=CustomUser)
-def send_verification_email(sender, instance, created, **kwargs):
-    """Send verification email when a new user is created."""
-    if created and not instance.is_email_verified:
-        # TODO: Implement email verification logic
-        pass
+@receiver(post_save, sender=User)
+def send_welcome_email(sender, instance, created, **kwargs):
+    """Send welcome email to new users."""
+    if created:
+        subject = 'Welcome to Regisbridge Private School'
+        message = f'Hi {instance.get_full_name()},\n\nWelcome to Regisbridge Private School! Your account has been created successfully.'
+        from_email = settings.DEFAULT_FROM_EMAIL
+        recipient_list = [instance.email]
+        
+        try:
+            send_mail(subject, message, from_email, recipient_list)
+        except Exception as e:
+            # Log the error but don't prevent user creation
+            print(f"Error sending welcome email: {e}")

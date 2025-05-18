@@ -16,6 +16,8 @@ class StaffRequiredMixin(UserPassesTestMixin):
 @login_required
 def schedule_view(request):
     """View for students and teachers to see their weekly schedule"""
+    if not request.user.is_authenticated:
+        return redirect('homepage:home')
     current_term = request.user.school.get_current_term()
     schedule, created = Schedule.objects.get_or_create(
         user=request.user,

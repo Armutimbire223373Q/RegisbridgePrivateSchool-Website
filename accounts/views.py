@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.contrib import messages
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
@@ -13,7 +13,7 @@ from .forms import (
     CustomUserCreationForm, CustomUserChangeForm,
     UserProfileForm, EmailVerificationForm
 )
-from .models import CustomUser
+from .models import User
 
 
 class SignUpView(CreateView):
@@ -37,7 +37,10 @@ class CustomLoginView(LoginView):
     redirect_authenticated_user = True
 
     def get_success_url(self):
-        return reverse_lazy('accounts:profile')
+        next_url = self.request.GET.get('next')
+        if next_url:
+            return next_url
+        return reverse_lazy('school:profile')
 
     def form_invalid(self, form):
         messages.error(self.request, _('Invalid email or password.'))
@@ -48,7 +51,7 @@ class CustomLoginView(LoginView):
 class ProfileView(UpdateView):
     """View for user profile management."""
     
-    model = CustomUser
+    model = User
     form_class = UserProfileForm
     template_name = 'accounts/profile.html'
     success_url = reverse_lazy('accounts:profile')
@@ -78,7 +81,6 @@ class EmailVerificationView(TemplateView):
             code = form.cleaned_data['code']
             # Add verification logic here
             user = request.user
-            user.is_email_verified = True
             user.save()
             messages.success(request, _('Email verified successfully!'))
             return redirect('accounts:profile')
@@ -91,3 +93,41 @@ def logout_view(request):
     logout(request)
     messages.info(request, _('You have been logged out.'))
     return redirect('accounts:login')
+
+
+def register(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, _('Your account has been created successfully!'))
+            return redirect('home')
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'accounts/register.html', {'form': form})
+
+
+@login_required
+def profile(request):
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, _('Your profile has been updated successfully!'))
+            return redirect('accounts:profile')
+    else:
+        form = UserProfileForm(instance=request.user)
+    return render(request, 'accounts/profile.html', {'form': form})
+
+
+@login_required
+def user_list(request):
+    users = User.objects.all().order_by('last_name', 'first_name')
+    return render(request, 'accounts/user_list.html', {'users': users})
+
+
+@login_required
+def user_detail(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    return render(request, 'accounts/user_detail.html', {'user': user})

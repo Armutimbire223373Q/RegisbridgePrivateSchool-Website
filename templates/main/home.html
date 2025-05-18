@@ -4,157 +4,166 @@
 {% block title %}Welcome to Regisbridge Private School{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="hero-section position-relative py-5">
-    <div class="hero-overlay"></div>
-    <div class="container position-relative">
-        <div class="row align-items-center">
-            <div class="col-lg-6 text-white">
-                <h1 class="display-4 fw-bold mb-4 animate__animated animate__fadeInUp">Welcome to Regisbridge Private School</h1>
-                <p class="lead mb-4 animate__animated animate__fadeInUp animate__delay-1s">Where excellence meets opportunity. We provide a nurturing environment for students to grow academically, socially, and personally.</p>
-                <div class="d-grid gap-2 d-md-flex justify-content-md-start animate__animated animate__fadeInUp animate__delay-2s">
-                    <a href="{% url 'admissions:apply' %}" class="btn btn-primary btn-lg px-4 me-md-2">Apply Now</a>
-                    <a href="{% url 'main:about' %}" class="btn btn-outline-light btn-lg px-4">Learn More</a>
+<div class="container py-4">
+    {% if error_message %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            {{ error_message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endif %}
+
+    <!-- Hero Section -->
+    <section class="hero-section position-relative py-5">
+        <div class="hero-overlay"></div>
+        <div class="container position-relative">
+            <div class="row align-items-center">
+                <div class="col-lg-6 text-white">
+                    <h1 class="display-4 fw-bold mb-4 animate__animated animate__fadeInUp">Welcome to Regisbridge Private School</h1>
+                    <p class="lead mb-4 animate__animated animate__fadeInUp animate__delay-1s">Where excellence meets opportunity. We provide a nurturing environment for students to grow academically, socially, and personally.</p>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-start animate__animated animate__fadeInUp animate__delay-2s">
+                        <a href="{% url 'admissions:apply' %}" class="btn btn-primary btn-lg px-4 me-md-2">Apply Now</a>
+                        <a href="{% url 'main:about' %}" class="btn btn-outline-light btn-lg px-4">Learn More</a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <img src="{% static 'images/home.jpg' %}" alt="Students learning at Regisbridge" class="img-fluid rounded shadow" loading="lazy">
                 </div>
             </div>
-            <div class="col-lg-6">
-                <img src="{% static 'images/home.jpg' %}" alt="Students learning at Regisbridge" class="img-fluid rounded shadow" loading="lazy">
-            </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- Add CSS -->
-<style>
-    .hero-section {
-        background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{% static "images/home.jpg" %}');
-        background-size: cover;
-        background-position: center;
-        min-height: 80vh;
-    }
-    
-    .hero-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.3);
-    }
-    
-    @media (max-width: 768px) {
+    <!-- Add CSS -->
+    <style>
         .hero-section {
-            min-height: 100vh;
-            text-align: center;
+            background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{% static "images/home.jpg" %}');
+            background-size: cover;
+            background-position: center;
+            min-height: 80vh;
         }
         
-        .hero-section .btn {
-            width: 100%;
-            margin-bottom: 1rem;
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
         }
-    }
-</style>
+        
+        @media (max-width: 768px) {
+            .hero-section {
+                min-height: 100vh;
+                text-align: center;
+            }
+            
+            .hero-section .btn {
+                width: 100%;
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
 
-<!-- Features Section -->
-<section class="features-section py-5">
-    <div class="container">
-        <h2 class="text-center mb-5">Why Choose Regisbridge?</h2>
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body text-center">
-                        <i class="fas fa-graduation-cap fa-3x text-primary mb-3"></i>
-                        <h3 class="card-title">Academic Excellence</h3>
-                        <p class="card-text">Our rigorous curriculum and dedicated faculty ensure students reach their full academic potential.</p>
+    <!-- Features Section -->
+    <section class="features-section py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Why Choose Regisbridge?</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-graduation-cap fa-3x text-primary mb-3"></i>
+                            <h3 class="card-title">Academic Excellence</h3>
+                            <p class="card-text">Our rigorous curriculum and dedicated faculty ensure students reach their full academic potential.</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body text-center">
-                        <i class="fas fa-users fa-3x text-primary mb-3"></i>
-                        <h3 class="card-title">Inclusive Community</h3>
-                        <p class="card-text">We foster a welcoming environment where every student feels valued and supported.</p>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                            <h3 class="card-title">Inclusive Community</h3>
+                            <p class="card-text">We foster a welcoming environment where every student feels valued and supported.</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body text-center">
-                        <i class="fas fa-trophy fa-3x text-primary mb-3"></i>
-                        <h3 class="card-title">Holistic Development</h3>
-                        <p class="card-text">We focus on developing well-rounded individuals through academics, sports, and arts.</p>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center">
+                            <i class="fas fa-trophy fa-3x text-primary mb-3"></i>
+                            <h3 class="card-title">Holistic Development</h3>
+                            <p class="card-text">We focus on developing well-rounded individuals through academics, sports, and arts.</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- News Section -->
-<section class="news-section py-5 bg-light">
-    <div class="container">
-        <h2 class="text-center mb-5">Latest News & Events</h2>
-        <div class="row g-4">
-            {% for post in latest_posts %}
-            <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm">
-                    {% if post.featured_image %}
-                    <img src="{{ post.featured_image.url }}" class="card-img-top" alt="{{ post.title }}">
-                    {% endif %}
-                    <div class="card-body">
-                        <h5 class="card-title">{{ post.title }}</h5>
-                        <p class="card-text">{{ post.excerpt|truncatewords:20 }}</p>
-                        <a href="{% url 'blog:post_detail' post.slug %}" class="btn btn-outline-primary">Read More</a>
+    <!-- News Section -->
+    <section class="news-section py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5">Latest News & Events</h2>
+            <div class="row g-4">
+                {% for post in latest_posts %}
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        {% if post.featured_image %}
+                        <img src="{{ post.featured_image.url }}" class="card-img-top" alt="{{ post.title }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ post.title }}</h5>
+                            <p class="card-text">{{ post.excerpt|truncatewords:20 }}</p>
+                            <a href="{% url 'blog:post_detail' post.slug %}" class="btn btn-outline-primary">Read More</a>
+                        </div>
                     </div>
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
+            <div class="text-center mt-4">
+                <a href="{% url 'blog:post_list' %}" class="btn btn-primary">View All News</a>
+            </div>
         </div>
-        <div class="text-center mt-4">
-            <a href="{% url 'blog:post_list' %}" class="btn btn-primary">View All News</a>
-        </div>
-    </div>
-</section>
+    </section>
 
-<!-- Quick Links Section -->
-<section class="quick-links-section py-5">
-    <div class="container">
-        <h2 class="text-center mb-5">Quick Links</h2>
-        <div class="row g-4">
-            <div class="col-md-3">
-                <a href="{% url 'main:academics' %}" class="card h-100 border-0 shadow-sm text-decoration-none">
-                    <div class="card-body text-center">
-                        <i class="fas fa-book fa-3x text-primary mb-3"></i>
-                        <h3 class="card-title h5">Academics</h3>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-3">
-                <a href="{% url 'admissions:apply' %}" class="card h-100 border-0 shadow-sm text-decoration-none">
-                    <div class="card-body text-center">
-                        <i class="fas fa-user-graduate fa-3x text-primary mb-3"></i>
-                        <h3 class="card-title h5">Admissions</h3>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-3">
-                <a href="{% url 'main:student_life' %}" class="card h-100 border-0 shadow-sm text-decoration-none">
-                    <div class="card-body text-center">
-                        <i class="fas fa-running fa-3x text-primary mb-3"></i>
-                        <h3 class="card-title h5">Student Life</h3>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-3">
-                <a href="{% url 'main:parents' %}" class="card h-100 border-0 shadow-sm text-decoration-none">
-                    <div class="card-body text-center">
-                        <i class="fas fa-users fa-3x text-primary mb-3"></i>
-                        <h3 class="card-title h5">Parents Corner</h3>
-                    </div>
-                </a>
+    <!-- Quick Links Section -->
+    <section class="quick-links-section py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Quick Links</h2>
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <a href="{% url 'main:academics' %}" class="card h-100 border-0 shadow-sm text-decoration-none">
+                        <div class="card-body text-center">
+                            <i class="fas fa-book fa-3x text-primary mb-3"></i>
+                            <h3 class="card-title h5">Academics</h3>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="{% url 'admissions:apply' %}" class="card h-100 border-0 shadow-sm text-decoration-none">
+                        <div class="card-body text-center">
+                            <i class="fas fa-user-graduate fa-3x text-primary mb-3"></i>
+                            <h3 class="card-title h5">Admissions</h3>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="{% url 'main:student_life' %}" class="card h-100 border-0 shadow-sm text-decoration-none">
+                        <div class="card-body text-center">
+                            <i class="fas fa-running fa-3x text-primary mb-3"></i>
+                            <h3 class="card-title h5">Student Life</h3>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="{% url 'main:parents' %}" class="card h-100 border-0 shadow-sm text-decoration-none">
+                        <div class="card-body text-center">
+                            <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                            <h3 class="card-title h5">Parents Corner</h3>
+                        </div>
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
+</div>
 {% endblock %} 

@@ -5,9 +5,12 @@ from . import views
 app_name = 'school'
 
 urlpatterns = [
+    # Main portal access
+    path('portals/', views.portal_access, name='portal_access'),
+    
     # Authentication
     path('login/', views.login_view, name='login'),
-    path('logout/', auth_views.LogoutView.as_view(next_page='main:home'), name='logout'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='homepage:home'), name='logout'),
     
     # Academic Section
     path('student-portal/', views.StudentParentPortalView.as_view(), name='student_portal'),
@@ -21,6 +24,7 @@ urlpatterns = [
     path('inventory/', views.InventoryView.as_view(), name='inventory'),
     
     # Staff Section
+    path('staff-portal/', views.StaffPortalView.as_view(), name='staff_portal'),
     path('accountant/', views.AccountantView.as_view(), name='accountant'),
     path('library/', views.LibraryView.as_view(), name='library'),
     path('health/', views.HealthCenterView.as_view(), name='health'),

@@ -6,31 +6,20 @@ from . import views
 app_name = 'accounts'
 
 urlpatterns = [
-    # Authentication
-    path('signup/', views.SignUpView.as_view(), name='signup'),
+    path('register/', views.register, name='register'),
     path('login/', views.CustomLoginView.as_view(), name='login'),
-    path('logout/', views.logout_view, name='logout'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('profile/', views.profile, name='profile'),
+    path('users/', views.user_list, name='user_list'),
+    path('users/<int:pk>/', views.user_detail, name='user_detail'),
     
-    # Profile Management
-    path('profile/', views.ProfileView.as_view(), name='profile'),
-    path('verify-email/', views.EmailVerificationView.as_view(), name='email_verification'),
-    
-    # Password Management
-    path('password-change/', auth_views.PasswordChangeView.as_view(
-        template_name='accounts/password_change.html',
-        success_url='done/'
-    ), name='password_change'),
-    path('password-change/done/', auth_views.PasswordChangeDoneView.as_view(
-        template_name='accounts/password_change_done.html'
-    ), name='password_change_done'),
-    
-    # Password Reset
-    path('password-reset/', auth_views.PasswordResetView.as_view(
+    # Password reset URLs
+    path('password_reset/', auth_views.PasswordResetView.as_view(
         template_name='accounts/password_reset.html',
         email_template_name='accounts/password_reset_email.html',
-        subject_template_name='accounts/password_reset_subject.txt',
+        subject_template_name='accounts/password_reset_subject.txt'
     ), name='password_reset'),
-    path('password-reset/done/', auth_views.PasswordResetDoneView.as_view(
+    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(
         template_name='accounts/password_reset_done.html'
     ), name='password_reset_done'),
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(
