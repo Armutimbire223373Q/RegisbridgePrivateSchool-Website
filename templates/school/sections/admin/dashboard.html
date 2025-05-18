@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Admin Dashboard</h5>
+                    <div class="list-group mt-3">
+                        <a href="{% url 'school:admin_portal' %}" class="list-group-item list-group-item-action active">
+                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                        </a>
+                        <a href="{% url 'school:accounting' %}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-calculator me-2"></i>Accounting
+                        </a>
+                        <a href="{% url 'school:hr' %}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-users-cog me-2"></i>HR Management
+                        </a>
+                        <a href="{% url 'school:boarding' %}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-home me-2"></i>Boarding
+                        </a>
+                        <a href="{% url 'school:inventory' %}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-boxes me-2"></i>Inventory
+                        </a>
+                        <a href="{% url 'admin:index' %}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-cog me-2"></i>System Admin
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <!-- Quick Stats -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <h6 class="card-title">Total Students</h6>
+                            <h2 class="mb-0">{{ total_students|default:"0" }}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <h6 class="card-title">Total Staff</h6>
+                            <h2 class="mb-0">{{ total_staff|default:"0" }}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <h6 class="card-title">Active Classes</h6>
+                            <h2 class="mb-0">{{ active_classes|default:"0" }}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <h6 class="card-title">Pending Tasks</h6>
+                            <h2 class="mb-0">{{ pending_tasks|default:"0" }}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activities and Quick Actions -->
+            <div class="row">
+                <!-- Recent Activities -->
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Recent Activities</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="list-group">
+                                {% if recent_activities %}
+                                    {% for activity in recent_activities %}
+                                    <div class="list-group-item">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">{{ activity.title }}</h6>
+                                            <small>{{ activity.timestamp }}</small>
+                                        </div>
+                                        <p class="mb-1">{{ activity.description }}</p>
+                                    </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="text-center text-muted py-3">
+                                        <p>No recent activities</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Quick Actions</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <a href="{% url 'admin:school_student_add' %}" class="btn btn-primary">
+                                    <i class="fas fa-user-plus me-2"></i>Add New Student
+                                </a>
+                                <a href="{% url 'admin:school_staff_add' %}" class="btn btn-success">
+                                    <i class="fas fa-user-tie me-2"></i>Add New Staff
+                                </a>
+                                <a href="{% url 'admin:school_class_add' %}" class="btn btn-info">
+                                    <i class="fas fa-chalkboard me-2"></i>Create New Class
+                                </a>
+                                <a href="{% url 'admin:school_importantdate_add' %}" class="btn btn-warning">
+                                    <i class="fas fa-bullhorn me-2"></i>Add Important Date
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Status -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">System Status</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="text-center">
+                                        <h6>Database Status</h6>
+                                        <i class="fas fa-database text-success fa-2x"></i>
+                                        <p class="mb-0 mt-2">Connected</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="text-center">
+                                        <h6>Storage Usage</h6>
+                                        <i class="fas fa-hdd text-info fa-2x"></i>
+                                        <p class="mb-0 mt-2">{{ storage_usage|default:"0" }}%</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="text-center">
+                                        <h6>Last Backup</h6>
+                                        <i class="fas fa-save text-primary fa-2x"></i>
+                                        <p class="mb-0 mt-2">{{ last_backup|default:"Never" }}</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="text-center">
+                                        <h6>System Load</h6>
+                                        <i class="fas fa-microchip text-warning fa-2x"></i>
+                                        <p class="mb-0 mt-2">{{ system_load|default:"0" }}%</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    margin-bottom: 1rem;
+}
+.list-group-item i {
+    width: 20px;
+}
+</style>
+{% endblock %} 

@@ -136,11 +136,12 @@ class Command(BaseCommand):
         grades = ['Grade 1-3', 'Grade 4-6', 'Grade 7-9', 'Grade 10-12']
         for grade in grades:
             TuitionFee.objects.get_or_create(
-                grade_level=grade,
-                amount=random.randint(5000, 15000),
-                term='ANNUAL',
-                description=f'Tuition fee for {grade}',
-                is_active=True
+                grade=grade,
+                defaults={
+                    'amount': random.randint(5000, 15000),
+                    'description': f'Tuition fee for {grade}',
+                    'is_active': True
+                }
             )
 
         # Create scholarships
@@ -148,10 +149,13 @@ class Command(BaseCommand):
         for type_ in types:
             Scholarship.objects.get_or_create(
                 name=f'{type_} Scholarship',
-                description=f'Scholarship for students excelling in {type_}',
-                amount=random.randint(1000, 5000),
-                criteria=f'Must demonstrate exceptional performance in {type_}',
-                is_active=True
+                defaults={
+                    'description': f'Scholarship for students excelling in {type_}',
+                    'amount': random.randint(1000, 5000),
+                    'requirements': f'Must demonstrate exceptional performance in {type_}',
+                    'deadline': timezone.now() + timedelta(days=random.randint(30, 90)),
+                    'is_active': True
+                }
             )
 
         # Create important dates
@@ -166,23 +170,33 @@ class Command(BaseCommand):
 
         # Create hostel facilities
         facilities = ['Boys Hostel A', 'Boys Hostel B', 'Girls Hostel A', 'Girls Hostel B']
-        for facility in facilities:
+        for i, facility in enumerate(facilities):
             HostelFacility.objects.get_or_create(
                 name=facility,
-                capacity=random.randint(50, 100),
-                description=f'Modern accommodation facility with all amenities for {facility}',
-                fee_per_semester=random.randint(2000, 4000),
-                is_available=True
+                defaults={
+                    'description': f'Modern accommodation facility with all amenities for {facility}',
+                    'is_available': True,
+                    'order': i + 1,
+                    'image': f'hostels/{facility.lower().replace(" ", "_")}.jpg'
+                }
             )
 
         # Create student services
-        services = ['Transportation', 'Cafeteria', 'Sports Complex', 'Computer Lab', 'Science Lab']
-        for service in services:
+        services = [
+            ('Transportation', 'fa-bus'),
+            ('Cafeteria', 'fa-utensils'),
+            ('Sports Complex', 'fa-futbol'),
+            ('Computer Lab', 'fa-desktop'),
+            ('Science Lab', 'fa-flask')
+        ]
+        for service, icon in services:
             StudentService.objects.get_or_create(
                 name=service,
-                description=f'Essential student service: {service}',
-                fee=random.randint(100, 500) if service in ['Transportation', 'Cafeteria'] else 0,
-                is_active=True
+                defaults={
+                    'description': f'Essential student service: {service}',
+                    'is_active': True,
+                    'icon': icon
+                }
             )
 
         # Create parent resources
@@ -190,9 +204,11 @@ class Command(BaseCommand):
         for resource in resources:
             ParentResource.objects.get_or_create(
                 title=resource,
-                description=f'Important resource for parents: {resource}',
-                file_url=f'https://example.com/{resource.lower().replace(" ", "-")}.pdf',
-                is_active=True
+                defaults={
+                    'content': f'Important resource for parents: {resource}',
+                    'file': f'resources/{resource.lower().replace(" ", "-")}.pdf',
+                    'is_active': True
+                }
             )
 
         # Create payment methods

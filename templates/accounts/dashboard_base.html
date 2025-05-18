@@ -7,101 +7,41 @@
 <div class="container-fluid">
     <div class="row">
         <!-- Sidebar -->
-        <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
-            <div class="position-sticky pt-3">
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
-                           href="{% url 'accounts:dashboard' %}">
-                            <i class="fas fa-tachometer-alt me-2"></i>
-                            Dashboard
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Account Dashboard</h5>
+                    <div class="list-group mt-3">
+                        <a href="{% url 'accounts:profile' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+                            <i class="fas fa-user me-2"></i>Profile
                         </a>
-                    </li>
-                    
-                    {% if user.is_staff %}
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'manage_homepage' %}active{% endif %}"
-                           href="{% url 'core:manage_homepage' %}">
-                            <i class="fas fa-home me-2"></i>
-                            Manage Home Page
+                        {% if user.is_staff %}
+                        <a href="{% url 'school:admin_portal' %}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'manage_news' %}active{% endif %}"
-                           href="{% url 'core:manage_news' %}">
-                            <i class="fas fa-newspaper me-2"></i>
-                            Manage News
+                        {% endif %}
+                        {% if user.is_teacher %}
+                        <a href="{% url 'school:teacher_portal' %}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-chalkboard-teacher me-2"></i>Teacher Dashboard
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'manage_events' %}active{% endif %}"
-                           href="{% url 'core:manage_events' %}">
-                            <i class="fas fa-calendar-alt me-2"></i>
-                            Manage Events
+                        {% endif %}
+                        {% if user.is_student %}
+                        <a href="{% url 'school:student_portal' %}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-graduation-cap me-2"></i>Student Dashboard
                         </a>
-                    </li>
-                    {% endif %}
-                    
-                    {% if user.teacherprofile %}
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'schedule' %}active{% endif %}"
-                           href="{% url 'teachers:schedule' %}">
-                            <i class="fas fa-clock me-2"></i>
-                            My Schedule
+                        {% endif %}
+                        <a href="{% url 'accounts:password_reset' %}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-key me-2"></i>Change Password
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'announcements' %}active{% endif %}"
-                           href="{% url 'teachers:announcements' %}">
-                            <i class="fas fa-bullhorn me-2"></i>
-                            Announcements
-                        </a>
-                    </li>
-                    {% endif %}
-                    
-                    {% if user.studentprofile %}
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'schedule' %}active{% endif %}"
-                           href="{% url 'students:schedule' %}">
-                            <i class="fas fa-clock me-2"></i>
-                            My Schedule
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'announcements' %}active{% endif %}"
-                           href="{% url 'students:announcements' %}">
-                            <i class="fas fa-bullhorn me-2"></i>
-                            Announcements
-                        </a>
-                    </li>
-                    {% endif %}
-                    
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}"
-                           href="{% url 'accounts:profile' %}">
-                            <i class="fas fa-user me-2"></i>
-                            Profile
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- Main content -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">Dashboard</h1>
-                <div class="btn-toolbar mb-2 mb-md-0">
-                    <div class="btn-group me-2">
-                        <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
                     </div>
                 </div>
             </div>
-
-            {% block dashboard_content %}
-            {% endblock %}
-        </main>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="col-md-9">
+            {% block dashboard_content %}{% endblock %}
+        </div>
     </div>
 </div>
 
