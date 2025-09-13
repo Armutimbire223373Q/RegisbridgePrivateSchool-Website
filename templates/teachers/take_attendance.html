@@ -1,0 +1,120 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block dashboard_title %}Take Attendance{% endblock %}
+{% block dashboard_heading %}Take Attendance{% endblock %}
+{% block page_title %}Take Attendance - {{ classroom.name }}{% endblock %}
+{% block page_subtitle %}{{ attendance_date|date:"F d, Y" }}{% endblock %}
+
+{% block dashboard_main %}
+<div class="card mb-6">
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h3 class="text-xl font-semibold text-gray-900">{{ classroom.name }}</h3>
+            <p class="text-gray-600">{{ students.count }} students</p>
+        </div>
+        <div class="text-right">
+            <p class="text-sm text-gray-600">Date: {{ attendance_date|date:"F d, Y" }}</p>
+            <p class="text-sm text-gray-600">Session ID: {{ session.id }}</p>
+        </div>
+    </div>
+    
+    <!-- Date Selector -->
+    <div class="mb-6">
+        <form method="get" class="flex items-center space-x-4">
+            <label for="date" class="text-sm font-medium text-gray-700">Select Date:</label>
+            <input type="date" id="date" name="date" value="{{ attendance_date|date:'Y-m-d' }}" 
+                   class="border border-gray-300 rounded-md px-3 py-2 text-sm">
+            <button type="submit" class="btn-outline">Change Date</button>
+        </form>
+    </div>
+</div>
+
+<!-- Attendance Form -->
+<form method="post">
+    {% csrf_token %}
+    
+    <div class="card">
+        <div class="mb-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">Student Attendance</h3>
+            <p class="text-gray-600 text-sm">Mark attendance for each student below.</p>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+            <div class="flex items-center space-x-4">
+                <button type="button" onclick="markAll('PRESENT')" class="btn-sm btn-success">Mark All Present</button>
+                <button type="button" onclick="markAll('ABSENT')" class="btn-sm btn-danger">Mark All Absent</button>
+                <button type="button" onclick="markAll('LATE')" class="btn-sm btn-warning">Mark All Late</button>
+            </div>
+        </div>
+        
+        <!-- Students List -->
+        <div class="space-y-4">
+            {% for student in students %}
+            {% with record=existing_records|dict_key:student.id %}
+            <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
+                <div class="flex items-center space-x-4">
+                    <div class="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
+                        <span class="text-primary-600 font-medium">{{ student.user.first_name.0 }}{{ student.user.last_name.0 }}</span>
+                    </div>
+                    <div>
+                        <h4 class="font-medium text-gray-900">{{ student.user.get_full_name }}</h4>
+                        <p class="text-sm text-gray-600">{{ student.admission_number }}</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <!-- Status Selection -->
+                    <div class="flex items-center space-x-2">
+                        <label class="flex items-center">
+                            <input type="radio" name="status_{{ student.id }}" value="PRESENT" 
+                                   {% if record.status == 'PRESENT' or not record %}checked{% endif %}
+                                   class="text-green-600 focus:ring-green-500">
+                            <span class="ml-2 text-sm text-green-600">Present</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="status_{{ student.id }}" value="ABSENT"
+                                   {% if record.status == 'ABSENT' %}checked{% endif %}
+                                   class="text-red-600 focus:ring-red-500">
+                            <span class="ml-2 text-sm text-red-600">Absent</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="status_{{ student.id }}" value="LATE"
+                                   {% if record.status == 'LATE' %}checked{% endif %}
+                                   class="text-yellow-600 focus:ring-yellow-500">
+                            <span class="ml-2 text-sm text-yellow-600">Late</span>
+                        </label>
+                    </div>
+                    
+                    <!-- Remarks -->
+                    <input type="text" name="remarks_{{ student.id }}" 
+                           placeholder="Remarks (optional)"
+                           value="{{ record.remarks|default:'' }}"
+                           class="border border-gray-300 rounded-md px-3 py-2 text-sm w-32">
+                </div>
+            </div>
+            {% endwith %}
+            {% empty %}
+            <div class="text-center py-8">
+                <p class="text-gray-500">No students in this class</p>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Submit Buttons -->
+        <div class="mt-8 flex items-center justify-between">
+            <a href="{% url 'teachers:attendance_overview' %}" class="btn-outline">Cancel</a>
+            <button type="submit" class="btn-primary">Save Attendance</button>
+        </div>
+    </div>
+</form>
+
+<script>
+function markAll(status) {
+    const radios = document.querySelectorAll(`input[type="radio"][value="${status}"]`);
+    radios.forEach(radio => {
+        radio.checked = true;
+    });
+}
+</script>
+{% endblock %}

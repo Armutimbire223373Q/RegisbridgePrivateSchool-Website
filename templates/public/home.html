@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Regisbridge College{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <div class="text-center">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6">
+                Welcome to <span class="text-accent-400">Regisbridge</span>
+            </h1>
+            <p class="text-xl md:text-2xl mb-8 text-primary-100 max-w-3xl mx-auto">
+                Empowering minds, building futures. A premier institution for primary and secondary education with world-class boarding facilities.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="{% url 'public:admissions' %}" class="btn-accent text-lg px-8 py-4">
+                    <i data-lucide="graduation-cap" class="w-5 h-5 mr-2"></i>
+                    Apply Now
+                </a>
+                <a href="{% url 'users:login' %}" class="btn-secondary text-lg px-8 py-4">
+                    <i data-lucide="log-in" class="w-5 h-5 mr-2"></i>
+                    Student Portal
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Links Section -->
+<section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Quick Access</h2>
+            <p class="text-lg text-gray-600">Navigate to important sections of our platform</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <a href="{% url 'public:admissions' %}" class="card-hover group">
+                <div class="bg-white rounded-2xl shadow-md p-6 text-center transition-all duration-300 group-hover:shadow-lg">
+                    <div class="mx-auto h-16 w-16 rounded-full bg-primary-100 flex items-center justify-center mb-4 group-hover:bg-primary-200 transition-colors">
+                        <i data-lucide="graduation-cap" class="h-8 w-8 text-primary-600"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Admissions</h3>
+                    <p class="text-sm text-gray-600">Apply for enrollment and join our community</p>
+                </div>
+            </a>
+            
+            <a href="{% url 'public:news_list' %}" class="card-hover group">
+                <div class="bg-white rounded-2xl shadow-md p-6 text-center transition-all duration-300 group-hover:shadow-lg">
+                    <div class="mx-auto h-16 w-16 rounded-full bg-secondary-100 flex items-center justify-center mb-4 group-hover:bg-secondary-200 transition-colors">
+                        <i data-lucide="newspaper" class="h-8 w-8 text-secondary-600"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">News & Events</h3>
+                    <p class="text-sm text-gray-600">Stay updated with latest announcements</p>
+                </div>
+            </a>
+            
+            <a href="{% url 'public:about' %}" class="card-hover group">
+                <div class="bg-white rounded-2xl shadow-md p-6 text-center transition-all duration-300 group-hover:shadow-lg">
+                    <div class="mx-auto h-16 w-16 rounded-full bg-accent-100 flex items-center justify-center mb-4 group-hover:bg-accent-200 transition-colors">
+                        <i data-lucide="info" class="h-8 w-8 text-accent-600"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">About Us</h3>
+                    <p class="text-sm text-gray-600">Learn about our mission and values</p>
+                </div>
+            </a>
+            
+            <a href="{% url 'public:contact' %}" class="card-hover group">
+                <div class="bg-white rounded-2xl shadow-md p-6 text-center transition-all duration-300 group-hover:shadow-lg">
+                    <div class="mx-auto h-16 w-16 rounded-full bg-success-100 flex items-center justify-center mb-4 group-hover:bg-success-200 transition-colors">
+                        <i data-lucide="phone" class="h-8 w-8 text-success-600"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Contact</h3>
+                    <p class="text-sm text-gray-600">Get in touch with our team</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- News & Events Section -->
+<section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Latest News & Events</h2>
+            <p class="text-lg text-gray-600">Stay informed about what's happening at Regisbridge</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for post in news_posts|slice:":6" %}
+            <article class="card-hover group">
+                <div class="bg-white rounded-2xl shadow-md overflow-hidden transition-all duration-300 group-hover:shadow-lg">
+                    {% if post.featured_image %}
+                    <div class="aspect-w-16 aspect-h-9 bg-gray-200">
+                        <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full h-48 object-cover">
+                    </div>
+                    {% else %}
+                    <div class="aspect-w-16 aspect-h-9 bg-gray-200 flex items-center justify-center">
+                        <i data-lucide="image" class="h-12 w-12 text-gray-400"></i>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="p-6">
+                        <div class="flex items-center text-sm text-gray-500 mb-2">
+                            <i data-lucide="calendar" class="w-4 h-4 mr-1"></i>
+                            {{ post.published_date|date:"M j, Y" }}
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors">
+                            {{ post.title }}
+                        </h3>
+                        <p class="text-gray-600 mb-4 line-clamp-3">{{ post.excerpt|default:post.content|truncatewords:20 }}</p>
+                        <a href="{% url 'public:news_detail' post.slug %}" class="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium">
+                            Read More
+                            <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </article>
+            {% empty %}
+            <div class="col-span-full text-center py-12">
+                <div class="mx-auto h-16 w-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+                    <i data-lucide="newspaper" class="h-8 w-8 text-gray-400"></i>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">No News Yet</h3>
+                <p class="text-gray-600">Check back soon for updates and announcements.</p>
+            </div>
+            {% endfor %}
+        </div>
+        
+        {% if news_posts %}
+        <div class="text-center mt-8">
+            <a href="{% url 'public:news_list' %}" class="btn-primary">
+                <i data-lucide="newspaper" class="w-4 h-4 mr-2"></i>
+                View All News
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Why Choose Regisbridge?</h2>
+            <p class="text-lg text-gray-600">Discover what makes us the preferred choice for education</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="text-center">
+                <div class="mx-auto h-16 w-16 rounded-full bg-primary-100 flex items-center justify-center mb-4">
+                    <i data-lucide="award" class="h-8 w-8 text-primary-600"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Academic Excellence</h3>
+                <p class="text-gray-600">Consistently high academic standards with proven track record of student success</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="mx-auto h-16 w-16 rounded-full bg-secondary-100 flex items-center justify-center mb-4">
+                    <i data-lucide="users" class="h-8 w-8 text-secondary-600"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Expert Faculty</h3>
+                <p class="text-gray-600">Experienced educators dedicated to nurturing young minds and fostering growth</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="mx-auto h-16 w-16 rounded-full bg-accent-100 flex items-center justify-center mb-4">
+                    <i data-lucide="home" class="h-8 w-8 text-accent-600"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Boarding Facilities</h3>
+                <p class="text-gray-600">Safe, comfortable boarding environment with 24/7 supervision and care</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="mx-auto h-16 w-16 rounded-full bg-success-100 flex items-center justify-center mb-4">
+                    <i data-lucide="activity" class="h-8 w-8 text-success-600"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Holistic Development</h3>
+                <p class="text-gray-600">Focus on academic, physical, and character development for well-rounded individuals</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="mx-auto h-16 w-16 rounded-full bg-warning-100 flex items-center justify-center mb-4">
+                    <i data-lucide="globe" class="h-8 w-8 text-warning-600"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Global Perspective</h3>
+                <p class="text-gray-600">International curriculum and cultural diversity preparation for global citizenship</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="mx-auto h-16 w-16 rounded-full bg-error-100 flex items-center justify-center mb-4">
+                    <i data-lucide="heart" class="h-8 w-8 text-error-600"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Caring Environment</h3>
+                <p class="text-gray-600">Nurturing atmosphere where every student feels valued and supported</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-16 bg-primary-900 text-white">
+    <div class="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-bold mb-4">Ready to Begin Your Journey?</h2>
+        <p class="text-xl text-primary-100 mb-8">Join the Regisbridge family and unlock your potential</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{% url 'public:admissions' %}" class="btn-accent text-lg px-8 py-4">
+                <i data-lucide="graduation-cap" class="w-5 h-5 mr-2"></i>
+                Start Application
+            </a>
+            <a href="{% url 'public:contact' %}" class="btn-secondary text-lg px-8 py-4">
+                <i data-lucide="phone" class="w-5 h-5 mr-2"></i>
+                Contact Us
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

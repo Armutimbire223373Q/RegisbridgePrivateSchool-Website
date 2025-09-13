@@ -1,0 +1,6 @@
+# filepath: c:\Users\armut\Dev\1.0.1\regisbridge\settings.py
+INSTALLED_APPS = [
+    # ...existing apps...
+    'fees',
+    # ...other apps...
+]

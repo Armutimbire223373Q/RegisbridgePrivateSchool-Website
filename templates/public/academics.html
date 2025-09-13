@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}Academics - Regisbridge College{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <div class="text-center">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6">Academic <span class="text-accent-400">Excellence</span></h1>
+            <p class="text-xl md:text-2xl mb-8 text-primary-100 max-w-3xl mx-auto">Comprehensive curriculum designed to nurture intellectual growth and prepare students for future success.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Academic Programs Section -->
+<section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Academic Programs</h2>
+            <p class="text-lg text-gray-600">Comprehensive education from primary to secondary levels</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Primary Education -->
+            <div class="bg-white rounded-2xl shadow-md p-8 text-center">
+                <div class="mx-auto h-16 w-16 rounded-full bg-primary-100 flex items-center justify-center mb-6">
+                    <i data-lucide="book-open" class="h-8 w-8 text-primary-600"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">Primary Education</h3>
+                <p class="text-gray-600 mb-6">Foundation years (Grades 1-6) focusing on core subjects and character development.</p>
+                <ul class="text-sm text-gray-600 space-y-2 text-left">
+                    <li class="flex items-center">
+                        <i data-lucide="check" class="h-4 w-4 text-success-500 mr-2"></i>
+                        English & Mathematics
+                    </li>
+                    <li class="flex items-center">
+                        <i data-lucide="check" class="h-4 w-4 text-success-500 mr-2"></i>
+                        Science & Social Studies
+                    </li>
+                    <li class="flex items-center">
+                        <i data-lucide="check" class="h-4 w-4 text-success-500 mr-2"></i>
+                        Arts & Physical Education
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Secondary Education -->
+            <div class="bg-white rounded-2xl shadow-md p-8 text-center">
+                <div class="mx-auto h-16 w-16 rounded-full bg-accent-100 flex items-center justify-center mb-6">
+                    <i data-lucide="graduation-cap" class="h-8 w-8 text-accent-600"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">Secondary Education</h3>
+                <p class="text-gray-600 mb-6">Advanced studies (Grades 7-12) with specialized subject tracks and career preparation.</p>
+                <ul class="text-sm text-gray-600 space-y-2 text-left">
+                    <li class="flex items-center">
+                        <i data-lucide="check" class="h-4 w-4 text-success-500 mr-2"></i>
+                        Core Academic Subjects
+                    </li>
+                    <li class="flex items-center">
+                        <i data-lucide="check" class="h-4 w-4 text-success-500 mr-2"></i>
+                        Elective Courses
+                    </li>
+                    <li class="flex items-center">
+                        <i data-lucide="check" class="h-4 w-4 text-success-500 mr-2"></i>
+                        College Preparation
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Boarding Education -->
+            <div class="bg-white rounded-2xl shadow-md p-8 text-center">
+                <div class="mx-auto h-16 w-16 rounded-full bg-success-100 flex items-center justify-center mb-6">
+                    <i data-lucide="home" class="h-8 w-8 text-success-600"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">Boarding Education</h3>
+                <p class="text-gray-600 mb-6">24/7 learning environment with comprehensive support and supervision.</p>
+                <ul class="text-sm text-gray-600 space-y-2 text-left">
+                    <li class="flex items-center">
+                        <i data-lucide="check" class="h-4 w-4 text-success-500 mr-2"></i>
+                        Residential Facilities
+                    </li>
+                    <li class="flex items-center">
+                        <i data-lucide="check" class="h-4 w-4 text-success-500 mr-2"></i>
+                        Academic Support
+                    </li>
+                    <li class="flex items-center">
+                        <i data-lucide="check" class="h-4 w-4 text-success-500 mr-2"></i>
+                        Life Skills Development
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Section -->
+<section class="py-16 bg-gradient-to-r from-primary-800 to-primary-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl font-bold mb-4">Ready to Start Your Academic Journey?</h2>
+        <p class="text-xl mb-8 text-primary-100">Join our community of learners and achievers</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{% url 'public:admissions' %}" class="btn-accent text-lg px-8 py-4">
+                <i data-lucide="graduation-cap" class="w-5 h-5 mr-2"></i>
+                Apply Now
+            </a>
+            <a href="{% url 'public:contact' %}" class="btn-secondary text-lg px-8 py-4">
+                <i data-lucide="phone" class="w-5 h-5 mr-2"></i>
+                Contact Us
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

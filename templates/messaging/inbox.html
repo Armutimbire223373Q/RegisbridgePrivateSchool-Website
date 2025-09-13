@@ -1,0 +1,31 @@
+{% extends 'public/base.html' %}
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h1 class="fw-bold mb-0">Inbox</h1>
+      <a href="{% url 'compose' %}" class="btn btn-primary">Compose</a>
+    </div>
+    <div class="list-group shadow-sm">
+      {% for t in threads %}
+      <a href="{% url 'thread_view' t.id %}" class="list-group-item list-group-item-action">
+        <div class="fw-semibold">{{ t.title }}</div>
+        <div class="text-muted small">Participants: {% for p in t.participants.all %}{{ p.username }}{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+      </a>
+      {% empty %}
+      <div class="alert alert-info">No threads.</div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+

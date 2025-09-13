@@ -1,0 +1,155 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block dashboard_title %}Grades Overview{% endblock %}
+{% block dashboard_heading %}Grades Management{% endblock %}
+{% block page_title %}Grades Overview{% endblock %}
+{% block page_subtitle %}Manage assessments and grades{% endblock %}
+
+{% block dashboard_main %}
+<!-- Quick Stats -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="stat-card primary">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-primary-100 text-sm font-medium">Pending Assessments</p>
+                <p class="text-3xl font-bold">{{ pending_assessments.count }}</p>
+                <p class="text-primary-100 text-sm">Need grading</p>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-full p-3">
+                <i data-lucide="clipboard-list" class="w-8 h-8 text-white"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="stat-card secondary">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-blue-100 text-sm font-medium">Recent Grades</p>
+                <p class="text-3xl font-bold">{{ recent_grades.count }}</p>
+                <p class="text-blue-100 text-sm">This month</p>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-full p-3">
+                <i data-lucide="check-circle" class="w-8 h-8 text-white"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="stat-card success">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-green-100 text-sm font-medium">My Subjects</p>
+                <p class="text-3xl font-bold">{{ subjects.count }}</p>
+                <p class="text-green-100 text-sm">Teaching subjects</p>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-full p-3">
+                <i data-lucide="book" class="w-8 h-8 text-white"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="card mb-8">
+    <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <a href="{% url 'teachers:create_assessment' %}" class="btn-primary">Create New Assessment</a>
+        <a href="{% url 'teachers:assignments_overview' %}" class="btn-secondary">View Assignments</a>
+        <a href="{% url 'teachers:my_classes' %}" class="btn-outline">View My Classes</a>
+    </div>
+</div>
+
+<!-- Pending Assessments -->
+{% if pending_assessments %}
+<div class="card mb-8">
+    <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-semibold text-gray-900">Pending Assessments</h3>
+        <span class="text-sm text-gray-500">{{ pending_assessments.count }} assessments need grading</span>
+    </div>
+    
+    <div class="space-y-4">
+        {% for assessment in pending_assessments|slice:":10" %}
+        <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
+            <div>
+                <h4 class="font-semibold text-gray-900">{{ assessment.title }}</h4>
+                <p class="text-sm text-gray-600">{{ assessment.subject.name }} • {{ assessment.classroom.name }}</p>
+                <p class="text-sm text-gray-500">Due: {{ assessment.due_date|date:"M d, Y" }} • {{ assessment.assessment_type.name }}</p>
+            </div>
+            <div class="flex items-center space-x-3">
+                <span class="text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded-full">{{ assessment.total_marks }} marks</span>
+                <a href="{% url 'teachers:grade_assessment' assessment.id %}" class="btn-sm btn-primary">Grade Now</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- My Assessments -->
+<div class="card mb-8">
+    <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-semibold text-gray-900">My Assessments</h3>
+        <a href="{% url 'teachers:create_assessment' %}" class="text-primary-600 hover:text-primary-700 text-sm font-medium">Create New</a>
+    </div>
+    
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Assessment</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Class</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Marks</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for assessment in my_assessments %}
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div>
+                            <div class="text-sm font-medium text-gray-900">{{ assessment.title }}</div>
+                            <div class="text-sm text-gray-500">{{ assessment.assessment_type.name }}</div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ assessment.subject.name }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ assessment.classroom.name }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ assessment.due_date|date:"M d, Y" }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ assessment.total_marks }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <a href="{% url 'teachers:grade_assessment' assessment.id %}" class="text-primary-600 hover:text-primary-700">Grade</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="px-6 py-4 text-center text-gray-500">No assessments found</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Recent Grades -->
+{% if recent_grades %}
+<div class="card">
+    <h3 class="text-xl font-semibold text-gray-900 mb-6">Recent Grades Entered</h3>
+    
+    <div class="space-y-3">
+        {% for grade in recent_grades|slice:":10" %}
+        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div>
+                <h4 class="font-medium text-gray-900">{{ grade.student.user.get_full_name }}</h4>
+                <p class="text-sm text-gray-600">{{ grade.assessment.title }} - {{ grade.assessment.subject.name }}</p>
+                <p class="text-sm text-gray-500">{{ grade.graded_at|date:"M d, Y H:i" }}</p>
+            </div>
+            <div class="text-right">
+                <span class="text-lg font-bold text-gray-900">{{ grade.marks_obtained }}/{{ grade.assessment.total_marks }}</span>
+                <p class="text-sm text-gray-500">{{ grade.percentage|floatformat:1 }}% ({{ grade.letter_grade }})</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

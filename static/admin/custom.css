@@ -1,0 +1,43 @@
+:root{
+  --rb-primary:#1E3A8A;
+  --rb-accent:#F59E0B;
+}
+body, input, select, textarea {
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+}
+#header{
+  background: var(--rb-primary);
+}
+#branding h1, #branding h1 a, #user-tools a{
+  color:#fff !important;
+}
+.rb-branding{display:flex;align-items:center;gap:12px}
+.rb-branding .rb-logo{height:28px;width:auto}
+.rb-branding .rb-motto{color:#c7d2fe;font-size:12px;margin-left:6px}
+.submit-row input.default{background:var(--rb-primary)}
+.module h2, .module caption, .inline-group h2{background:linear-gradient(90deg, var(--rb-primary), #2a4bb3); color:#fff}
+.button, input[type=submit].default, .submit-row input{
+  border-radius:8px;
+}
+.selector-chosen h2{background:var(--rb-accent)}
+.rb-login-brand{text-align:center;margin-bottom:12px}
+.rb-login-brand .rb-logo{height:40px;margin-bottom:6px}
+/* Stat cards in custom admin index */
+.dashboard .module{border-radius:10px;border:1px solid #e5e7eb}
+.app-list .module{border-radius:12px}
+.module{background:#fff}
+.breadcrumbs{background:#fff;border-bottom:1px solid #e5e7eb}
+.object-tools a, .button, input[type=submit].default, .submit-row input{box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.change-list .changelist-form .results{border-radius:12px;overflow:hidden}
+.change-list .paginator{border-top:1px solid #e5e7eb}
+.filter-wrapper .filter-title{font-weight:600}
+.selector .selector-available h2, .selector .selector-chosen h2{border-radius:8px}
+.submit-row{display:flex;gap:8px}
+.inline-group .tabular tr.has_original td{background:#fafafa}
+.delete-confirmation .cancel-link{border-radius:8px}
+/* Layout guards to avoid overlap with Django admin floats */
+.rb-section{clear:both;margin-bottom:16px;position:relative;z-index:1}
+.rb-section .tw-rounded-xl{position:relative}
+.rb-grid{clear:both}
+canvas{max-width:100%}
+

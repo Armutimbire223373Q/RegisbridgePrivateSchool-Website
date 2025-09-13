@@ -1,0 +1,200 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block dashboard_title %}{{ child.user.get_full_name }} - Grades{% endblock %}
+{% block dashboard_heading %}Academic Performance{% endblock %}
+{% block page_title %}{{ child.user.get_full_name }} - Grades{% endblock %}
+{% block page_subtitle %}Detailed academic performance and grades{% endblock %}
+
+{% block dashboard_main %}
+<!-- Back Navigation -->
+<div class="mb-6">
+    <a href="{% url 'parents:child_detail' child.id %}" class="btn-secondary">
+        <i data-lucide="arrow-left" class="w-4 h-4 mr-2"></i>
+        Back to {{ child.user.first_name }}'s Details
+    </a>
+</div>
+
+<!-- Subject Averages -->
+{% if subject_averages %}
+<div class="card mb-8">
+    <h3 class="text-xl font-semibold text-gray-900 mb-6">Subject Averages</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for subject, average in subject_averages.items %}
+        <div class="border border-gray-200 rounded-lg p-4 text-center">
+            <h4 class="font-semibold text-gray-900 mb-2">{{ subject }}</h4>
+            <div class="text-3xl font-bold mb-2 {% if average >= 80 %}text-green-600{% elif average >= 70 %}text-amber-600{% elif average >= 60 %}text-orange-600{% else %}text-red-600{% endif %}">
+                {{ average|floatformat:1 }}%
+            </div>
+            <div class="text-sm text-gray-500">
+                {% if average >= 80 %}
+                    Excellent
+                {% elif average >= 70 %}
+                    Good
+                {% elif average >= 60 %}
+                    Satisfactory
+                {% else %}
+                    Needs Improvement
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Detailed Grades -->
+<div class="card">
+    <h3 class="text-xl font-semibold text-gray-900 mb-6">Detailed Grade Records</h3>
+    
+    {% if grades %}
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Date
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Subject
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Assessment
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Score
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Percentage
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Grade
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Remarks
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for grade in grades %}
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {{ grade.graded_at|date:"M d, Y" }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {{ grade.assessment.subject.name }}
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-500">
+                        <div>
+                            <p class="font-medium">{{ grade.assessment.title }}</p>
+                            <p class="text-xs text-gray-400">{{ grade.assessment.get_assessment_type_display }}</p>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {{ grade.marks_obtained }}/{{ grade.assessment.max_marks }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <span class="{% if grade.percentage >= 80 %}text-green-600{% elif grade.percentage >= 70 %}text-amber-600{% elif grade.percentage >= 60 %}text-orange-600{% else %}text-red-600{% endif %}">
+                            {{ grade.percentage|floatformat:1 }}%
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {% if grade.letter_grade == 'A' %}bg-green-100 text-green-800{% elif grade.letter_grade == 'B' %}bg-blue-100 text-blue-800{% elif grade.letter_grade == 'C' %}bg-amber-100 text-amber-800{% elif grade.letter_grade == 'D' %}bg-orange-100 text-orange-800{% else %}bg-red-100 text-red-800{% endif %}">
+                            {{ grade.letter_grade|default:"-" }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-500">
+                        {{ grade.remarks|default:"-" }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Performance Summary -->
+    <div class="mt-8 grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="text-center p-4 bg-green-50 rounded-lg">
+            <div class="text-2xl font-bold text-green-600">
+                {% with excellent_count=0 %}
+                    {% for grade in grades %}
+                        {% if grade.percentage >= 80 %}{{ forloop.counter }}{% endif %}
+                    {% empty %}0{% endfor %}
+                {% endwith %}
+            </div>
+            <div class="text-sm text-green-600 font-medium">Excellent (80%+)</div>
+        </div>
+        
+        <div class="text-center p-4 bg-blue-50 rounded-lg">
+            <div class="text-2xl font-bold text-blue-600">
+                {% with good_count=0 %}
+                    {% for grade in grades %}
+                        {% if grade.percentage >= 70 and grade.percentage < 80 %}{{ forloop.counter }}{% endif %}
+                    {% empty %}0{% endfor %}
+                {% endwith %}
+            </div>
+            <div class="text-sm text-blue-600 font-medium">Good (70-79%)</div>
+        </div>
+        
+        <div class="text-center p-4 bg-amber-50 rounded-lg">
+            <div class="text-2xl font-bold text-amber-600">
+                {% with satisfactory_count=0 %}
+                    {% for grade in grades %}
+                        {% if grade.percentage >= 60 and grade.percentage < 70 %}{{ forloop.counter }}{% endif %}
+                    {% empty %}0{% endfor %}
+                {% endwith %}
+            </div>
+            <div class="text-sm text-amber-600 font-medium">Satisfactory (60-69%)</div>
+        </div>
+        
+        <div class="text-center p-4 bg-red-50 rounded-lg">
+            <div class="text-2xl font-bold text-red-600">
+                {% with needs_improvement_count=0 %}
+                    {% for grade in grades %}
+                        {% if grade.percentage < 60 %}{{ forloop.counter }}{% endif %}
+                    {% empty %}0{% endfor %}
+                {% endwith %}
+            </div>
+            <div class="text-sm text-red-600 font-medium">Needs Improvement (&lt;60%)</div>
+        </div>
+    </div>
+    
+    {% else %}
+    <div class="text-center py-12">
+        <i data-lucide="book-open" class="w-16 h-16 text-gray-400 mx-auto mb-4"></i>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">No Grades Available</h3>
+        <p class="text-gray-600">No academic grades found for {{ child.user.get_full_name }}.</p>
+        <p class="text-gray-600 text-sm mt-1">Grades will appear here once assessments are graded.</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Study Tips -->
+{% if grades %}
+<div class="card mt-8">
+    <h3 class="text-xl font-semibold text-gray-900 mb-4">Performance Insights</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+            <h4 class="font-semibold text-green-600 mb-2">Strong Subjects</h4>
+            <div class="space-y-1">
+                {% for subject, average in subject_averages.items %}
+                    {% if average >= 75 %}
+                    <p class="text-sm text-gray-600">• {{ subject }} ({{ average|floatformat:1 }}%)</p>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div>
+            <h4 class="font-semibold text-amber-600 mb-2">Areas for Improvement</h4>
+            <div class="space-y-1">
+                {% for subject, average in subject_averages.items %}
+                    {% if average < 70 %}
+                    <p class="text-sm text-gray-600">• {{ subject }} ({{ average|floatformat:1 }}%)</p>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

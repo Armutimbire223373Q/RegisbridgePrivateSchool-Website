@@ -1,0 +1,143 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - RegisBridge College</title>
+    <link href="{% static 'styles.css' %}" rel="stylesheet">
+    <link rel="icon" href="{% static 'img/logo.jpg' %}">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #1b1f24; }
+        .header { background: linear-gradient(90deg, #123d82, #1b56b0); color: white; padding: 1rem 0; position: fixed; width: 100%; top: 0; z-index: 1000; }
+        .nav { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 2rem; }
+        .logo { display: flex; align-items: center; font-size: 1.5rem; font-weight: bold; }
+        .logo img { height: 40px; width: 40px; border-radius: 50%; margin-right: 0.5rem; object-fit: cover; }
+        .nav-links a { color: white; text-decoration: none; margin-left: 2rem; transition: opacity 0.2s; }
+        .nav-links a:hover { opacity: 0.8; }
+        .hero { background: linear-gradient(135deg, #123d82 0%, #1b56b0 100%); color: white; padding: 8rem 2rem 4rem; text-align: center; }
+        .hero h1 { font-size: 3rem; margin-bottom: 1rem; font-weight: 700; }
+        .hero p { font-size: 1.2rem; margin-bottom: 2rem; opacity: 0.9; }
+        .content { max-width: 1200px; margin: 0 auto; padding: 4rem 2rem; }
+        .section { margin-bottom: 4rem; }
+        .section h2 { font-size: 2.5rem; color: #123d82; margin-bottom: 2rem; text-align: center; }
+        .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; margin-top: 3rem; }
+        .contact-info { background: white; padding: 3rem; border-radius: 1rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .contact-form { background: white; padding: 3rem; border-radius: 1rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .contact-item { display: flex; align-items: center; margin-bottom: 2rem; }
+        .contact-item i { font-size: 1.5rem; color: #123d82; margin-right: 1rem; width: 30px; }
+        .contact-item div h4 { color: #123d82; margin-bottom: 0.5rem; }
+        .contact-item div p { color: #6c757d; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: #123d82; font-weight: 500; }
+        .form-group input, .form-group textarea { width: 100%; padding: 0.75rem; border: 1px solid #dee2e6; border-radius: 0.5rem; font-size: 1rem; font-family: inherit; }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #123d82; box-shadow: 0 0 0 3px rgba(18, 61, 130, 0.1); }
+        .form-group textarea { resize: vertical; min-height: 120px; }
+        .submit-btn { background: #123d82; color: white; border: none; padding: 0.75rem 2rem; border-radius: 0.5rem; font-size: 1rem; cursor: pointer; transition: background-color 0.2s; }
+        .submit-btn:hover { background: #1b56b0; }
+        .footer { background: #f8f9fa; padding: 3rem 2rem; text-align: center; color: #6c757d; border-top: 1px solid #dee2e6; }
+        .footer a { color: #123d82; text-decoration: none; }
+        @media (max-width: 768px) { .contact-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">
+                <img src="{% static 'img/logo.jpg' %}" alt="RegisBridge">
+                <span>RegisBridge</span>
+            </div>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/about/">About</a>
+                <a href="/academics/">Academics</a>
+                <a href="/admissions/">Admissions</a>
+                <a href="/student-life/">Student Life</a>
+                <a href="/contact/">Contact</a>
+                <a href="/admin/">Admin</a>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>Contact Us</h1>
+        <p>Get in touch with our team for any inquiries</p>
+    </section>
+
+    <main class="content">
+        <section class="section">
+            <h2>Get In Touch</h2>
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <h3 style="color: #123d82; margin-bottom: 2rem; font-size: 1.5rem;">Contact Information</h3>
+                    
+                    <div class="contact-item">
+                        <i>📍</i>
+                        <div>
+                            <h4>Address</h4>
+                            <p>123 Education Street<br>Academic District<br>City, State 12345</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i>📞</i>
+                        <div>
+                            <h4>Phone</h4>
+                            <p>+1 (555) 123-4567<br>+1 (555) 123-4568</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i>✉️</i>
+                        <div>
+                            <h4>Email</h4>
+                            <p>info@regisbridge.edu<br>admissions@regisbridge.edu</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i>🕒</i>
+                        <div>
+                            <h4>Office Hours</h4>
+                            <p>Monday - Friday: 8:00 AM - 5:00 PM<br>Saturday: 9:00 AM - 1:00 PM</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-form">
+                    <h3 style="color: #123d82; margin-bottom: 2rem; font-size: 1.5rem;">Send us a Message</h3>
+                    
+                    <form>
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" id="subject" name="subject" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" name="message" required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="submit-btn">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 <a href="#">RegisBridge College</a>. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>

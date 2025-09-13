@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - Regisbridge College{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">Profile</h1>
+            <p class="mt-2 text-gray-600">Manage your account information and preferences</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Profile Card -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-2xl shadow-md p-6">
+                    <div class="text-center">
+                        <div class="mx-auto h-24 w-24 rounded-full bg-primary-100 flex items-center justify-center">
+                            <i data-lucide="user" class="h-12 w-12 text-primary-600"></i>
+                        </div>
+                        <h2 class="mt-4 text-xl font-semibold text-gray-900">{{ user.get_full_name|default:user.username }}</h2>
+                        <p class="text-sm text-gray-500">{{ user.get_role_display }}</p>
+                        <p class="text-sm text-gray-500">{{ user.email }}</p>
+                    </div>
+
+                    <div class="mt-6 space-y-4">
+                        <a href="{% url 'users:edit_profile' %}" class="btn-primary w-full">
+                            <i data-lucide="edit" class="w-4 h-4 mr-2"></i>
+                            Edit Profile
+                        </a>
+                        <a href="{% url 'users:settings' %}" class="btn-secondary w-full">
+                            <i data-lucide="settings" class="w-4 h-4 mr-2"></i>
+                            Settings
+                        </a>
+                        <a href="{% url 'users:password_change' %}" class="btn-secondary w-full">
+                            <i data-lucide="lock" class="w-4 h-4 mr-2"></i>
+                            Change Password
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Details -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-2xl shadow-md">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h3 class="text-lg font-medium text-gray-900">Personal Information</h3>
+                    </div>
+                    
+                    <div class="px-6 py-6">
+                        <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">First Name</dt>
+                                <dd class="mt-1 text-sm text-gray-900">{{ user.first_name|default:"Not provided" }}</dd>
+                            </div>
+                            
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Last Name</dt>
+                                <dd class="mt-1 text-sm text-gray-900">{{ user.last_name|default:"Not provided" }}</dd>
+                            </div>
+                            
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Username</dt>
+                                <dd class="mt-1 text-sm text-gray-900">{{ user.username }}</dd>
+                            </div>
+                            
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Email</dt>
+                                <dd class="mt-1 text-sm text-gray-900">{{ user.email }}</dd>
+                            </div>
+                            
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Phone Number</dt>
+                                <dd class="mt-1 text-sm text-gray-900">{{ user.phone_number|default:"Not provided" }}</dd>
+                            </div>
+                            
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Role</dt>
+                                <dd class="mt-1 text-sm text-gray-900">{{ user.get_role_display }}</dd>
+                            </div>
+                            
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Date Joined</dt>
+                                <dd class="mt-1 text-sm text-gray-900">{{ user.date_joined|date:"F j, Y" }}</dd>
+                            </div>
+                            
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Last Login</dt>
+                                <dd class="mt-1 text-sm text-gray-900">{{ user.last_login|date:"F j, Y g:i A"|default:"Never" }}</dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+
+                <!-- Account Status -->
+                <div class="mt-6 bg-white rounded-2xl shadow-md">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h3 class="text-lg font-medium text-gray-900">Account Status</h3>
+                    </div>
+                    
+                    <div class="px-6 py-6">
+                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    <div class="h-8 w-8 rounded-full bg-success-100 flex items-center justify-center">
+                                        <i data-lucide="check" class="h-4 w-4 text-success-600"></i>
+                                    </div>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-gray-900">Email Verified</p>
+                                    <p class="text-sm text-gray-500">{{ user.is_active|yesno:"Active,Inactive" }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    <div class="h-8 w-8 rounded-full bg-primary-100 flex items-center justify-center">
+                                        <i data-lucide="shield" class="h-4 w-4 text-primary-600"></i>
+                                    </div>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-gray-900">Account Status</p>
+                                    <p class="text-sm text-gray-500">{{ user.is_active|yesno:"Active,Inactive" }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

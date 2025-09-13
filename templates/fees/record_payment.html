@@ -1,0 +1,26 @@
+{% extends 'public/base.html' %}
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <h1 class="fw-bold mb-3">Record Payment - Invoice {{ invoice.id }}</h1>
+    <p class="text-muted">{{ invoice.student.user.get_full_name|default:invoice.student.user.username }} · {{ invoice.term }}</p>
+    <form method="post" class="card shadow-sm p-3">
+      {% csrf_token %}
+      <div class="row g-2 mb-3">
+        <div class="col-md-4"><label class="form-label">Amount</label><input class="form-control" type="number" name="amount" step="0.01" required></div>
+        <div class="col-md-4">
+          <label class="form-label">Method</label>
+          <select class="form-select" name="method">
+            <option value="CASH">Cash</option>
+            <option value="BANK">Bank</option>
+            <option value="MOBILE">Mobile Money</option>
+          </select>
+        </div>
+        <div class="col-md-4"><label class="form-label">Reference</label><input class="form-control" name="reference"></div>
+      </div>
+      <div class="text-end"><button class="btn btn-primary" type="submit">Save</button></div>
+    </form>
+  </div>
+</section>
+{% endblock %}
+

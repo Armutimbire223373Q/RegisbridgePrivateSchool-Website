@@ -1,0 +1,90 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block dashboard_title %}Attendance Overview{% endblock %}
+{% block dashboard_heading %}Attendance Management{% endblock %}
+{% block page_title %}Attendance Overview{% endblock %}
+{% block page_subtitle %}Manage attendance for your classes{% endblock %}
+
+{% block dashboard_main %}
+<!-- Today's Attendance -->
+<div class="card mb-8">
+    <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-semibold text-gray-900">Today's Attendance</h3>
+        <span class="text-sm text-gray-500">{{ today_sessions.count }} sessions today</span>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for class in teacher_classes %}
+        <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
+            <div class="flex items-center justify-between mb-3">
+                <h4 class="font-semibold text-gray-900">{{ class.name }}</h4>
+                {% with session=today_sessions|dict_key:class.id %}
+                {% if session %}
+                    <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Completed</span>
+                {% else %}
+                    <span class="text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded-full">Pending</span>
+                {% endif %}
+                {% endwith %}
+            </div>
+            <p class="text-sm text-gray-600 mb-4">{{ class.students.count }} students</p>
+            <a href="{% url 'teachers:take_attendance' class.id %}" class="btn-primary w-full">
+                {% with session=today_sessions|dict_key:class.id %}
+                {% if session %}Update Attendance{% else %}Take Attendance{% endif %}
+                {% endwith %}
+            </a>
+        </div>
+        {% empty %}
+        <div class="col-span-full text-center py-8">
+            <i data-lucide="users" class="w-16 h-16 text-gray-400 mx-auto mb-3"></i>
+            <p class="text-gray-500">No classes assigned</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Recent Attendance Sessions -->
+<div class="card">
+    <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-semibold text-gray-900">Recent Attendance Sessions</h3>
+        <a href="{% url 'teachers:my_classes' %}" class="text-primary-600 hover:text-primary-700 text-sm font-medium">View All Classes</a>
+    </div>
+    
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Class</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Students</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Taken By</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for session in recent_sessions %}
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ session.date|date:"M d, Y" }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ session.classroom.name }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ session.records.count }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {% if session.taken_by %}
+                            {{ session.taken_by.get_full_name }}
+                        {% else %}
+                            System
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <a href="{% url 'teachers:take_attendance' session.classroom.id %}?date={{ session.date|date:'Y-m-d' }}" 
+                           class="text-primary-600 hover:text-primary-700">View/Edit</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">No attendance sessions yet</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

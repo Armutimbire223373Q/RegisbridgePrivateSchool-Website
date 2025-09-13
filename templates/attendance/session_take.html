@@ -1,0 +1,49 @@
+{% extends 'public/base.html' %}
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <h1 class="fw-bold mb-1">Attendance - {{ session.classroom.grade_level.name }} {{ session.classroom.name }}</h1>
+    <p class="text-muted">Date: {{ session.date }}</p>
+
+    <form method="post" class="card shadow-sm">
+      {% csrf_token %}
+      <div class="table-responsive">
+        <table class="table align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>#</th>
+              <th>Student</th>
+              <th>Status</th>
+              <th>Remarks</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for s in students %}
+            {% with rec=existing|get_item:s.id %}{% endwith %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ s.user.get_full_name|default:s.user.username }} <span class="text-muted small">({{ s.admission_number }})</span></td>
+              <td>
+                <select class="form-select" name="status_{{ s.id }}">
+                  <option value="PRESENT" {% if existing_status.s.id == 'PRESENT' %}selected{% endif %}>Present</option>
+                  <option value="ABSENT" {% if existing_status.s.id == 'ABSENT' %}selected{% endif %}>Absent</option>
+                  <option value="LATE" {% if existing_status.s.id == 'LATE' %}selected{% endif %}>Late</option>
+                </select>
+              </td>
+              <td>
+                <input class="form-control" type="text" name="remarks_{{ s.id }}" value="{{ existing_remarks.s.id|default:'' }}" />
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="p-3 border-top text-end">
+        <a href="{% url 'attendance_classes' %}" class="btn btn-outline-secondary">Back</a>
+        <button type="submit" class="btn btn-primary">Save Attendance</button>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}
+

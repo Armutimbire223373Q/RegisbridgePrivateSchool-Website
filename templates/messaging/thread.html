@@ -1,0 +1,33 @@
+{% extends 'public/base.html' %}
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <h1 class="fw-bold mb-3">{{ thread.title }}</h1>
+    <div class="card shadow-sm mb-3">
+      <div class="card-body">
+        {% for m in messages %}
+        <div class="mb-2">
+          <div class="fw-semibold">{{ m.sender.username }} <span class="text-muted small">{{ m.created_at }}</span></div>
+          <div>{{ m.content|linebreaks }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <form method="post" class="card shadow-sm p-3">
+      {% csrf_token %}
+      <textarea name="content" class="form-control mb-2" rows="3" placeholder="Write a message..."></textarea>
+      <div class="text-end"><button class="btn btn-primary" type="submit">Send</button></div>
+    </form>
+  </div>
+</section>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,37 @@
+{% extends 'public/base.html' %}
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h1 class="fw-bold mb-0">{{ classroom.grade_level.name }} {{ classroom.name }} Timetable</h1>
+      <a href="{% url 'timetable_classes' %}" class="btn btn-outline-secondary">Back to Classes</a>
+    </div>
+
+    <div class="row g-4">
+      {% for i,label in classroom.lessons.first.timeslot.WEEKDAY_CHOICES %}{% endfor %}
+      {% for idx,label in weekdays %}
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-header fw-semibold">{{ label }}</div>
+          <ul class="list-group list-group-flush">
+            {% for l in grouped.forloop.parentloop.counter0 %}{% endfor %}
+            {% for l in grouped.idx %}
+            <li class="list-group-item d-flex justify-content-between">
+              <div>
+                <div class="fw-semibold">{{ l.subject.name }}</div>
+                <div class="text-muted small">{{ l.teacher.user.get_full_name|default:l.teacher.user.username }}</div>
+              </div>
+              <div class="text-muted small">{{ l.timeslot.start_time }} - {{ l.timeslot.end_time }}</div>
+            </li>
+            {% empty %}
+            <li class="list-group-item text-muted">No lessons.</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}
+

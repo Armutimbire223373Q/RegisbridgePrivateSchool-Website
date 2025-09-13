@@ -1,0 +1,179 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block dashboard_title %}Teacher Portal{% endblock %}
+{% block dashboard_heading %}Teacher Portal{% endblock %}
+{% block page_title %}Teacher Dashboard{% endblock %}
+{% block page_subtitle %}Manage your classes, grades, and assignments{% endblock %}
+
+{% block dashboard_main %}
+<!-- Quick Stats -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <!-- My Classes -->
+    <div class="stat-card primary">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-primary-100 text-sm font-medium">My Classes</p>
+                <p class="text-3xl font-bold">{{ teacher_classes.count }}</p>
+                <p class="text-primary-100 text-sm">Active classes</p>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-full p-3">
+                <i data-lucide="users" class="w-8 h-8 text-white"></i>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Total Students -->
+    <div class="stat-card secondary">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-blue-100 text-sm font-medium">Total Students</p>
+                <p class="text-3xl font-bold">{{ total_students }}</p>
+                <p class="text-blue-100 text-sm">Across all classes</p>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-full p-3">
+                <i data-lucide="user-check" class="w-8 h-8 text-white"></i>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pending Assignments -->
+    <div class="stat-card accent">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-amber-100 text-sm font-medium">Pending Grading</p>
+                <p class="text-3xl font-bold">{{ pending_assignments }}</p>
+                <p class="text-amber-100 text-sm">Need attention</p>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-full p-3">
+                <i data-lucide="file-text" class="w-8 h-8 text-white"></i>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Subjects -->
+    <div class="stat-card success">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-green-100 text-sm font-medium">My Subjects</p>
+                <p class="text-3xl font-bold">{{ subjects.count }}</p>
+                <p class="text-green-100 text-sm">Teaching subjects</p>
+            </div>
+            <div class="bg-white bg-opacity-20 rounded-full p-3">
+                <i data-lucide="book" class="w-8 h-8 text-white"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <!-- Take Attendance -->
+    <div class="card">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Take Attendance</h3>
+        <p class="text-gray-600 mb-4 text-sm">Record attendance for your classes</p>
+        <a href="{% url 'teachers:attendance_overview' %}" class="btn-primary w-full">Mark Attendance</a>
+    </div>
+    
+    <!-- Grade Assignments -->
+    <div class="card">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Grade Work</h3>
+        <p class="text-gray-600 mb-4 text-sm">Grade assessments and assignments</p>
+        <a href="{% url 'teachers:grades_overview' %}" class="btn-secondary w-full">View Grades</a>
+    </div>
+    
+    <!-- Create Assignment -->
+    <div class="card">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">New Assignment</h3>
+        <p class="text-gray-600 mb-4 text-sm">Create homework and projects</p>
+        <a href="{% url 'teachers:create_assignment' %}" class="btn-accent w-full">Create Assignment</a>
+    </div>
+    
+    <!-- Send Message -->
+    <div class="card">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Send Message</h3>
+        <p class="text-gray-600 mb-4 text-sm">Message students and parents</p>
+        <a href="{% url 'teachers:compose_message' %}" class="btn-success w-full">Compose Message</a>
+    </div>
+</div>
+
+<!-- Today's Schedule -->
+{% if today_lessons %}
+<div class="card mb-8">
+    <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-semibold text-gray-900">Today's Schedule</h3>
+        <a href="{% url 'teachers:my_timetable' %}" class="text-primary-600 hover:text-primary-700 text-sm font-medium">Full Timetable</a>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for lesson in today_lessons %}
+        <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-sm font-medium text-primary-600">{{ lesson.timeslot.start_time|time:"H:i" }} - {{ lesson.timeslot.end_time|time:"H:i" }}</span>
+                <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">{{ lesson.subject.code }}</span>
+            </div>
+            <h4 class="font-semibold text-gray-900">{{ lesson.subject.name }}</h4>
+            <p class="text-sm text-gray-600">{{ lesson.classroom.name }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- My Classes Overview -->
+<div class="card mb-8">
+    <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-semibold text-gray-900">My Classes</h3>
+        <a href="{% url 'teachers:my_classes' %}" class="text-primary-600 hover:text-primary-700 text-sm font-medium">View All</a>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for class in teacher_classes %}
+        <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
+            <div class="flex items-center justify-between mb-3">
+                <h4 class="font-semibold text-gray-900">{{ class.name }}</h4>
+                <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">{{ class.students.count }} students</span>
+            </div>
+            <p class="text-sm text-gray-600 mb-3">Grade {{ class.grade_level.name }}</p>
+            <div class="flex space-x-2">
+                <a href="{% url 'teachers:class_detail' class.id %}" class="text-primary-600 hover:text-primary-700 text-sm">View</a>
+                <a href="{% url 'teachers:take_attendance' class.id %}" class="text-gray-600 hover:text-gray-700 text-sm">Attendance</a>
+                <a href="{% url 'teachers:class_students' class.id %}" class="text-gray-600 hover:text-gray-700 text-sm">Students</a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-full text-center py-8">
+            <i data-lucide="users" class="w-16 h-16 text-gray-400 mx-auto mb-3"></i>
+            <p class="text-gray-500">No classes assigned yet</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Recent Submissions -->
+{% if recent_submissions %}
+<div class="card">
+    <h3 class="text-xl font-semibold text-gray-900 mb-6">Recent Submissions</h3>
+    
+    <div class="space-y-4">
+        {% for submission in recent_submissions %}
+        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div>
+                <h4 class="font-medium text-gray-900">{{ submission.assignment.title }}</h4>
+                <p class="text-sm text-gray-600">{{ submission.student.user.get_full_name }} • {{ submission.submitted_at|date:"M d, H:i" }}</p>
+            </div>
+            <div class="flex items-center space-x-3">
+                {% if submission.is_late %}
+                <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">Late</span>
+                {% endif %}
+                {% if submission.marks_obtained %}
+                <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Graded</span>
+                {% else %}
+                <a href="{% url 'teachers:assignment_detail' submission.assignment.id %}" class="text-primary-600 hover:text-primary-700 text-sm font-medium">Grade</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

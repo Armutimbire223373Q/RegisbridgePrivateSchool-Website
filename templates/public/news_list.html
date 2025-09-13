@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+
+{% block title %}News & Events - Regisbridge College{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <div class="text-center">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6">News & Events</h1>
+            <p class="text-xl md:text-2xl mb-8 text-primary-100 max-w-3xl mx-auto">
+                Stay updated with the latest happenings, announcements, and events at Regisbridge College.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- News List Section -->
+<section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Search and Filter Bar -->
+        <div class="mb-8">
+            <div class="bg-gray-50 rounded-2xl p-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Search News</label>
+                        <div class="relative">
+                            <input type="text" id="search" placeholder="Search articles..." class="input-field pl-10">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i data-lucide="search" class="h-5 w-5 text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="category" class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                        <select id="category" class="form-select">
+                            <option value="">All Categories</option>
+                            <option value="announcements">Announcements</option>
+                            <option value="events">Events</option>
+                            <option value="academic">Academic</option>
+                            <option value="sports">Sports</option>
+                            <option value="arts">Arts & Culture</option>
+                            <option value="community">Community</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="date" class="block text-sm font-medium text-gray-700 mb-2">Date Range</label>
+                        <select id="date" class="form-select">
+                            <option value="">All Time</option>
+                            <option value="today">Today</option>
+                            <option value="week">This Week</option>
+                            <option value="month">This Month</option>
+                            <option value="year">This Year</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- News Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for post in news_posts %}
+            <article class="card-hover group">
+                <div class="bg-white rounded-2xl shadow-md overflow-hidden transition-all duration-300 group-hover:shadow-lg">
+                    {% if post.featured_image %}
+                    <div class="aspect-w-16 aspect-h-9 bg-gray-200">
+                        <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full h-48 object-cover">
+                    </div>
+                    {% else %}
+                    <div class="aspect-w-16 aspect-h-9 bg-gray-200 flex items-center justify-center">
+                        <i data-lucide="image" class="h-12 w-12 text-gray-400"></i>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="p-6">
+                        <div class="flex items-center justify-between text-sm text-gray-500 mb-3">
+                            <div class="flex items-center">
+                                <i data-lucide="calendar" class="w-4 h-4 mr-1"></i>
+                                {{ post.published_date|date:"M j, Y" }}
+                            </div>
+                            {% if post.category %}
+                            <span class="px-2 py-1 bg-primary-100 text-primary-800 text-xs rounded-full">
+                                {{ post.category }}
+                            </span>
+                            {% endif %}
+                        </div>
+                        
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3 group-hover:text-primary-600 transition-colors line-clamp-2">
+                            {{ post.title }}
+                        </h3>
+                        
+                        <p class="text-gray-600 mb-4 line-clamp-3">
+                            {{ post.excerpt|default:post.content|truncatewords:25 }}
+                        </p>
+                        
+                        <div class="flex items-center justify-between">
+                            <a href="{% url 'public:news_detail' post.slug %}" class="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium">
+                                Read More
+                                <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>
+                            </a>
+                            
+                            {% if post.author %}
+                            <div class="flex items-center text-sm text-gray-500">
+                                <i data-lucide="user" class="w-4 h-4 mr-1"></i>
+                                {{ post.author }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </article>
+            {% empty %}
+            <div class="col-span-full text-center py-16">
+                <div class="mx-auto h-24 w-24 rounded-full bg-gray-100 flex items-center justify-center mb-6">
+                    <i data-lucide="newspaper" class="h-12 w-12 text-gray-400"></i>
+                </div>
+                <h3 class="text-2xl font-medium text-gray-900 mb-2">No News Available</h3>
+                <p class="text-gray-600 mb-6">Check back soon for updates and announcements.</p>
+                <a href="{% url 'public:home' %}" class="btn-primary">
+                    <i data-lucide="home" class="w-4 h-4 mr-2"></i>
+                    Return Home
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if news_posts.has_other_pages %}
+        <div class="mt-12 flex justify-center">
+            <nav class="flex items-center space-x-2">
+                {% if news_posts.has_previous %}
+                <a href="?page={{ news_posts.previous_page_number }}" class="btn-secondary px-3 py-2">
+                    <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                    Previous
+                </a>
+                {% endif %}
+                
+                {% for num in news_posts.paginator.page_range %}
+                    {% if news_posts.number == num %}
+                    <span class="px-3 py-2 bg-primary-600 text-white rounded-lg">{{ num }}</span>
+                    {% elif num > news_posts.number|add:'-3' and num < news_posts.number|add:'3' %}
+                    <a href="?page={{ num }}" class="px-3 py-2 text-gray-700 hover:text-primary-600 rounded-lg">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if news_posts.has_next %}
+                <a href="?page={{ news_posts.next_page_number }}" class="btn-secondary px-3 py-2">
+                    Next
+                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                </a>
+                {% endif %}
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Featured Events Section -->
+<section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Upcoming Events</h2>
+            <p class="text-lg text-gray-600">Mark your calendar for these important dates</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="bg-white rounded-2xl shadow-md p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="bg-primary-100 rounded-full w-12 h-12 flex items-center justify-center">
+                        <i data-lucide="calendar" class="w-6 h-6 text-primary-600"></i>
+                    </div>
+                    <span class="text-sm text-gray-500">Dec 15, 2024</span>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Annual Sports Day</h3>
+                <p class="text-gray-600 mb-4">Join us for a day of athletic excellence and team spirit.</p>
+                <a href="#" class="text-primary-600 hover:text-primary-700 font-medium">Learn More</a>
+            </div>
+            
+            <div class="bg-white rounded-2xl shadow-md p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="bg-accent-100 rounded-full w-12 h-12 flex items-center justify-center">
+                        <i data-lucide="music" class="w-6 h-6 text-accent-600"></i>
+                    </div>
+                    <span class="text-sm text-gray-500">Dec 20, 2024</span>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Winter Concert</h3>
+                <p class="text-gray-600 mb-4">Experience the musical talents of our students in a festive celebration.</p>
+                <a href="#" class="text-primary-600 hover:text-primary-700 font-medium">Learn More</a>
+            </div>
+            
+            <div class="bg-white rounded-2xl shadow-md p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="bg-success-100 rounded-full w-12 h-12 flex items-center justify-center">
+                        <i data-lucide="graduation-cap" class="w-6 h-6 text-success-600"></i>
+                    </div>
+                    <span class="text-sm text-gray-500">Jan 10, 2025</span>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Open House</h3>
+                <p class="text-gray-600 mb-4">Visit our campus and learn about our programs and facilities.</p>
+                <a href="#" class="text-primary-600 hover:text-primary-700 font-medium">Learn More</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="py-16 bg-primary-900 text-white">
+    <div class="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-bold mb-4">Stay Updated</h2>
+        <p class="text-xl text-primary-100 mb-8">Subscribe to our newsletter for the latest news and updates</p>
+        
+        <form class="max-w-md mx-auto">
+            <div class="flex flex-col sm:flex-row gap-4">
+                <input type="email" placeholder="Enter your email address" class="flex-1 px-4 py-3 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-accent-500">
+                <button type="submit" class="btn-accent px-6 py-3">
+                    <i data-lucide="mail" class="w-4 h-4 mr-2"></i>
+                    Subscribe
+                </button>
+            </div>
+        </form>
+        
+        <p class="text-sm text-primary-200 mt-4">We respect your privacy. Unsubscribe at any time.</p>
+    </div>
+</section>
+{% endblock %}
+

@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Regisbridge College{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md">
+        <div class="text-center">
+            <h2 class="text-3xl font-bold text-gray-900">🎓 Regisbridge</h2>
+            <h3 class="mt-6 text-2xl font-bold text-gray-900">Create your account</h3>
+            <p class="mt-2 text-sm text-gray-600">
+                Join our academic community
+            </p>
+        </div>
+    </div>
+
+    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div class="bg-white py-8 px-4 shadow-xl rounded-2xl sm:px-10">
+            <form class="space-y-6" method="post">
+                {% csrf_token %}
+                
+                {% if form.errors %}
+                <div class="bg-error-50 border border-error-200 rounded-lg p-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i data-lucide="alert-triangle" class="w-5 h-5 text-error-400"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-error-800">
+                                Please correct the following errors:
+                            </h3>
+                            <div class="mt-2 text-sm text-error-700">
+                                <ul class="list-disc pl-5 space-y-1">
+                                    {% for field, errors in form.errors.items %}
+                                        {% for error in errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <div>
+                        <label for="id_first_name" class="block text-sm font-medium text-gray-700">
+                            First Name
+                        </label>
+                        <div class="mt-1">
+                            <input id="id_first_name" name="first_name" type="text" required 
+                                   class="input-field {% if form.first_name.errors %}error{% endif %}"
+                                   placeholder="Enter your first name">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="id_last_name" class="block text-sm font-medium text-gray-700">
+                            Last Name
+                        </label>
+                        <div class="mt-1">
+                            <input id="id_last_name" name="last_name" type="text" required 
+                                   class="input-field {% if form.last_name.errors %}error{% endif %}"
+                                   placeholder="Enter your last name">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="id_email" class="block text-sm font-medium text-gray-700">
+                        Email Address
+                    </label>
+                    <div class="mt-1">
+                        <input id="id_email" name="email" type="email" required 
+                               class="input-field {% if form.email.errors %}error{% endif %}"
+                               placeholder="Enter your email address">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="id_username" class="block text-sm font-medium text-gray-700">
+                        Username
+                    </label>
+                    <div class="mt-1">
+                        <input id="id_username" name="username" type="text" required 
+                               class="input-field {% if form.username.errors %}error{% endif %}"
+                               placeholder="Choose a username">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="id_password1" class="block text-sm font-medium text-gray-700">
+                        Password
+                    </label>
+                    <div class="mt-1">
+                        <input id="id_password1" name="password1" type="password" required 
+                               class="input-field {% if form.password1.errors %}error{% endif %}"
+                               placeholder="Create a password">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="id_password2" class="block text-sm font-medium text-gray-700">
+                        Confirm Password
+                    </label>
+                    <div class="mt-1">
+                        <input id="id_password2" name="password2" type="password" required 
+                               class="input-field {% if form.password2.errors %}error{% endif %}"
+                               placeholder="Confirm your password">
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit" class="btn-primary w-full">
+                        <i data-lucide="user-plus" class="w-4 h-4 mr-2"></i>
+                        Create Account
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-6">
+                <div class="relative">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-300" />
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-2 bg-white text-gray-500">Already have an account?</span>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <a href="{% url 'users:login' %}" class="btn-secondary w-full">
+                        <i data-lucide="log-in" class="w-4 h-4 mr-2"></i>
+                        Sign in instead
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

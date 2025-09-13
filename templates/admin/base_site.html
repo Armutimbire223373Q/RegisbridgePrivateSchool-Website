@@ -1,0 +1,122 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}RegisBridge Admin{% endblock %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link href="{% static 'styles.css' %}" rel="stylesheet">
+    <link rel="icon" href="{% static 'img/logo.jpg' %}">
+    <style>
+        /* TESTING - This should be very obvious if our template is working */
+        body::before {
+            content: "🎯 REGISBRIDGE CUSTOM TEMPLATE IS WORKING! 🎯";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #ff0000;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            z-index: 9999;
+        }
+        
+        .regisbridge-admin-wrapper { 
+            display: flex; 
+            min-height: 100vh; 
+            background: #fff; 
+            font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        }
+        .regisbridge-content { flex: 1; }
+        .sidebar { 
+            width: 250px; 
+            background: #f8f9fa; 
+            border-right: 1px solid #dee2e6;
+            padding: 1rem;
+        }
+        .content { flex: 1; }
+        .navbar-brand { 
+            display: flex; 
+            align-items: center; 
+            text-decoration: none; 
+            color: #123d82; 
+            font-weight: bold;
+            margin-bottom: 2rem;
+        }
+        .nav-item { 
+            margin-bottom: 0.5rem; 
+        }
+        .nav-link { 
+            color: #6c757d; 
+            text-decoration: none; 
+            padding: 0.5rem; 
+            border-radius: 0.25rem;
+            transition: background-color 0.2s;
+        }
+        .nav-link:hover { 
+            background-color: #e9ecef; 
+            color: #123d82;
+        }
+        .nav-link.active { 
+            background-color: #123d82; 
+            color: white;
+        }
+        .top-navbar { 
+            background: #f8f9fa; 
+            padding: 1rem; 
+            border-bottom: 1px solid #dee2e6;
+        }
+        .footer { 
+            background: #f8f9fa; 
+            padding: 1rem; 
+            border-top: 1px solid #dee2e6;
+            text-align: center;
+            color: #6c757d;
+        }
+        /* Hide Django's original header */
+        #header { display: none; }
+    </style>
+{% endblock %}
+
+{% block branding %}
+    <div class="d-flex align-items-center">
+        <img src="{% static 'img/logo.jpg' %}" alt="RegisBridge" style="height:32px;width:32px;object-fit:cover" class="me-2 rounded-circle">
+        <h1 id="site-name" style="font-size:18px;margin:0;color:#123d82">RegisBridge Admin</h1>
+    </div>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block content %}
+<div class="regisbridge-admin-wrapper">
+    <div class="sidebar">
+        <a href="{% url 'admin:index' %}" class="navbar-brand">
+            <img src="{% static 'img/logo.jpg' %}" alt="RegisBridge" style="height: 36px; width: 36px; object-fit: cover; margin-right: 0.5rem; border-radius: 50%;">
+            <span>RegisBridge</span>
+        </a>
+        <nav>
+            <a href="{% url 'admin:index' %}" class="nav-item nav-link active">Dashboard</a>
+            <a href="/" class="nav-item nav-link">Site</a>
+            <a href="{% url 'admin:password_change' %}" class="nav-item nav-link">Account</a>
+            <a href="{% url 'admin:logout' %}" class="nav-item nav-link">Logout</a>
+        </nav>
+    </div>
+
+    <div class="content">
+        <div class="top-navbar">
+            <span>{{ request.user.get_username }}</span>
+        </div>
+
+        <div style="padding: 2rem;">
+            {{ block.super }}
+        </div>
+
+        <div class="footer">
+            &copy; <a href="#" style="color: #123d82;">RegisBridge</a>, All Right Reserved.
+        </div>
+    </div>
+</div>
+{% endblock %}

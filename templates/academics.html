@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academics - RegisBridge College</title>
+    <link href="{% static 'styles.css' %}" rel="stylesheet">
+    <link rel="icon" href="{% static 'img/logo.jpg' %}">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #1b1f24; }
+        .header { background: linear-gradient(90deg, #123d82, #1b56b0); color: white; padding: 1rem 0; position: fixed; width: 100%; top: 0; z-index: 1000; }
+        .nav { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 2rem; }
+        .logo { display: flex; align-items: center; font-size: 1.5rem; font-weight: bold; }
+        .logo img { height: 40px; width: 40px; border-radius: 50%; margin-right: 0.5rem; object-fit: cover; }
+        .nav-links a { color: white; text-decoration: none; margin-left: 2rem; transition: opacity 0.2s; }
+        .nav-links a:hover { opacity: 0.8; }
+        .hero { background: linear-gradient(135deg, #123d82 0%, #1b56b0 100%); color: white; padding: 8rem 2rem 4rem; text-align: center; }
+        .hero h1 { font-size: 3rem; margin-bottom: 1rem; font-weight: 700; }
+        .hero p { font-size: 1.2rem; margin-bottom: 2rem; opacity: 0.9; }
+        .content { max-width: 1200px; margin: 0 auto; padding: 4rem 2rem; }
+        .section { margin-bottom: 4rem; }
+        .section h2 { font-size: 2.5rem; color: #123d82; margin-bottom: 2rem; text-align: center; }
+        .academic-levels { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; margin-top: 3rem; }
+        .level-card { background: white; padding: 2.5rem; border-radius: 1rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; transition: transform 0.3s; }
+        .level-card:hover { transform: translateY(-5px); }
+        .level-card h3 { color: #123d82; font-size: 1.8rem; margin-bottom: 1rem; }
+        .level-card p { color: #6c757d; margin-bottom: 1.5rem; }
+        .footer { background: #f8f9fa; padding: 3rem 2rem; text-align: center; color: #6c757d; border-top: 1px solid #dee2e6; }
+        .footer a { color: #123d82; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">
+                <img src="{% static 'img/logo.jpg' %}" alt="RegisBridge">
+                <span>RegisBridge</span>
+            </div>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/about/">About</a>
+                <a href="/academics/">Academics</a>
+                <a href="/admissions/">Admissions</a>
+                <a href="/student-life/">Student Life</a>
+                <a href="/contact/">Contact</a>
+                <a href="/admin/">Admin</a>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>Academic Excellence</h1>
+        <p>Comprehensive education from primary to secondary levels</p>
+    </section>
+
+    <main class="content">
+        <section class="section">
+            <h2>Academic Programs</h2>
+            <div class="academic-levels">
+                <div class="level-card">
+                    <h3>Primary Education</h3>
+                    <p>Foundation years (Grades 1-6) focusing on core skills and character development</p>
+                </div>
+                
+                <div class="level-card">
+                    <h3>Secondary Education</h3>
+                    <p>Advanced learning (Grades 7-12) preparing students for higher education</p>
+                </div>
+                
+                <div class="level-card">
+                    <h3>Boarding Program</h3>
+                    <p>Residential education with 24/7 supervision and academic support</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 <a href="#">RegisBridge College</a>. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>

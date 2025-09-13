@@ -1,0 +1,27 @@
+{% extends 'public/base.html' %}
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <h1 class="fw-bold mb-3">Issue Invoice - {{ student.user.get_full_name|default:student.user.username }}</h1>
+    <form method="post" class="card shadow-sm p-3">
+      {% csrf_token %}
+      <div class="mb-3"><label class="form-label">Term</label><input class="form-control" type="text" name="term" required></div>
+      <div class="mb-2 fw-semibold">Lines</div>
+      <div id="lines">
+        {% for fs in fee_structs %}
+        <div class="row g-2 mb-2">
+          <div class="col-md-8"><input class="form-control" name="desc" value="{{ fs.fee_type }} - {{ fs.term }}" /></div>
+          <div class="col-md-4"><input class="form-control" name="amount" value="{{ fs.amount }}" /></div>
+        </div>
+        {% endfor %}
+        <div class="row g-2 mb-2">
+          <div class="col-md-8"><input class="form-control" name="desc" placeholder="Description" /></div>
+          <div class="col-md-4"><input class="form-control" name="amount" placeholder="Amount" /></div>
+        </div>
+      </div>
+      <div class="text-end"><button class="btn btn-primary" type="submit">Issue</button></div>
+    </form>
+  </div>
+</section>
+{% endblock %}
+
