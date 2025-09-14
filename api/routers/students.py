@@ -24,7 +24,7 @@ async def get_students(
     search: Optional[str] = Query(None),
     grade_level: Optional[int] = Query(None),
     academic_status: Optional[str] = Query(None),
-    current_user = Depends(require_roles(["ADMIN", "TEACHER", "BOARDING_STAFF"])),
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
@@ -117,7 +117,7 @@ async def get_students(
 @router.get("/{student_id}", response_model=StudentProfileResponse)
 async def get_student(
     student_id: int,
-    current_user = Depends(require_roles(["ADMIN", "TEACHER", "BOARDING_STAFF"])),
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """

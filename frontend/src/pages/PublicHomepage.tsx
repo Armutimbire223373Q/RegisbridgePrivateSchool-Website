@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import LoadingSpinner from '../components/LoadingSpinner'
 import { 
   Calendar, 
   Users, 
@@ -74,6 +75,13 @@ const PublicHomepage: React.FC = () => {
   useEffect(() => {
     fetchHomepageData()
   }, [])
+
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
 
   const fetchHomepageData = async () => {
     try {
@@ -174,11 +182,7 @@ const PublicHomepage: React.FC = () => {
   }
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
-      </div>
-    )
+    return <LoadingSpinner size="xl" text="Loading Regisbridge College..." fullScreen={true} />
   }
 
   return (
@@ -194,11 +198,11 @@ const PublicHomepage: React.FC = () => {
               </div>
             </div>
             <nav className="hidden md:flex space-x-8">
-              <a href="#home" className="text-gray-900 hover:text-blue-600">Home</a>
-              <a href="#about" className="text-gray-900 hover:text-blue-600">About</a>
-              <a href="#programs" className="text-gray-900 hover:text-blue-600">Programs</a>
-              <a href="#news" className="text-gray-900 hover:text-blue-600">News</a>
-              <a href="#contact" className="text-gray-900 hover:text-blue-600">Contact</a>
+              <button onClick={() => scrollToSection('home')} className="text-gray-900 hover:text-blue-600 cursor-pointer">Home</button>
+              <button onClick={() => scrollToSection('about')} className="text-gray-900 hover:text-blue-600 cursor-pointer">About</button>
+              <button onClick={() => scrollToSection('programs')} className="text-gray-900 hover:text-blue-600 cursor-pointer">Programs</button>
+              <button onClick={() => scrollToSection('news')} className="text-gray-900 hover:text-blue-600 cursor-pointer">News</button>
+              <button onClick={() => scrollToSection('contact')} className="text-gray-900 hover:text-blue-600 cursor-pointer">Contact</button>
             </nav>
             <div className="flex space-x-4">
               <Link
@@ -225,12 +229,15 @@ const PublicHomepage: React.FC = () => {
               </p>
               <div className="flex space-x-4">
                 <Link
-                  to="/login"
+                  to="/admissions"
                   className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
                 >
                   Apply Now
                 </Link>
-                <button className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors">
+                <button 
+                  onClick={() => scrollToSection('about')}
+                  className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors"
+                >
                   Learn More
                 </button>
               </div>
@@ -273,10 +280,16 @@ const PublicHomepage: React.FC = () => {
                 {homepageContent?.about_content || "Regisbridge Private School is a premier educational institution offering both primary and secondary education with comprehensive boarding services. We are committed to providing world-class education that nurtures academic excellence, character development, and leadership skills. Our holistic approach ensures students are prepared for success in an ever-changing world."}
               </p>
               <div className="flex space-x-4">
-                <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
+                <button 
+                  onClick={() => scrollToSection('programs')}
+                  className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
+                >
                   Learn More
                 </button>
-                <button className="border border-blue-600 text-blue-600 px-6 py-3 rounded-lg hover:bg-blue-50">
+                <button 
+                  onClick={() => scrollToSection('contact')}
+                  className="border border-blue-600 text-blue-600 px-6 py-3 rounded-lg hover:bg-blue-50"
+                >
                   Take a Tour
                 </button>
               </div>
@@ -467,28 +480,36 @@ const PublicHomepage: React.FC = () => {
                 Excellence in Education, Character, and Leadership
               </p>
               <div className="flex space-x-4">
-                <Facebook className="h-6 w-6 text-gray-400 hover:text-white cursor-pointer" />
-                <Twitter className="h-6 w-6 text-gray-400 hover:text-white cursor-pointer" />
-                <Instagram className="h-6 w-6 text-gray-400 hover:text-white cursor-pointer" />
-                <Linkedin className="h-6 w-6 text-gray-400 hover:text-white cursor-pointer" />
+                <a href="https://facebook.com/regisbridge" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white cursor-pointer">
+                  <Facebook className="h-6 w-6" />
+                </a>
+                <a href="https://twitter.com/regisbridge" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white cursor-pointer">
+                  <Twitter className="h-6 w-6" />
+                </a>
+                <a href="https://instagram.com/regisbridge" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white cursor-pointer">
+                  <Instagram className="h-6 w-6" />
+                </a>
+                <a href="https://linkedin.com/company/regisbridge" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white cursor-pointer">
+                  <Linkedin className="h-6 w-6" />
+                </a>
               </div>
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
               <ul className="space-y-2">
-                <li><a href="#about" className="text-gray-400 hover:text-white">About</a></li>
-                <li><a href="#programs" className="text-gray-400 hover:text-white">Programs</a></li>
-                <li><a href="#news" className="text-gray-400 hover:text-white">News</a></li>
-                <li><a href="#contact" className="text-gray-400 hover:text-white">Contact</a></li>
+                <li><button onClick={() => scrollToSection('about')} className="text-gray-400 hover:text-white cursor-pointer">About</button></li>
+                <li><button onClick={() => scrollToSection('programs')} className="text-gray-400 hover:text-white cursor-pointer">Programs</button></li>
+                <li><button onClick={() => scrollToSection('news')} className="text-gray-400 hover:text-white cursor-pointer">News</button></li>
+                <li><button onClick={() => scrollToSection('contact')} className="text-gray-400 hover:text-white cursor-pointer">Contact</button></li>
               </ul>
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-4">Admissions</h3>
               <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white">Apply Now</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white">Requirements</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white">Fees</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white">Scholarships</a></li>
+                <li><Link to="/admissions" className="text-gray-400 hover:text-white cursor-pointer">Apply Now</Link></li>
+                <li><Link to="/admissions" className="text-gray-400 hover:text-white cursor-pointer">Requirements</Link></li>
+                <li><Link to="/login" className="text-gray-400 hover:text-white cursor-pointer">Fees</Link></li>
+                <li><Link to="/admissions" className="text-gray-400 hover:text-white cursor-pointer">Scholarships</Link></li>
               </ul>
             </div>
             <div>

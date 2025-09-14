@@ -56,6 +56,7 @@ class Invoice(BaseModel):
     
     # Relationships
     student = relationship("StudentProfile", back_populates="invoices")
+    payments = relationship("Payment", back_populates="invoice")
     
     def __str__(self):
         return f"{self.invoice_number} - {self.student.user.full_name}: {self.amount}"

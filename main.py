@@ -100,14 +100,6 @@ async def root():
             "note": "Frontend not built. Run 'npm run build' in frontend directory."
         }
 
-@app.get("/{full_path:path}")
-async def serve_frontend(full_path: str):
-    """Catch-all route to serve frontend for React Router"""
-    if os.path.exists("frontend/dist/index.html"):
-        return FileResponse("frontend/dist/index.html")
-    else:
-        raise HTTPException(status_code=404, detail="Frontend not found")
-
 @app.get("/health")
 async def health_check():
     """Health check endpoint for monitoring"""
@@ -145,6 +137,14 @@ async def get_current_user_info(current_user: User = Depends(get_current_user)):
         "is_active": current_user.is_active,
         "date_joined": current_user.date_joined.isoformat() if current_user.date_joined else None
     }
+
+@app.get("/{full_path:path}")
+async def serve_frontend(full_path: str):
+    """Catch-all route to serve frontend for React Router"""
+    if os.path.exists("frontend/dist/index.html"):
+        return FileResponse("frontend/dist/index.html")
+    else:
+        raise HTTPException(status_code=404, detail="Frontend not found")
 
 if __name__ == "__main__":
     uvicorn.run(

@@ -55,6 +55,7 @@ class ClassRoom(BaseModel):
     # Relationships
     students = relationship("StudentProfile", back_populates="classroom")
     attendance_sessions = relationship("AttendanceSession", back_populates="classroom")
+    timetables = relationship("Timetable", back_populates="classroom")
     
     def __str__(self):
         return f"{self.code} - {self.name}"
@@ -98,6 +99,7 @@ class StudentProfile(BaseModel):
     admission_number = Column(String(30), unique=True, nullable=False)
     grade_level_id = Column(Integer, ForeignKey("grade_levels.id"), nullable=False)
     classroom_id = Column(Integer, ForeignKey("classrooms.id"), nullable=True)
+    program_id = Column(Integer, ForeignKey("programs.id"), nullable=True)
     is_boarder = Column(Boolean, default=False)
     dormitory_id = Column(Integer, ForeignKey("dormitories.id"), nullable=True)
     
@@ -121,6 +123,7 @@ class StudentProfile(BaseModel):
     user = relationship("User", back_populates="student_profile")
     grade_level = relationship("GradeLevel", back_populates="students")
     classroom = relationship("ClassRoom", back_populates="students")
+    program = relationship("Program", back_populates="students")
     dormitory = relationship("Dormitory", back_populates="boarders")
     grades = relationship("Grade", back_populates="student")
     attendance_records = relationship("AttendanceRecord", back_populates="student")
