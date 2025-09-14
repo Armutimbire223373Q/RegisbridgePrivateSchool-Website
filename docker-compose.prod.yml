@@ -1,66 +1,116 @@
 version: '3.8'
 
 services:
-  web:
-    build: .
-    restart: always
-    environment:
-      - DEBUG=0
-      - DJANGO_SETTINGS_MODULE=regisbridge.settings.production
-      - DATABASE_URL=${DATABASE_URL}
-      - REDIS_URL=${REDIS_URL}
-      - SECRET_KEY=${SECRET_KEY}
-    volumes:
-      - static_volume:/app/staticfiles
-      - media_volume:/app/media
-    depends_on:
-      - db
-      - redis
-    networks:
-      - regisbridge_network
-
+  # PostgreSQL Database
   db:
-    image: postgres:15
-    restart: always
+    image: postgres:15-alpine
+    container_name: regisbridge_db
     environment:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      POSTGRES_DB: regisbridge_prod
+      POSTGRES_USER: regisbridge_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    networks:
-      - regisbridge_network
+      - ./backups:/backups
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U regisbridge_user -d regisbridge_prod"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
+  # Redis for caching and sessions
   redis:
     image: redis:7-alpine
-    restart: always
+    container_name: regisbridge_redis
+    ports:
+      - "6379:6379"
     volumes:
       - redis_data:/data
-    networks:
-      - regisbridge_network
+    restart: unless-stopped
+    command: redis-server --appendonly yes
 
+  # FastAPI Backend
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    container_name: regisbridge_backend
+    environment:
+      - DATABASE_URL=postgresql://regisbridge_user:${DB_PASSWORD}@db:5432/regisbridge_prod
+      - SECRET_KEY=${SECRET_KEY}
+      - REDIS_URL=redis://redis:6379
+      - ENVIRONMENT=production
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./logs:/app/logs
+      - ./media:/app/media
+    ports:
+      - "8001:8001"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    container_name: regisbridge_frontend
+    environment:
+      - VITE_API_URL=http://localhost:8001/api/v1
+      - VITE_ENVIRONMENT=production
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  # Nginx Reverse Proxy
   nginx:
     image: nginx:alpine
-    restart: always
+    container_name: regisbridge_nginx
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/ssl:/etc/nginx/ssl
-      - static_volume:/app/staticfiles
-      - media_volume:/app/media
+      - ./nginx/nginx.prod.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./frontend/dist:/usr/share/nginx/html:ro
+      - ./media:/usr/share/nginx/media:ro
     depends_on:
-      - web
-    networks:
-      - regisbridge_network
+      - backend
+      - frontend
+    restart: unless-stopped
+
+  # Backup Service
+  backup:
+    image: postgres:15-alpine
+    container_name: regisbridge_backup
+    environment:
+      - PGPASSWORD=${DB_PASSWORD}
+    volumes:
+      - ./backups:/backups
+      - ./scripts/backup.sh:/backup.sh
+    command: /bin/sh -c "while true; do /backup.sh; sleep 86400; done"
+    depends_on:
+      - db
+    restart: unless-stopped
 
 volumes:
   postgres_data:
   redis_data:
-  static_volume:
-  media_volume:
 
 networks:
-  regisbridge_network:
-    driver: bridge
+  default:
+    name: regisbridge_network

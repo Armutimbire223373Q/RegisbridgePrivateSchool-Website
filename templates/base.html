@@ -1,313 +1,121 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Regisbridge College Management System{% endblock %}</title>
-    
-    <!-- TailwindCSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Custom TailwindCSS Configuration -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            200: '#bfdbfe',
-                            300: '#93c5fd',
-                            400: '#60a5fa',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                            800: '#1e3a8a',
-                            900: '#1e3a8a',
-                        },
-                        accent: {
-                            50: '#fffbeb',
-                            100: '#fef3c7',
-                            200: '#fde68a',
-                            300: '#fcd34d',
-                            400: '#fbbf24',
-                            500: '#f59e0b',
-                            600: '#d97706',
-                            700: '#b45309',
-                            800: '#92400e',
-                            900: '#78350f',
-                        },
-                        success: {
-                            50: '#ecfdf5',
-                            100: '#d1fae5',
-                            200: '#a7f3d0',
-                            300: '#6ee7b7',
-                            400: '#34d399',
-                            500: '#10b981',
-                            600: '#059669',
-                            700: '#047857',
-                            800: '#065f46',
-                            900: '#064e3b',
-                        },
-                        warning: {
-                            50: '#fffbeb',
-                            100: '#fef3c7',
-                            200: '#fde68a',
-                            300: '#fcd34d',
-                            400: '#fbbf24',
-                            500: '#f59e0b',
-                            600: '#d97706',
-                            700: '#b45309',
-                            800: '#92400e',
-                            900: '#78350f',
-                        },
-                        error: {
-                            50: '#fef2f2',
-                            100: '#fee2e2',
-                            200: '#fecaca',
-                            300: '#fca5a5',
-                            400: '#f87171',
-                            500: '#ef4444',
-                            600: '#dc2626',
-                            700: '#b91c1c',
-                            800: '#991b1b',
-                            900: '#7f1d1d',
-                        }
-                    },
-                    fontFamily: {
-                        'sans': ['Inter', 'Roboto', 'Nunito', 'system-ui', 'sans-serif'],
-                    },
-                    animation: {
-                        'fade-in': 'fadeIn 0.5s ease-in-out',
-                        'slide-up': 'slideUp 0.3s ease-out',
-                    },
-                    keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0' },
-                            '100%': { opacity: '1' },
-                        },
-                        slideUp: {
-                            '0%': { transform: 'translateY(10px)', opacity: '0' },
-                            '100%': { transform: 'translateY(0)', opacity: '1' },
-                        }
-                    }
-                }
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background-color: #343a40;
+        }
+        .sidebar .nav-link {
+            color: #adb5bd;
+        }
+        .sidebar .nav-link:hover {
+            color: #fff;
+        }
+        .sidebar .nav-link.active {
+            color: #fff;
+            background-color: #495057;
+        }
+        .main-content {
+            margin-left: 0;
+        }
+        @media (min-width: 768px) {
+            .main-content {
+                margin-left: 250px;
             }
         }
-    </script>
-    
-    <!-- Custom CSS -->
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        
-        .sidebar-transition {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .card-hover {
-            transition: all 0.3s ease;
-        }
-        
-        .card-hover:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
-        
-        .btn-primary {
-            @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
-        }
-        
-        .btn-secondary {
-            @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2;
-        }
-        
-        .btn-accent {
-            @apply bg-accent-500 hover:bg-accent-600 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2;
-        }
-        
-        .input-field {
-            @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-300;
-        }
-        
-        .card {
-            @apply bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 p-4 sm:p-6;
-        }
-        
-        .table-striped tbody tr:nth-child(odd) {
-            @apply bg-gray-50;
-        }
-        
-        .table-hover tbody tr:hover {
-            @apply bg-gray-100;
-        }
     </style>
-    
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    
-    {% block extra_css %}{% endblock %}
 </head>
-<body class="h-full bg-gray-50 font-sans">
-    <!-- Loading Spinner -->
-    <div id="loading-spinner" class="fixed inset-0 bg-white bg-opacity-75 flex items-center justify-center z-50 hidden">
-        <div class="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-600"></div>
-    </div>
-    
-    <!-- Toast Notifications Container -->
-    <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
-    
-    <!-- Main Layout -->
-    <div class="min-h-full">
-        <!-- Navigation Header -->
-        <nav class="bg-white shadow-sm border-b border-gray-200">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between items-center h-16">
-                    <!-- Logo -->
-                    <div class="flex items-center">
-                        <a href="/" class="flex items-center space-x-3 text-xl font-bold text-primary-900">
-                            <div class="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center">
-                                <span class="text-white font-bold text-sm">R</span>
-                            </div>
-                            <span>RegisBridge</span>
-                        </a>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <div class="text-center mb-4">
+                        <h4 class="text-white">Regisbridge</h4>
+                        <small class="text-muted">College Management</small>
                     </div>
-                    
-                    <!-- Navigation Links -->
-                    <div class="hidden md:flex items-center space-x-8">
-                        <a href="/" class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Home</a>
-                        <a href="/about/" class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">About</a>
-                        <a href="/academics/" class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Academics</a>
-                        <a href="/admissions/" class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Admissions</a>
-                        <a href="/student-life/" class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Student Life</a>
-                        <a href="/contact/" class="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Contact</a>
-                        <a href="/admin/" class="bg-primary-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary-700 transition-colors">Admin</a>
-                    </div>
-                    
-                    <!-- Mobile menu button -->
-                    <div class="md:hidden">
-                        <button type="button" class="text-gray-700 hover:text-primary-600 p-2" onclick="toggleMobileMenu()">
-                            <i data-lucide="menu" class="h-6 w-6"></i>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.url.path == '/admin/' %}active{% endif %}" href="/admin/">
+                                <i class="fas fa-tachometer-alt me-2"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if 'users' in request.url.path %}active{% endif %}" href="/admin/users">
+                                <i class="fas fa-users me-2"></i>
+                                Users
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if 'students' in request.url.path %}active{% endif %}" href="/admin/students">
+                                <i class="fas fa-graduation-cap me-2"></i>
+                                Students
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if 'teachers' in request.url.path %}active{% endif %}" href="/admin/teachers">
+                                <i class="fas fa-chalkboard-teacher me-2"></i>
+                                Teachers
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if 'grades' in request.url.path %}active{% endif %}" href="/admin/grades">
+                                <i class="fas fa-chart-line me-2"></i>
+                                Grades
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if 'attendance' in request.url.path %}active{% endif %}" href="/admin/attendance">
+                                <i class="fas fa-calendar-check me-2"></i>
+                                Attendance
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if 'fees' in request.url.path %}active{% endif %}" href="/admin/fees">
+                                <i class="fas fa-dollar-sign me-2"></i>
+                                Fees
+                            </a>
+                        </li>
+                        <li class="nav-item mt-3">
+                            <a class="nav-link" href="/api/v1/auth/logout">
+                                <i class="fas fa-sign-out-alt me-2"></i>
+                                Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">{% block page_title %}Dashboard{% endblock %}</h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <div class="btn-group me-2">
+                            <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+                            <i class="fas fa-plus me-1"></i>
+                            Add New
                         </button>
                     </div>
                 </div>
-                
-                <!-- Mobile menu -->
-                <div id="mobile-menu" class="hidden md:hidden pb-4">
-                    <div class="space-y-1">
-                        <a href="/" class="block text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-base font-medium">Home</a>
-                        <a href="/about/" class="block text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-base font-medium">About</a>
-                        <a href="/academics/" class="block text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-base font-medium">Academics</a>
-                        <a href="/admissions/" class="block text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-base font-medium">Admissions</a>
-                        <a href="/student-life/" class="block text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-base font-medium">Student Life</a>
-                        <a href="/contact/" class="block text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-base font-medium">Contact</a>
-                        <a href="/admin/" class="block bg-primary-600 text-white px-3 py-2 rounded-md text-base font-medium hover:bg-primary-700">Admin</a>
-                    </div>
-                </div>
-            </div>
-        </nav>
-        
-        {% block content %}{% endblock %}
+
+                {% block content %}{% endblock %}
+            </main>
+        </div>
     </div>
-    
-    <!-- JavaScript -->
-    <script>
-        // Toast Notification System
-        function showToast(message, type = 'info') {
-            const toastContainer = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            
-            const colors = {
-                success: 'bg-success-500 text-white',
-                error: 'bg-error-500 text-white',
-                warning: 'bg-warning-500 text-white',
-                info: 'bg-primary-500 text-white'
-            };
-            
-            toast.className = `${colors[type]} px-6 py-3 rounded-lg shadow-lg transition-all duration-300 transform translate-x-full`;
-            toast.textContent = message;
-            
-            toastContainer.appendChild(toast);
-            
-            // Animate in
-            setTimeout(() => {
-                toast.classList.remove('translate-x-full');
-            }, 100);
-            
-            // Auto remove after 5 seconds
-            setTimeout(() => {
-                toast.classList.add('translate-x-full');
-                setTimeout(() => {
-                    toastContainer.removeChild(toast);
-                }, 300);
-            }, 5000);
-        }
-        
-        // Loading Spinner
-        function showLoading() {
-            document.getElementById('loading-spinner').classList.remove('hidden');
-        }
-        
-        function hideLoading() {
-            document.getElementById('loading-spinner').classList.add('hidden');
-        }
-        
-        // Initialize Lucide Icons
-        document.addEventListener('DOMContentLoaded', function() {
-            lucide.createIcons();
-        });
-        
-        // Form Validation Helper
-        function validateForm(formElement) {
-            const inputs = formElement.querySelectorAll('input[required], select[required], textarea[required]');
-            let isValid = true;
-            
-            inputs.forEach(input => {
-                if (!input.value.trim()) {
-                    input.classList.add('border-error-500', 'ring-error-500');
-                    isValid = false;
-                } else {
-                    input.classList.remove('border-error-500', 'ring-error-500');
-                }
-            });
-            
-            return isValid;
-        }
-        
-        // Table Sorting Helper
-        function sortTable(table, columnIndex, type = 'string') {
-            const tbody = table.querySelector('tbody');
-            const rows = Array.from(tbody.querySelectorAll('tr'));
-            
-            rows.sort((a, b) => {
-                const aValue = a.cells[columnIndex].textContent.trim();
-                const bValue = b.cells[columnIndex].textContent.trim();
-                
-                if (type === 'number') {
-                    return parseFloat(aValue) - parseFloat(bValue);
-                } else if (type === 'date') {
-                    return new Date(aValue) - new Date(bValue);
-                } else {
-                    return aValue.localeCompare(bValue);
-                }
-            });
-            
-            rows.forEach(row => tbody.appendChild(row));
-        }
-        
-        // Mobile Menu Toggle
-        function toggleMobileMenu() {
-            const mobileMenu = document.getElementById('mobile-menu');
-            mobileMenu.classList.toggle('hidden');
-        }
-        
-        // Mobile Menu Toggle
-        function toggleMobileMenu() {
-            const mobileMenu = document.getElementById('mobile-menu');
-            mobileMenu.classList.toggle('hidden');
-        }
-    </script>
-    
-    {% block extra_js %}{% endblock %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {% block scripts %}{% endblock %}
 </body>
 </html>

@@ -1,6 +1,5 @@
-#!/usr/bin/env python3
 """
-Startup script for the complete Regisbridge College Management System
+Start script for the complete Regisbridge College Management System
 """
 
 import subprocess
@@ -10,177 +9,116 @@ import os
 from pathlib import Path
 
 def run_command(command, cwd=None, shell=True):
-    """Run a command and return the result"""
-    try:
-        result = subprocess.run(
-            command, 
-            cwd=cwd, 
-            shell=shell, 
-            check=True, 
-            capture_output=True, 
-            text=True
-        )
-        return True, result.stdout
-    except subprocess.CalledProcessError as e:
-        return False, e.stderr
+    """Run a command and return the process"""
+    print(f"🚀 Running: {command}")
+    return subprocess.Popen(
+        command,
+        cwd=cwd,
+        shell=shell,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True
+    )
 
-def check_dependencies():
-    """Check if required dependencies are installed"""
-    print("🔍 Checking dependencies...")
-    
-    # Check Python
-    success, output = run_command("python --version")
-    if not success:
-        print("❌ Python is not installed or not in PATH")
-        return False
-    print(f"✅ Python: {output.strip()}")
-    
-    # Check if we're in the right directory
-    if not Path("manage.py").exists():
-        print("❌ Please run this script from the project root directory")
-        return False
-    
-    print("✅ Project structure looks good")
-    return True
-
-def start_django():
-    """Start Django backend"""
-    print("\n🚀 Starting Django backend...")
-    
-    # Check if virtual environment exists
-    if not Path("venv").exists():
-        print("❌ Virtual environment not found. Please run: python -m venv venv")
-        return False
-    
-    # Activate virtual environment and start Django
-    if os.name == 'nt':  # Windows
-        activate_cmd = "venv\\Scripts\\activate"
-        django_cmd = "python manage.py runserver 0.0.0.0:8000"
-    else:  # Linux/Mac
-        activate_cmd = "source venv/bin/activate"
-        django_cmd = "python manage.py runserver 0.0.0.0:8000"
-    
-    print("Starting Django server on http://localhost:8000")
-    try:
-        subprocess.Popen(
-            f"{activate_cmd} && {django_cmd}",
-            shell=True,
-            cwd=Path.cwd()
-        )
-        time.sleep(3)  # Give Django time to start
-        print("✅ Django backend started")
-        return True
-    except Exception as e:
-        print(f"❌ Failed to start Django: {e}")
-        return False
-
-def start_fastapi():
-    """Start FastAPI backend"""
-    print("\n🚀 Starting FastAPI backend...")
-    
-    fastapi_dir = Path("fastapi_backend")
-    if not fastapi_dir.exists():
-        print("❌ FastAPI backend directory not found")
-        return False
-    
-    # Check if FastAPI virtual environment exists
-    fastapi_venv = fastapi_dir / "venv"
-    if not fastapi_venv.exists():
-        print("❌ FastAPI virtual environment not found. Please run: cd fastapi_backend && python -m venv venv")
-        return False
-    
-    # Start FastAPI
-    if os.name == 'nt':  # Windows
-        activate_cmd = "venv\\Scripts\\activate"
-        fastapi_cmd = "python start_server.py"
-    else:  # Linux/Mac
-        activate_cmd = "source venv/bin/activate"
-        fastapi_cmd = "python start_server.py"
-    
-    print("Starting FastAPI server on http://localhost:8001")
-    try:
-        subprocess.Popen(
-            f"{activate_cmd} && {fastapi_cmd}",
-            shell=True,
-            cwd=fastapi_dir
-        )
-        time.sleep(3)  # Give FastAPI time to start
-        print("✅ FastAPI backend started")
-        return True
-    except Exception as e:
-        print(f"❌ Failed to start FastAPI: {e}")
-        return False
-
-def start_frontend():
-    """Start React frontend"""
-    print("\n🚀 Starting React frontend...")
-    
-    frontend_dir = Path("frontend")
-    if not frontend_dir.exists():
-        print("❌ Frontend directory not found")
-        return False
-    
-    # Check if node_modules exists
-    if not (frontend_dir / "node_modules").exists():
-        print("❌ Frontend dependencies not installed. Please run: cd frontend && npm install")
-        return False
-    
-    print("Starting React development server on http://localhost:3000")
-    try:
-        subprocess.Popen(
-            "npm run dev",
-            shell=True,
-            cwd=frontend_dir
-        )
-        time.sleep(5)  # Give React time to start
-        print("✅ React frontend started")
-        return True
-    except Exception as e:
-        print(f"❌ Failed to start React frontend: {e}")
-        return False
+def check_port(port):
+    """Check if a port is available"""
+    import socket
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    result = sock.connect_ex(('localhost', port))
+    sock.close()
+    return result != 0
 
 def main():
     """Main startup function"""
-    print("🎓 Regisbridge College Management System Startup")
-    print("=" * 50)
+    print("🎓 Starting Regisbridge College Management System...")
+    print("=" * 60)
     
-    # Check dependencies
-    if not check_dependencies():
+    # Check if we're in the right directory
+    if not Path("main.py").exists():
+        print("❌ Error: main.py not found. Please run from the project root.")
         sys.exit(1)
     
-    # Start services
-    services_started = 0
-    
-    if start_django():
-        services_started += 1
-    
-    if start_fastapi():
-        services_started += 1
-    
-    if start_frontend():
-        services_started += 1
-    
-    print("\n" + "=" * 50)
-    if services_started == 3:
-        print("🎉 All services started successfully!")
-        print("\n📱 Access your application:")
-        print("   • Frontend: http://localhost:3000")
-        print("   • Django Admin: http://localhost:8000/admin")
-        print("   • FastAPI Docs: http://localhost:8001/docs")
-        print("   • FastAPI ReDoc: http://localhost:8001/redoc")
-        print("\n🛑 To stop all services, press Ctrl+C")
-    else:
-        print(f"⚠️  Only {services_started}/3 services started successfully")
-        print("Please check the error messages above and try again")
+    # Check if frontend directory exists
+    if not Path("frontend").exists():
+        print("❌ Error: frontend directory not found.")
         sys.exit(1)
     
-    # Keep the script running
+    processes = []
+    
     try:
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        print("\n🛑 Shutting down services...")
-        print("✅ All services stopped")
+        # Start FastAPI backend
+        print("\n🔧 Starting FastAPI Backend...")
+        if not check_port(8001):
+            print("⚠️  Port 8001 is already in use. Backend may already be running.")
+        else:
+            backend_process = run_command("python start_server.py")
+            processes.append(("Backend", backend_process))
+            time.sleep(3)  # Give backend time to start
+        
+        # Start React frontend
+        print("\n🎨 Starting React Frontend...")
+        if not check_port(3000):
+            print("⚠️  Port 3000 is already in use. Frontend may already be running.")
+        else:
+            frontend_process = run_command("npm run dev", cwd="frontend")
+            processes.append(("Frontend", frontend_process))
+            time.sleep(3)  # Give frontend time to start
+        
+        # Display access information
+        print("\n" + "=" * 60)
+        print("🎉 Regisbridge College Management System is starting!")
+        print("=" * 60)
+        print("📊 Access Points:")
+        print("  • API Documentation: http://localhost:8001/docs")
+        print("  • Admin Interface:   http://localhost:8001/admin")
+        print("  • Frontend:          http://localhost:3000")
+        print("  • Health Check:      http://localhost:8001/health")
+        print("\n🔧 Services:")
+        for name, process in processes:
+            if process.poll() is None:
+                print(f"  ✅ {name}: Running (PID: {process.pid})")
+            else:
+                print(f"  ❌ {name}: Failed to start")
+        
+        print("\n💡 Tips:")
+        print("  • Press Ctrl+C to stop all services")
+        print("  • Check logs for any errors")
+        print("  • Visit /docs for API documentation")
+        
+        print("\n⏳ Services are starting up... Please wait a moment.")
+        print("   You can check the status by visiting the URLs above.")
+        
+        # Keep the script running
+        try:
+            while True:
+                time.sleep(1)
+                # Check if any process has died
+                for name, process in processes:
+                    if process.poll() is not None:
+                        print(f"\n❌ {name} has stopped unexpectedly!")
+                        return_code = process.returncode
+                        stdout, stderr = process.communicate()
+                        if stderr:
+                            print(f"Error: {stderr}")
+        except KeyboardInterrupt:
+            print("\n\n🛑 Shutting down services...")
+            
+    except Exception as e:
+        print(f"\n❌ Error starting system: {e}")
+        sys.exit(1)
+    
+    finally:
+        # Clean up processes
+        for name, process in processes:
+            if process.poll() is None:
+                print(f"🛑 Stopping {name}...")
+                process.terminate()
+                try:
+                    process.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+        
+        print("✅ All services stopped.")
 
 if __name__ == "__main__":
     main()

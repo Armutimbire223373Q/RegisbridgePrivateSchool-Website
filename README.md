@@ -1,203 +1,294 @@
 # 🎓 Regisbridge College Management System
 
-A comprehensive Django-based web platform for private college management, providing both primary and secondary education as well as boarding facilities.
+A comprehensive, modern college management system built with React and FastAPI, featuring role-based access control, student management, teacher profiles, parent portals, and more.
 
-## ✨ **Features Implemented**
+## ✨ Features
 
-### 🔐 **Authentication & User Management**
-- **Custom User Model**: Extended Django User with role-based access control
-- **User Roles**: Admin, Teacher, Student, Parent, Boarding Staff
-- **Role-Based Permissions**: Secure access control for different user types
+### 🎯 Core Functionality
+- **Student Management** - Complete student profiles with academic records
+- **Teacher Management** - Teacher profiles with subject assignments
+- **Parent Portal** - Parent accounts linked to student records
+- **Grade Management** - Academic assessments and progress tracking
+- **Attendance System** - Daily attendance tracking and reporting
+- **Fee Management** - Payment processing and invoice generation
+- **Messaging System** - Internal communication platform
+- **Dashboard Analytics** - Real-time statistics and insights
 
-### 👥 **Student Management**
-- **Student Profiles**: Comprehensive student information including personal, academic, and health details
-- **Grade Levels**: Primary and Secondary education stages
-- **Class Management**: Classroom organization with capacity limits
-- **Dormitory System**: Boarding facility management with gender-specific options
+### 🔐 Security & Access Control
+- **JWT Authentication** - Secure token-based authentication
+- **Role-Based Access** - Admin, Teacher, Student, Parent, Boarding Staff
+- **Protected Routes** - Role-specific page access
+- **Secure API** - RESTful API with proper validation
 
-### 👨‍🏫 **Teacher Management**
-- **Teacher Profiles**: Professional information, qualifications, and specializations
-- **Subject Management**: Course offerings with credit hours and grade level associations
-- **Class Assignment**: Teacher-subject-classroom relationships
+### 🎨 User Experience
+- **Modern UI** - Clean, responsive design with Tailwind CSS
+- **Mobile Responsive** - Works on all device sizes
+- **Real-time Updates** - Hot module replacement for development
+- **Intuitive Navigation** - Easy-to-use interface
+- **Loading States** - Smooth user experience
 
-### 👨‍👩‍👧‍👦 **Parent Management**
-- **Parent Profiles**: Comprehensive contact and emergency information
-- **Student Relationships**: Multiple students per parent with relationship types
-- **Access Control**: Parents can only access their children's information
+## 🚀 Quick Start
 
-### 📊 **Grade Management System**
-- **Academic Years**: Multi-year academic planning
-- **Terms**: Term-based assessment organization (Term 1, 2, 3)
-- **Assessment Types**: Configurable assessment categories with weights
-- **Individual Grades**: Student performance tracking per assessment
-- **Term Grades**: Aggregated term performance with automatic calculations
-- **Letter Grades**: A-F grading system with percentage conversion
+### Prerequisites
+- Python 3.11+
+- Node.js 18+
+- npm or yarn
 
-### 📅 **Attendance Tracking**
-- **Daily Attendance**: Student presence/absence/late tracking
-- **Class Sessions**: Organized attendance by classroom and date
-- **Boarding Attendance**: Meal attendance for boarding students
-- **Reports**: Class and individual student attendance summaries
+### Installation
 
-### ⏰ **Timetable Management**
-- **Time Slots**: Configurable class periods with weekday scheduling
-- **Lesson Planning**: Subject-teacher-classroom-time assignments
-- **Conflict Prevention**: Unique classroom-time slot constraints
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd regisbridge
+   ```
 
-### 💰 **Financial Management**
-- **Fee Structures**: Grade-level and type-based fee configurations
-- **Invoice System**: Student-specific fee billing
-- **Payment Tracking**: Multiple payment methods and receipt generation
-- **Financial Reports**: Outstanding fees and payment summaries
+2. **Install Backend Dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-### 💬 **Communication System**
-- **Messaging**: Internal communication between users
-- **Thread Management**: Organized conversation threads
-- **Participant Management**: Multi-user communication support
+3. **Install Frontend Dependencies**
+   ```bash
+   cd frontend
+   npm install
+   ```
 
-### 📰 **Public Content Management**
-- **News & Events**: Public-facing content with categories
-- **CMS Integration**: Admin-managed content updates
-- **Slug-based URLs**: SEO-friendly content URLs
+4. **Start the Backend**
+   ```bash
+   uvicorn main:app --host 0.0.0.0 --port 8001 --reload
+   ```
 
-### 🎛️ **Role-Based Dashboards**
-- **Admin Dashboard**: System overview, statistics, and quick actions
-- **Teacher Dashboard**: Class management, assessments, and grading
-- **Student Dashboard**: Academic progress, timetable, and attendance
-- **Parent Dashboard**: Children's information and progress tracking
+5. **Start the Frontend**
+   ```bash
+   cd frontend
+   npm run dev
+   ```
 
-### 🔌 **REST API Support**
-- **API Endpoints**: RESTful API for mobile app integration
-- **Serializers**: Structured data transformation
-- **ViewSets**: Efficient CRUD operations
+6. **Access the Application**
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:8001/docs
+   - Admin Interface: http://localhost:8001/admin
 
-## 🏗️ **Architecture & Design**
+## 🔑 Demo Credentials
 
-### **App Structure**
+| Role | Username | Password |
+|------|----------|----------|
+| Admin | admin | admin123 |
+| Teacher | teacher1 | teacher123 |
+| Student | student1 | student123 |
+| Parent | parent1 | parent123 |
+
+## 🏗️ Architecture
+
+### Frontend (React + TypeScript)
+- **Framework**: React 19 with TypeScript
+- **Build Tool**: Vite for fast development
+- **Styling**: Tailwind CSS with custom components
+- **State Management**: React Context API
+- **Routing**: React Router DOM
+- **Icons**: Lucide React
+- **HTTP Client**: Fetch API
+
+### Backend (FastAPI + Python)
+- **Framework**: FastAPI with async support
+- **Database**: SQLAlchemy ORM with SQLite/PostgreSQL
+- **Authentication**: JWT tokens with bcrypt hashing
+- **API Documentation**: Auto-generated with Swagger UI
+- **Validation**: Pydantic models
+- **Database Migrations**: Alembic
+
+### Database Schema
+- **Users** - Authentication and basic user info
+- **Students** - Student profiles and academic records
+- **Teachers** - Teacher profiles and subject assignments
+- **Parents** - Parent information and student relationships
+- **Grades** - Academic assessments and grade tracking
+- **Attendance** - Daily attendance records
+- **Fees** - Payment and invoice management
+- **Messages** - Internal communication system
+
+## 📁 Project Structure
+
 ```
 regisbridge/
-├── users/           # Custom user model and authentication
-├── students/        # Student profiles and class management
-├── teachers/        # Teacher profiles and subject management
-├── parents/         # Parent profiles and student relationships
-├── grades/          # Grade management and assessment system
-├── core_attendance/ # Attendance tracking system
-├── core_timetable/  # Timetable and scheduling
-├── core_api/        # REST API endpoints
-├── fees/            # Financial management
-├── messaging/       # Internal communication
-├── public/          # Public content and CMS
-├── dashboard/       # Role-based dashboards
-└── regisbridge/     # Project configuration
+├── frontend/                 # React frontend application
+│   ├── src/
+│   │   ├── components/      # Reusable UI components
+│   │   ├── pages/          # Page components
+│   │   ├── contexts/       # React context providers
+│   │   └── App.tsx         # Main application component
+│   ├── public/             # Static assets
+│   └── package.json        # Frontend dependencies
+├── api/                    # FastAPI backend
+│   ├── routers/           # API route handlers
+│   ├── models.py          # Pydantic models
+│   ├── auth.py            # Authentication logic
+│   └── database.py        # Database configuration
+├── models/                 # SQLAlchemy database models
+│   ├── user.py            # User model
+│   ├── student.py         # Student model
+│   ├── teacher.py         # Teacher model
+│   └── ...
+├── main.py                # FastAPI application entry point
+├── requirements.txt       # Python dependencies
+└── README.md             # Project documentation
 ```
 
-### **Database Design**
-- **Normalized Structure**: Efficient data organization with proper relationships
-- **Foreign Key Constraints**: Data integrity and referential integrity
-- **Indexing**: Optimized queries for large datasets
-- **Audit Trails**: Timestamps and user tracking for all changes
+## 🔧 Development
 
-### **Security Features**
-- **Role-Based Access Control**: Secure access to different system areas
-- **CSRF Protection**: Cross-site request forgery prevention
-- **Input Validation**: Comprehensive data validation and sanitization
-- **Permission Checks**: Granular access control throughout the system
+### Backend Development
+```bash
+# Start development server
+uvicorn main:app --host 0.0.0.0 --port 8001 --reload
 
-## 🚀 **Getting Started**
+# Run tests
+pytest
 
-### **Prerequisites**
-- Python 3.8+
-- Django 5.2+
-- PostgreSQL (recommended) or SQLite
-- Virtual environment
+# Check code formatting
+black .
+isort .
+```
 
-### **Installation**
-1. Clone the repository
-2. Create and activate virtual environment
-3. Install dependencies: `pip install -r requirements.txt`
-4. Run migrations: `python manage.py migrate`
-5. Create superuser: `python manage.py createsuperuser`
-6. Run development server: `python manage.py runserver`
+### Frontend Development
+```bash
+# Start development server
+npm run dev
 
-### **Initial Setup**
-1. Access admin panel at `/admin/`
-2. Create academic years and terms
-3. Set up grade levels and classrooms
-4. Create assessment types with weights
-5. Add teachers and assign subjects
-6. Register students and assign classes
-7. Create parent accounts and link students
+# Build for production
+npm run build
 
-## 📈 **Next Development Steps**
+# Run linting
+npm run lint
+```
 
-### **Phase 1: Enhanced Academic Features**
-- **Assignment Submission System**: File uploads and submission tracking
-- **Exam Scheduling**: Automated exam timetabling
-- **Grade Analytics**: Performance trends and comparisons
-- **Report Generation**: PDF/Excel report exports
+## 🌐 API Endpoints
 
-### **Phase 2: Advanced Features**
-- **Notification System**: Email and in-app alerts
-- **Payment Gateway Integration**: Stripe/PayNow integration
-- **Mobile App API**: Enhanced REST endpoints
-- **Data Import/Export**: Bulk data management
+### Authentication
+- `POST /api/v1/auth/login` - User login
+- `POST /api/v1/auth/logout` - User logout
+- `GET /api/v1/auth/me` - Get current user
 
-### **Phase 3: Production Features**
-- **Docker Support**: Containerized deployment
-- **CI/CD Pipeline**: Automated testing and deployment
-- **Performance Monitoring**: System health and analytics
-- **Backup & Recovery**: Automated data protection
+### Students
+- `GET /api/v1/students/` - List students
+- `POST /api/v1/students/` - Create student
+- `GET /api/v1/students/{id}` - Get student
+- `PUT /api/v1/students/{id}` - Update student
+- `DELETE /api/v1/students/{id}` - Delete student
 
-## 🛠️ **Development Guidelines**
+### Teachers
+- `GET /api/v1/teachers/` - List teachers
+- `POST /api/v1/teachers/` - Create teacher
+- `GET /api/v1/teachers/{id}` - Get teacher
+- `PUT /api/v1/teachers/{id}` - Update teacher
+- `DELETE /api/v1/teachers/{id}` - Delete teacher
 
-### **Code Standards**
-- **Django Best Practices**: Follow Django conventions and patterns
-- **Code Documentation**: Comprehensive docstrings and comments
-- **Type Hints**: Python type annotations for better code clarity
-- **Testing**: Unit tests for all models and views
+### Parents
+- `GET /api/v1/parents/` - List parents
+- `POST /api/v1/parents/` - Create parent
+- `GET /api/v1/parents/{id}` - Get parent
+- `PUT /api/v1/parents/{id}` - Update parent
+- `DELETE /api/v1/parents/{id}` - Delete parent
 
-### **Database Management**
-- **Migrations**: Always create migrations for model changes
-- **Data Integrity**: Use proper constraints and validations
-- **Performance**: Optimize queries with select_related and prefetch_related
-- **Backups**: Regular database backups and version control
+### Dashboard
+- `GET /api/v1/dashboard/stats` - Get dashboard statistics
 
-### **Security Considerations**
-- **Input Validation**: Validate all user inputs
-- **Permission Checks**: Verify user permissions at view level
-- **SQL Injection**: Use Django ORM to prevent SQL injection
-- **XSS Protection**: Sanitize user-generated content
+## 🎨 UI Components
 
-## 📚 **API Documentation**
+### Layout Components
+- **Layout** - Main application layout with sidebar navigation
+- **Header** - Top navigation with user menu
+- **Sidebar** - Role-based navigation menu
 
-### **Core Endpoints**
-- `GET /api/subjects/` - List all subjects
-- `GET /api/students/` - List students (authenticated)
-- `GET /api/news/` - Public news and events
-- `GET /api/attendance/` - Attendance records (authenticated)
+### Page Components
+- **Dashboard** - Analytics and quick actions
+- **Students** - Student management interface
+- **Teachers** - Teacher management interface
+- **Parents** - Parent management interface
+- **Grades** - Grade and assessment management
+- **Attendance** - Attendance tracking interface
+- **Fees** - Fee management interface
+- **Messages** - Internal messaging system
+- **Profile** - User profile management
 
-### **Authentication**
-- Session-based authentication for web interface
-- Token-based authentication for API access (planned)
+### Common Components
+- **Modal** - Reusable modal dialogs
+- **Table** - Data tables with sorting and filtering
+- **Forms** - Form components with validation
+- **Cards** - Information display cards
 
-## 🤝 **Contributing**
+## 🔒 Security Features
+
+- **JWT Authentication** - Secure token-based authentication
+- **Password Hashing** - bcrypt for password security
+- **Role-Based Access** - Granular permission system
+- **CORS Protection** - Cross-origin request security
+- **Input Validation** - Pydantic model validation
+- **SQL Injection Protection** - SQLAlchemy ORM protection
+
+## 🚀 Deployment
+
+### Docker Deployment
+```bash
+# Build and run with Docker Compose
+docker-compose up -d --build
+```
+
+### Manual Deployment
+1. **Backend**: Deploy FastAPI with Gunicorn/Uvicorn
+2. **Frontend**: Build and serve static files with Nginx
+3. **Database**: Configure PostgreSQL for production
+4. **Environment**: Set production environment variables
+
+## 📊 Performance
+
+- **Frontend**: Vite for fast development and building
+- **Backend**: FastAPI with async support for high performance
+- **Database**: SQLAlchemy with connection pooling
+- **Caching**: Redis for session and data caching
+- **CDN**: Static asset delivery optimization
+
+## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch
-3. Make your changes with proper testing
-4. Submit a pull request with detailed description
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
 
-## 📄 **License**
+## 📝 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🆘 **Support**
+## 🆘 Support
 
 For support and questions:
 - Create an issue in the repository
 - Contact the development team
-- Check the documentation and admin panel
+- Check the documentation at `/docs`
+
+## 🎯 Roadmap
+
+### Phase 1: Core Features ✅
+- [x] User authentication and authorization
+- [x] Student management
+- [x] Teacher management
+- [x] Parent portal
+- [x] Basic dashboard
+
+### Phase 2: Advanced Features 🚧
+- [ ] Grade analytics and reporting
+- [ ] PDF report generation
+- [ ] Email notifications
+- [ ] Mobile app integration
+- [ ] Advanced search and filtering
+
+### Phase 3: Enterprise Features 📋
+- [ ] Multi-tenant support
+- [ ] Advanced analytics
+- [ ] Integration APIs
+- [ ] Custom reporting
+- [ ] Advanced security features
 
 ---
 
-**Regisbridge College Management System** - Empowering education through technology 🎓✨
+**Built with ❤️ for modern education management**
